@@ -1,0 +1,269 @@
+================================================================================
+PyTorch Compile 模式基准测试
+测试时间: 2026-01-25 16:09:44
+PyTorch 版本: 2.7.1+cu126
+CUDA 版本: 12.6
+GPU: NVIDIA H100 80GB HBM3
+================================================================================
+
+============================================================
+设置 Pipeline: No Compile
+============================================================
+Patched 120 FP32_RMSNorm modules
+
+Patched 30 Flash_LayerNorm modules
+
+Patched 120 Flash_RMSNorm modules
+
+Patched Flash_RoPE globally
+
+
+预热运行 1 次...
+  预热 1/1
+
+开始基准测试 3 次...
+  运行 1/3
+    耗时: 17.15秒
+  运行 2/3
+    耗时: 17.14秒
+  运行 3/3
+    耗时: 17.19秒
+
+============================================================
+设置 Pipeline: Default Compile
+============================================================
+Patched 120 FP32_RMSNorm modules
+
+Patched 30 Flash_LayerNorm modules
+
+Patched 120 Flash_RMSNorm modules
+
+Patched Flash_RoPE globally
+
+应用编译配置: {}
+
+预热运行 1 次...
+  预热 1/1
+
+开始基准测试 3 次...
+  运行 1/3
+    耗时: 12.80秒
+  运行 2/3
+    耗时: 12.79秒
+  运行 3/3
+    耗时: 12.79秒
+
+============================================================
+设置 Pipeline: Fullgraph Only
+============================================================
+Patched 120 FP32_RMSNorm modules
+
+Patched 30 Flash_LayerNorm modules
+
+Patched 120 Flash_RMSNorm modules
+
+Patched Flash_RoPE globally
+
+应用编译配置: {'fullgraph': True}
+
+预热运行 1 次...
+  预热 1/1
+
+开始基准测试 3 次...
+  运行 1/3
+    耗时: 12.79秒
+  运行 2/3
+    耗时: 12.80秒
+  运行 3/3
+    耗时: 12.80秒
+
+============================================================
+设置 Pipeline: Max-Autotune-No-Cudagraphs + Dynamic
+============================================================
+Patched 120 FP32_RMSNorm modules
+
+Patched 30 Flash_LayerNorm modules
+
+Patched 120 Flash_RMSNorm modules
+
+Patched Flash_RoPE globally
+
+应用编译配置: {'mode': 'max-autotune-no-cudagraphs', 'dynamic': True}
+
+预热运行 1 次...
+  预热 1/1
+
+开始基准测试 3 次...
+  运行 1/3
+    耗时: 12.61秒
+  运行 2/3
+    耗时: 12.63秒
+  运行 3/3
+    耗时: 12.63秒
+
+============================================================
+设置 Pipeline: Max-Autotune + Fullgraph
+============================================================
+Patched 120 FP32_RMSNorm modules
+
+Patched 30 Flash_LayerNorm modules
+
+Patched 120 Flash_RMSNorm modules
+
+Patched Flash_RoPE globally
+
+应用编译配置: {'mode': 'max-autotune', 'fullgraph': True}
+
+预热运行 1 次...
+  预热 1/1
+
+❌ 配置 'Max-Autotune + Fullgraph' 失败: Skip calling `torch.compiler.disable()`d function
+  Explanation: Skip calling function `<function flash_rms_layernorm at 0x7fe108a128e0>` since it was wrapped with `torch.compiler.disable`
+  Hint: Remove the `torch.compiler.disable` call
+
+  Developer debug context: <function flash_rms_layernorm at 0x7fe108a128e0>
+
+
+from user code:
+   File "transformer_helios.py", line 999, in forward
+    attn_output = self.attn1(
+  File "transformer_helios.py", line 737, in forward
+    return self.processor(
+  File "transformer_helios.py", line 360, in __call__
+    query = attn.norm_q(query)
+  File "/usr/local/lib/python3.11/dist-packages/torch/nn/modules/module.py", line 1762, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "kernels/triton_norm.py", line 29, in <lambda>
+    module.forward = (lambda self, x: flash_rms_layernorm(self, x)).__get__(module, module.__class__)
+
+Set TORCHDYNAMO_VERBOSE=1 for the internal stack trace (please do this especially if you're reporting a bug to PyTorch). For even more developer context, set TORCH_LOGS="+dynamo"
+
+
+============================================================
+设置 Pipeline: Max-Autotune
+============================================================
+Patched 120 FP32_RMSNorm modules
+
+Patched 30 Flash_LayerNorm modules
+
+Patched 120 Flash_RMSNorm modules
+
+Patched Flash_RoPE globally
+
+应用编译配置: {'mode': 'max-autotune'}
+
+预热运行 1 次...
+  预热 1/1
+
+开始基准测试 3 次...
+  运行 1/3
+    耗时: 13.02秒
+  运行 2/3
+    耗时: 13.02秒
+  运行 3/3
+    耗时: 13.03秒
+
+============================================================
+设置 Pipeline: Reduce-Overhead
+============================================================
+Patched 120 FP32_RMSNorm modules
+
+Patched 30 Flash_LayerNorm modules
+
+Patched 120 Flash_RMSNorm modules
+
+Patched Flash_RoPE globally
+
+应用编译配置: {'mode': 'reduce-overhead'}
+
+预热运行 1 次...
+  预热 1/1
+
+开始基准测试 3 次...
+  运行 1/3
+    耗时: 13.24秒
+  运行 2/3
+    耗时: 13.24秒
+  运行 3/3
+    耗时: 13.26秒
+
+============================================================
+设置 Pipeline: Default Mode
+============================================================
+Patched 120 FP32_RMSNorm modules
+
+Patched 30 Flash_LayerNorm modules
+
+Patched 120 Flash_RMSNorm modules
+
+Patched Flash_RoPE globally
+
+应用编译配置: {'mode': 'default'}
+
+预热运行 1 次...
+  预热 1/1
+
+开始基准测试 3 次...
+  运行 1/3
+    耗时: 12.74秒
+  运行 2/3
+    耗时: 12.68秒
+  运行 3/3
+    耗时: 12.75秒
+
+================================================================================
+基准测试结果摘要
+================================================================================
+配置                                            平均时间(秒)         最小时间(秒)         最大时间(秒)        
+--------------------------------------------------------------------------------
+No Compile (Baseline)                         17.16           17.14           17.19          
+Default Compile                               12.79           12.79           12.80          
+Fullgraph Only                                12.80           12.79           12.80          
+Max-Autotune-No-Cudagraphs + Dynamic          12.62           12.61           12.63          
+Max-Autotune + Fullgraph                      FAILED          FAILED          FAILED         
+Max-Autotune                                  13.02           13.02           13.03          
+Reduce-Overhead                               13.25           13.24           13.26          
+Default Mode                                  12.72           12.68           12.75          
+
+================================================================================
+速度排名 (从快到慢)
+================================================================================
+
+1. Max-Autotune-No-Cudagraphs + Dynamic
+   平均时间: 12.62秒
+   相对最慢提速: 1.36x
+   详细时间: ['12.61s', '12.63s', '12.63s']
+
+2. Default Mode
+   平均时间: 12.72秒
+   相对最慢提速: 1.35x
+   详细时间: ['12.74s', '12.68s', '12.75s']
+
+3. Default Compile
+   平均时间: 12.79秒
+   相对最慢提速: 1.34x
+   详细时间: ['12.80s', '12.79s', '12.79s']
+
+4. Fullgraph Only
+   平均时间: 12.80秒
+   相对最慢提速: 1.34x
+   详细时间: ['12.79s', '12.80s', '12.80s']
+
+5. Max-Autotune
+   平均时间: 13.02秒
+   相对最慢提速: 1.32x
+   详细时间: ['13.02s', '13.02s', '13.03s']
+
+6. Reduce-Overhead
+   平均时间: 13.25秒
+   相对最慢提速: 1.30x
+   详细时间: ['13.24s', '13.24s', '13.26s']
+
+7. No Compile (Baseline)
+   平均时间: 17.16秒
+   相对最慢提速: 1.00x
+   详细时间: ['17.15s', '17.14s', '17.19s']
+
+================================================================================
+测试完成! 结果已保存到: compile_benchmark_results_20260125_160944.txt
+================================================================================

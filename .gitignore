@@ -1,0 +1,127 @@
+# ==============================
+# 编译文件 / 缓存
+# ==============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.env
+.venv/
+
+# ==============================
+# 模型权重 /  checkpoint（超大文件）
+# ==============================
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.bin
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+*.npy
+*.npz
+*_ckpt
+*_ckpt/
+1_formal_ckpts/
+checkpoint*/
+ckpt*/
+
+# ==============================
+# 日志 / 实验追踪
+# ==============================
+*.log
+wandb/
+*.log.*
+logs/
+output_gigaworld/
+ablation_*/
+profile
+*.prof
+
+# ==============================
+# 缓存目录
+# ==============================
+.cache/
+*.cache*
+cache/
+.gradio/
+*.tmp
+*temp*
+*temp_path*/
+temp/
+
+# ==============================
+# 视频 / 图像 / 媒体（大文件）
+# ==============================
+*.gif
+*.bmp
+*.mov
+*.mkv
+*.mp4
+*.avi
+*.webm
+*.flv
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.ico
+
+# ==============================
+# 压缩包 / 数据集
+# ==============================
+*.zip
+*.tar
+*.tar.gz
+*.gz
+*.bz2
+*.xz
+*.rar
+*.txt.gz
+demo_data/
+Videoreward/
+
+# ==============================
+# 文档 / 构建包
+# ==============================
+*.html
+*.pdf
+*.whl
+poetry.lock
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ==============================
+# 系统文件 / 密钥
+# ==============================
+.DS_Store
+*DS_Store
+*.pem
+*.key
+*.pub
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# ==============================
+# 配置白名单（必须保留）
+# ==============================
+!.gitignore
+!requirements.txt
+!*.py
+!*.yaml
+!*.yml
+!*.md
+!*.sh
+
+# 你项目里的特殊大文件目录
+AMT-S.yaml
+bpe_simple_vocab_16e6.txt

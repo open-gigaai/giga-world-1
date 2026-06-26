@@ -1,0 +1,31 @@
+{
+  "num_models": 1,
+  "score_type": "rating",
+  "metrics": [
+    "aesthetic",
+    "drifting_aesthetic",
+    "drifting_motion_smoothness",
+    "drifting_naturalness",
+    "drifting_semantic",
+    "motion_amplitude",
+    "motion_smoothness",
+    "naturalness",
+    "semantic",
+    "total_weighted_rating"
+  ],
+  "models": {
+    "toy-video": {
+      "aesthetic": 9,
+      "motion_amplitude": 3,
+      "motion_smoothness": 10,
+      "naturalness": 7,
+      "semantic": 8,
+      "drifting_aesthetic": 8,
+      "drifting_motion_smoothness": 10,
+      "drifting_naturalness": 10,
+      "drifting_semantic": 10,
+      "total_weighted_rating": 8.247
+    }
+  },
+  "rating_scale": 10
+}

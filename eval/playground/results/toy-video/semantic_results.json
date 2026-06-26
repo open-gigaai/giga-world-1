@@ -1,0 +1,19 @@
+{
+  "metric": "semantic",
+  "average_score": 0.2817579507827759,
+  "num_videos": 2,
+  "per_video_results": [
+    {
+      "id": 2,
+      "video_name": "2_240_ori81.mp4",
+      "prompt": "A stunning mid-afternoon landscape photograph with a low camera angle, showcasing several giant wooly mammoths treading through a snowy meadow. Their long, wooly fur gently billows in the brisk wind as they move, creating a sense of natural movement. Snow-covered trees and dramatic snow-capped mountains loom in the distance, adding to the majestic setting. Wispy clouds and a high sun cast a warm glow over the scene, enhancing the serene and awe-inspiring atmosphere. The depth of field brings out the detailed textures of the mammoths and the snowy environment, capturing every nuance of these prehistoric giants in breathtaking clarity.",
+      "semantic_score": 0.29471662640571594
+    },
+    {
+      "id": 239,
+      "video_name": "239_120_ori129.mp4",
+      "prompt": "An old man in blue jeans and a white T-shirt takes a leisurely stroll along a bustling street in Mumbai, India, during a breathtaking sunset. He walks with a gentle sway, his weathered face reflecting the warm hues of the setting sun. His hands rest casually in his pockets, and he appears content and at peace. The background features a vibrant mix of colorful buildings, street vendors, and pedestrians, with the sky painted in shades of orange, pink, and purple. The photo has a nostalgic and documentary style, capturing the essence of a serene moment amidst the city's energy. A medium shot with a soft focus on the old man.",
+      "semantic_score": 0.2687992751598358
+    }
+  ]
+}

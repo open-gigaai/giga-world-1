@@ -1,0 +1,11 @@
+[tool.isort]
+profile = "black"
+known_first_party = ["nunchaku"]
+line_length = 120
+
+[tool.black]
+line-length = 120
+target-version = ['py311']
+
+[tool.ruff]
+line-length = 120

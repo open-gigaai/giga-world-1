@@ -1,0 +1,74 @@
+{
+  "rating_scale": 10,
+  "summary": {
+    "non_drifting": {
+      "aesthetic": {
+        "name": "Aesthetic",
+        "raw_score": 0.6564263701438904,
+        "normalized_score": 0.6564263701438904,
+        "rating": 9,
+        "num_videos": 2
+      },
+      "motion_amplitude": {
+        "name": "Motion Amplitude",
+        "raw_score": 0.12899818271398544,
+        "normalized_score": 0.12899818271398544,
+        "rating": 3,
+        "num_videos": 2
+      },
+      "motion_smoothness": {
+        "name": "Motion Smoothness",
+        "raw_score": 0.9922347277689807,
+        "normalized_score": 0.9922347277689807,
+        "rating": 10,
+        "num_videos": 2
+      },
+      "naturalness": {
+        "name": "Naturalness",
+        "raw_score": 0.5,
+        "normalized_score": 0.5,
+        "rating": 7,
+        "num_videos": 2
+      },
+      "semantic": {
+        "name": "Semantic",
+        "raw_score": 0.2817579507827759,
+        "normalized_score": 0.2817579507827759,
+        "rating": 8,
+        "num_videos": 2
+      }
+    },
+    "drifting": {
+      "drifting_aesthetic": {
+        "name": "Drifting Aesthetic",
+        "raw_score": 0.027865678071975708,
+        "normalized_score": 0.027865678071975708,
+        "rating": 8,
+        "num_videos": 2
+      },
+      "drifting_motion_smoothness": {
+        "name": "Drifting Motion Smoothness",
+        "raw_score": 0.0009624073235373065,
+        "normalized_score": 0.0009624073235373065,
+        "rating": 10,
+        "num_videos": 2
+      },
+      "drifting_naturalness": {
+        "name": "Drifting Naturalness",
+        "raw_score": 0.0,
+        "normalized_score": 0.0,
+        "rating": 10,
+        "num_videos": 2
+      },
+      "drifting_semantic": {
+        "name": "Drifting Semantic",
+        "raw_score": 0.006637156009674072,
+        "normalized_score": 0.006637156009674072,
+        "rating": 10,
+        "num_videos": 2
+      }
+    },
+    "total_weighted_rating": 8.247
+  },
+  "per_video": {}
+}

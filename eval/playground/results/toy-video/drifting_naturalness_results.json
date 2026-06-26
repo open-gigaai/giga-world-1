@@ -1,0 +1,27 @@
+{
+  "metric": "drifting_naturalness",
+  "description": "Start-end contrast of naturalness (first/last 15% frames)",
+  "average_drift_score": 0.0,
+  "num_videos": 2,
+  "model_name": "gpt-5.2-2025-12-11",
+  "per_video_results": [
+    {
+      "id": 2,
+      "video_name": "2_240_ori81.mp4",
+      "drift_naturalness_score": 0.0,
+      "start_naturalness_score": 0.0,
+      "end_naturalness_score": 0.0,
+      "start_raw_score": "1",
+      "end_raw_score": "1"
+    },
+    {
+      "id": 239,
+      "video_name": "239_120_ori129.mp4",
+      "drift_naturalness_score": 0.0,
+      "start_naturalness_score": 0.75,
+      "end_naturalness_score": 0.75,
+      "start_raw_score": "4",
+      "end_raw_score": "4"
+    }
+  ]
+}

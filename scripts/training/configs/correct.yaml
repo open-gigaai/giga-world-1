@@ -1,0 +1,27 @@
+validation_config:
+  # ------------------------------------------------------------------------------------------------------------------------------------
+  # ------- During validation/inference, enabling use_dynamic_shifting" yields better results.
+  use_dynamic_shifting: true
+  time_shift_type: "exponential"   # ["exponential", "linear"]
+  # ------------------------------------------------------------------------------------------------------------------------------------
+
+training_config:
+  # ------------------------------------------------------------------------------------------------------------------------------------
+  # ------- Regarding the issue that I2V tends to produce very slow motion at the beginning:
+  # ------- During training, we did not construct the corresponding history context format (i.e., first-frame anchor + last-frame), 
+  # ------- which means the current I2V inference relies heavily on the model’s zero-shot capability.
+  # ------- Incorporating this data format during training should significantly improve performance.
+  random_drop_i2v_ratio: 0.1                 # should be changed according to valiation
+  # ------------------------------------------------------------------------------------------------------------------------------------
+  # 
+  # ------------------------------------------------------------------------------------------------------------------------------------
+  # ------- Easy Anit-Drifting (Noise + Blur + Saturation): We actually missed fully turning this on when we trained Helios-Base 
+  # ------- and Helios-Mid. But based on our ablation experiments on Helios-Distilled, it definitely helps mitigate degradation.
+  corrupt_mode_history: "random"
+  downsample_min_corrupt_ratio_history: 0.9  # should be changed according to valiation
+  downsample_max_corrupt_ratio_history: 1.0  # should be changed according to valiation
+  is_add_saturation: true
+  saturation_ratio_clean_prob: 0.1           # should be changed according to valiation
+  saturation_ratio_min: 0.3                  # should be changed according to valiation
+  saturation_ratio_max: 1.7                  # should be changed according to valiation
+  # ------------------------------------------------------------------------------------------------------------------------------------

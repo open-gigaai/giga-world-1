@@ -1,0 +1,21 @@
+{
+  "metric": "naturalness",
+  "average_score": 0.5,
+  "num_videos": 2,
+  "model_name": "gpt-5.2-2025-12-11",
+  "num_frames_per_video": 16,
+  "per_video_results": [
+    {
+      "id": 2,
+      "video_name": "2_240_ori81.mp4",
+      "naturalness_score": 0.25,
+      "raw_score": "2"
+    },
+    {
+      "id": 239,
+      "video_name": "239_120_ori129.mp4",
+      "naturalness_score": 0.75,
+      "raw_score": "4"
+    }
+  ]
+}

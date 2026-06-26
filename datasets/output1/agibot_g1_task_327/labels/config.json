@@ -1,0 +1,27 @@
+{
+  "_class_name": "PklDataset",
+  "_key_names": [
+    "action",
+    "data_index",
+    "episode_name",
+    "cam_high_video_path",
+    "cam_left_wrist_video_path",
+    "cam_right_wrist_video_path",
+    "cam_high_depth_path",
+    "cam_left_wrist_depth_path",
+    "cam_right_wrist_depth_path",
+    "qpos",
+    "video_height",
+    "video_width",
+    "video_length",
+    "short-prompt",
+    "long-prompt",
+    "sketch_video_path",
+    "sketch_overlay_video_path",
+    "left_plucker_moment_video_path",
+    "left_plucker_direction_video_path",
+    "right_plucker_moment_video_path",
+    "right_plucker_direction_video_path"
+  ],
+  "data_size": 8
+}

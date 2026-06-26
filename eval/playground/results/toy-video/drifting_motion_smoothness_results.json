@@ -1,0 +1,22 @@
+{
+  "metric": "drifting_motion_smoothness",
+  "description": "Start-end contrast of motion smoothness (first/last 15% frames)",
+  "average_drift_score": 0.0009624073235373065,
+  "num_videos": 2,
+  "per_video_results": [
+    {
+      "id": 2,
+      "video_name": "2_240_ori81.mp4",
+      "drift_motion_smoothness_score": 0.0016874511579993978,
+      "start_motion_smoothness_score": 0.9880413336530265,
+      "end_motion_smoothness_score": 0.9897287848110259
+    },
+    {
+      "id": 239,
+      "video_name": "239_120_ori129.mp4",
+      "drift_motion_smoothness_score": 0.0002373634890752152,
+      "start_motion_smoothness_score": 0.9948747067013198,
+      "end_motion_smoothness_score": 0.995112070190395
+    }
+  ]
+}

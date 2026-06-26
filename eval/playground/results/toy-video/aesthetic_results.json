@@ -1,0 +1,17 @@
+{
+  "metric": "aesthetic",
+  "average_score": 0.6564263701438904,
+  "num_videos": 2,
+  "per_video_results": [
+    {
+      "id": 2,
+      "video_name": "2_240_ori81.mp4",
+      "aesthetic_score": 0.6802743077278137
+    },
+    {
+      "id": 239,
+      "video_name": "239_120_ori129.mp4",
+      "aesthetic_score": 0.632578432559967
+    }
+  ]
+}

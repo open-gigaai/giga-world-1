@@ -1,0 +1,272 @@
+output_dir: /shared_disk/users/xuancheng.xu/output/experiment/helios/ablation_stage_2_dmd_wode_wan21
+logging_dir: logs
+seed: 47
+
+report_to:
+  tracker_name: Helios-Train
+  wandb_name: ablation_stage_2_dmd
+  report_to: wandb
+
+data_config:
+  # ---- Base ----
+  use_shuffle: true
+  pin_memory: true
+  persistent_workers: true
+  force_rebuild: true
+  single_res: true
+  single_height: 480
+  single_width: 1920
+  dataloader_num_workers: 8
+  prefetch_factor: 1
+  caption_dropout_p: 0
+  id_token: ""
+  # ---- Stage 1 ----
+  use_stage1_dataset: false
+  # ---- Stage 3 ----
+  use_stage2_dataset: true
+  gan_data_root:
+    - "/shared_disk/users/zhanqian.wu/data/train_data/helios_data/giga_ctrl_3view/latents_short_giga_control"
+
+model_config:
+  # ---- Path ----
+  model_type: "wan2.1"
+  pretrained_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-1/stage1_final"
+  transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage3_ODE_3v_uni_s0P6k/"
+  #transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage1_final_3v_uni_s16k/"
+  subfolder: "transformer" # TODO: subfolder: "transformer_ode"
+  real_score_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage1_final_3v_uni_s16k"  #FIXME: real score model path should be checked
+  load_checkpoints_custom: false
+  # load_model_path:
+  load_dcp: false
+  # load_dcp_path:
+  # ---- Vae ----
+  upcast_vae: true
+  enable_slicing: false
+  enable_tiling: false
+  # ---- Lora ----
+  lora_rank: 256
+  lora_alpha: 256.0
+  lora_dropout: 0.0
+  lora_layers: "all-linear"
+  # lora_target_modules:
+  #   - to_k
+  #   - to_q
+  #   - to_v
+  #   - to_out.0
+  #   - ffn.net.0.proj
+  #   - ffn.net.2
+  lora_exclude_modules:
+    - down
+    - up
+  # ---- Other ----
+  train_norm_layers: false
+  is_control_model: true
+  # ---- DMD ----
+  critic_lora_rank: 256
+  critic_lora_alpha: 256.0
+  critic_lora_dropout: 0.0
+  # ---- Reward Parameters ----
+  #is_use_reward: false
+  reward_model_name_or_path: "/mnt/bn/yufan-dev-my/ysh_new/Ckpts/Videoreward" # FIXME: reward model path should be checked
+
+
+validation_config:
+  validation_steps: 500
+  validation_height: 480
+  validation_width: 1920
+  validation_max_num_frames: 66
+  validation_first_image:
+    - "/shared_disk/users/zhanqian.wu/data/infer_data/helios_data/giga_ctrl_3view/task3/videos/task3/episode_000007_72ce1f94ca_s000000_e000330.mp4"
+  validation_control_video:
+    - "/shared_disk/users/zhanqian.wu/data/infer_data/helios_data/giga_ctrl_3view/task3/control_videos/task3/episode_000007_72ce1f94ca_s000000_e000330.mp4"
+  validation_prompts:
+    - "A robot with black and white grippers approaches an open cardboard box on a gray wooden floor. The grippers, attached to articulated arms, position themselves on either side of the box’s flaps. The left gripper grasps the left flap, while the right gripper secures the right flap. The robot then lifts both flaps simultaneously, folding them inward to close the box. The grippers maintain a firm but controlled grip throughout, ensuring the box remains stable. The environment is minimalistic, with no other objects visible. The robot’s motion is precise, demonstrating coordinated manipulation to complete the box-closing task."
+  validation_guidance_scale: 1.0
+  validation_latent_window_size:
+    - 9
+  num_validation_videos: 1
+  num_inference_steps: 6
+  # ---- Dynamic Shifting ----
+  use_dynamic_shifting: true
+  time_shift_type: "linear"  # ["exponential", "linear"]
+  # ---- Pyramid ----
+  # stage2_simulated_inference_steps:
+  #   - 2
+  #   - 2
+  #   - 2
+
+
+training_config:
+  # ---- Environment ----
+  allow_tf32: false
+  gradient_checkpointing: true
+  enable_xformers_memory_efficient_attention: false
+  enable_npu_flash_attention: false
+  upcast_before_saving: false
+  offload: false
+  mixed_precision: "bf16"
+  # ---- Training Resource ----
+  max_train_steps: 1000000
+  train_batch_size: 1
+  gradient_accumulation_steps: 2
+  checkpointing_steps: 250
+  resume_from_checkpoint: "latest"
+  save_checkpoints_custom: true
+  # ---- Optimizer ----
+  learning_rate: 2.0e-06
+  lr_scheduler: "constant"
+  lr_warmup_steps: 200
+  optimizer: "adamw"
+  adam_beta1: 0.0
+  adam_beta2: 0.999
+  adam_weight_decay: 1e-03
+  adam_epsilon: 1e-08
+  max_grad_norm: 10.0
+  weighting_scheme: "none"  # ["sigma_sqrt", "logit_normal", "mode", "cosmap", "none"]
+  logit_mean: 0.0
+  logit_std: 1.0
+  mode_scale: 1.29
+  # ---- Dynamic Shifting Parameters ----
+  use_dynamic_shifting: true
+  time_shift_type: "linear"
+  base_seq_len: 256
+  max_seq_len: 4096
+  base_shift: 0.5
+  max_shift: 1.15
+  # ---- VAE Decode Parameters ----
+  vae_decode_type: "default"
+  # ---- EMA Parameters ----
+  use_ema: true
+  use_ema_validation: false
+  ema_decay: 0.99
+  ema_start_step: 750
+  ema_zero3_port: 10543
+  ema_deepspeed_config_file: "scripts/accelerate_configs/zero3.json"
+  # ---- Stage 1 Parameters ----
+  is_enable_stage1: true
+  history_sizes:
+    - 16
+    - 2
+    - 1
+  latent_window_size:
+    # - 12
+    # - 10
+    - 9
+    # - 8
+    # - 6
+    # - 5
+    # - 4
+    # - 3
+    # - 2
+    # - 1
+  is_amplify_history: false
+  history_scale_mode: "per_head"
+  # 
+  is_train_full_patch_embedding: false
+  is_train_lora_patch_embedding: false
+  has_multi_term_memory_patch: true
+  is_train_full_multi_term_memory_patchg: false
+  is_train_lora_multi_term_memory_patchg: true
+  zero_history_timestep: true
+  guidance_cross_attn: true
+  restrict_self_attn: false
+  is_train_restrict_lora: false
+  restrict_lora: false
+  restrict_lora_rank: 128
+  # ---- Stage 2 Parameters ----
+  is_navit_pyramid: false
+  # stage2_num_stages: 3
+  # stage2_timestep_shift: 1.0
+  # stage2_scheduler_gamma: 0.333333333333333333333333333333333   # Approximate value of 1/3
+  # stage2_stage_range:
+  #   - 0
+  #   - 0.333333333333333333333333333333333   # Approximate value of 1/3
+  #   - 0.666666666666666666666666666666666   # Approximate value of 2/3
+  #   - 1
+  # stage2_sample_ratios:
+  #   - 1
+  #   - 1
+  #   - 1
+  # efficient_sample: false
+  # ---- Stage 3 VRAM Parameters ----
+  dmd_is_low_vram_mode: true
+  is_gan_low_vram_mode: true
+  dmd_is_offload_grad: false
+  # ---- Stage 3 Parameters ----
+  log_iters: 20
+  no_visualize: false
+  is_train_dmd: true
+  max_grad_norm_critic: 10.0
+  dmd_generator_deepspeed_config: scripts/accelerate_configs/zero2.json
+  dmd_critic_deepspeed_config: scripts/accelerate_configs/zero2.json
+  critic_learning_rate: 4.0e-07
+  dfake_gen_update_ratio: 5
+  dmd_denoising_step_list:
+    - 1000
+    - 750
+    - 500
+    - 250
+  num_critic_input_frames: 9
+  dmd_timestep_shift: 5.0
+  dmd_last_step_only: false
+  dmd_last_section_grad_only: false
+  dmd_teacher_forcing: false
+  dmd_teacher_forcing_ratio: 0.2
+  fake_guidance_scale: 0.0
+  real_guidance_scale: 3.0
+  # ---- GT History Parameters ----
+  is_use_gt_history: true
+  use_gt_history_ratio: 1.0
+  # ---- VAE Re-Encode ----
+  is_dmd_vae_decode: false
+  # ---- Multi Stage Backward Simulated ----
+  is_multi_pyramid_stage_backward_simulated: false
+  is_amplify_first_chunk: true
+  # ---- GAN Parameters ----
+  is_use_gan: false
+  gan_start_step: 1000
+  is_separate_gan_grad: false
+  is_use_gan_hooks: true
+  is_use_gan_final: true
+  gan_cond_map_dim: 768
+  gan_hooks:
+    - 5
+    - 15
+    - 25
+    - 35
+  gan_g_weight: 5e-2
+  gan_d_weight: 1e-2
+  aprox_r1: true
+  aprox_r2: true
+  r1_weight: 100.0
+  r2_weight: 0.0
+  r1_sigma: 0.1
+  r2_sigma: 0.1
+  # ---- Cold Start Parameters ----
+  is_enable_cold_start: false
+  cold_start_step: 2000
+  stage_cold_start_step: 2000
+  # ---- Dynamic Timestep ----
+  generator_is_forcing_low_renoise: false
+  generator_dynamic_alpha: 4.0
+  generator_dynamic_beta: 1.5
+  generator_dynamic_sample_type: "beta"
+  generator_dynamic_step: 500
+  critic_dynamic_alpha: 4.0
+  critic_dynamic_beta: 1.5
+  critic_dynamic_sample_type: "uniform"
+  critic_dynamic_step: 500
+  # ---- Dynamic DMD Section ----
+  dmd_num_latent_sections_min: 1
+  dmd_num_latent_sections_max: 1
+  dmd_dynamic_alpha: 1.5
+  dmd_dynamic_beta: 4.0
+  dmd_dynamic_sample_type: "uniform"
+  dmd_dynamic_step: 500
+  # ---- Dynamic ODE Section ----
+  ode_num_latent_sections_min: 3
+  ode_num_latent_sections_max: 3
+  ode_dynamic_alpha: 1.5
+  ode_dynamic_beta: 4.0
+  ode_dynamic_sample_type: "uniform"
+  ode_dynamic_step: 500

@@ -1,0 +1,17 @@
+{
+  "metric": "motion_fb",
+  "average_score": 0.12899818271398544,
+  "num_videos": 2,
+  "per_video_results": [
+    {
+      "id": 2,
+      "video_name": "2_240_ori81.mp4",
+      "motion_fb": 0.19912056624889374
+    },
+    {
+      "id": 239,
+      "video_name": "239_120_ori129.mp4",
+      "motion_fb": 0.05887579917907715
+    }
+  ]
+}

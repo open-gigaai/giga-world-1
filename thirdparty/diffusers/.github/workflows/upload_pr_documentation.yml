@@ -1,0 +1,19 @@
+name: Upload PR Documentation
+
+on:
+  workflow_run:
+    workflows: ["Build PR Documentation"]
+    types:
+      - completed
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: huggingface/doc-builder/.github/workflows/upload_pr_documentation.yml@9ad2de8582b56c017cb530c1165116d40433f1c6  # main
+    with:
+      package_name: diffusers
+    secrets:
+      hf_token: ${{ secrets.HF_DOC_BUILD_PUSH }}
+      comment_bot_token: ${{ secrets.COMMENT_BOT_TOKEN }}

@@ -1,0 +1,187 @@
+output_dir: ablation_stage_1_post_giga_functrl_lora_0606_debug
+logging_dir: logs
+seed: 44
+
+report_to:
+  tracker_name: Helios-Train
+  wandb_name: ablation_stage_1_ctrl
+  report_to: wandb
+
+data_config:
+  # ---- Base ----
+  use_shuffle: true
+  pin_memory: true
+  persistent_workers: true
+  force_rebuild: true
+  single_res: true
+  single_height: 480
+  single_width: 1920
+  dataloader_num_workers: 8
+  prefetch_factor: 2
+  caption_dropout_p: 0
+  id_token: ""
+  # ---- Stage 1 ----
+  use_stage1_dataset: true
+  instance_data_root:
+    - "/shared_disk/users/zhanqian.wu/data/train_data/helios_data/giga_ctrl_3view/latents_short_giga_control"
+
+model_config:
+  # ---- Path ----
+  pretrained_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/Wan2.1-Fun-V1.1-1.3B-giga-ctrl-2200" #load VAE, t5, ...
+  #transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-1/ablation_1.3B_gigactrl_3v_rank128_bs128_0526" #load transformer
+  transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/Wan2.1-Fun-V1.1-1.3B-giga-ctrl-2200" #load transformer
+  # subfolder: "transformer"
+  load_checkpoints_custom: false
+  # load_model_path:
+  load_dcp: false
+  # load_dcp_path:
+  # ---- Vae ----
+  upcast_vae: true
+  enable_slicing: false
+  enable_tiling: false
+  # ---- Lora ----
+  lora_rank: 128
+  lora_alpha: 128.0
+  lora_dropout: 0.0
+  lora_layers: "all-linear"
+  # lora_target_modules:
+  #   - to_k
+  #   - to_q
+  #   - to_v
+  #   - to_out.0
+  #   - ffn.net.0.proj
+  #   - ffn.net.2
+  lora_exclude_modules:
+    - down
+    - up
+  # ---- Other ----
+  train_norm_layers: false
+  is_control_model: true
+  model_type: "wan2.1"
+
+
+validation_config:
+  validation_steps: 1000
+  validation_height: 480
+  validation_width: 1920
+  validation_max_num_frames: 99
+  validation_first_image:
+    - "/shared_disk/users/zhanqian.wu/data/infer_data/helios_data/giga_ctrl_3view/task3/videos/task3/episode_000007_72ce1f94ca_s000000_e000330.mp4"
+  validation_control_video:
+    - "/shared_disk/users/zhanqian.wu/data/infer_data/helios_data/giga_ctrl_3view/task3/control_videos/task3/episode_000007_72ce1f94ca_s000000_e000330.mp4"
+  validation_prompts:
+    - "A robot with black and white grippers approaches an open cardboard box on a gray wooden floor. The grippers, attached to articulated arms, position themselves on either side of the box’s flaps. The left gripper grasps the left flap, while the right gripper secures the right flap. The robot then lifts both flaps simultaneously, folding them inward to close the box. The grippers maintain a firm but controlled grip throughout, ensuring the box remains stable. The environment is minimalistic, with no other objects visible. The robot’s motion is precise, demonstrating coordinated manipulation to complete the box-closing task."
+  validation_guidance_scale: 5.0
+  validation_latent_window_size:
+    - 9
+  num_validation_videos: 1
+  num_inference_steps: 15
+  # ---- Dynamic Shifting ----
+  use_dynamic_shifting: true
+  time_shift_type: "exponential"  # ["exponential", "linear"]
+
+
+training_config:
+  # ---- Environment ----
+  allow_tf32: true # ori false
+  gradient_checkpointing: true
+  enable_xformers_memory_efficient_attention: true # ori true
+  enable_npu_flash_attention: false
+  upcast_before_saving: false
+  offload: false
+  mixed_precision: "bf16"
+  # ---- Training Resource ----
+  max_train_steps: 1000000
+  train_batch_size: 1 #4
+  gradient_accumulation_steps: 1
+  checkpointing_steps: 500
+  resume_from_checkpoint: "latest"
+  save_checkpoints_custom: false
+  # ---- Optimizer ----
+  learning_rate: 3e-5
+  lr_scheduler: "constant"
+  lr_warmup_steps: 500
+  optimizer: "adamw"
+  adam_beta1: 0.9
+  adam_beta2: 0.999
+  adam_weight_decay: 1e-04
+  adam_epsilon: 1e-08
+  max_grad_norm: 1.0
+  weighting_scheme: "logit_normal"  # ["sigma_sqrt", "logit_normal", "mode", "cosmap", "none"]
+  logit_mean: 0.0
+  logit_std: 1.0
+  mode_scale: 1.29
+  # ---- Dynamic Shifting Parameters ----
+  use_dynamic_shifting: false
+  time_shift_type: "exponential"  # ["exponential", "linear"]
+  base_seq_len: 256
+  max_seq_len: 4096
+  base_shift: 0.5
+  max_shift: 1.15
+  # ---- VAE Decode Parameters ----
+  vae_decode_type: "default"
+  # ---- EMA Parameters ----
+  use_ema: false
+  use_ema_validation: false
+  ema_decay: 0.999
+  ema_start_step: 250
+  ema_zero3_port: 10543
+  ema_deepspeed_config_file: "scripts/accelerate_configs/zero3.json"
+  # ---- Stage 1 Parameters ----
+  is_enable_stage1: true
+  history_sizes:
+    - 16
+    - 2
+    - 1
+  latent_window_size:
+    # - 12
+    # - 10
+    - 9
+    # - 8
+    # - 6
+    # - 5
+    # - 4
+    # - 3
+    # - 2
+    # - 1
+  is_random_drop: true
+  random_drop_v2v_ratio: 0.4
+  random_drop_t2v_ratio: 0.4
+  # 
+  corrupt_model_input: false
+  corrupt_mode_model_input: "noise"
+  corrupt_mode_prob_model_input: 0.9
+  is_frame_independent_corrupt_model_input: true
+  is_chunk_independent_corrupt_model_input: false
+  noise_corrupt_ratio_model_input: 0.33333333333333
+  noise_corrupt_clean_prob_model_input: 0.1
+  downsample_min_corrupt_ratio_model_input: 0.9
+  downsample_max_corrupt_ratio_model_input: 1.0
+  corrupt_history: true
+  corrupt_mode_history: "noise"
+  corrupt_mode_prob_history: 0.9
+  is_frame_independent_corrupt_history: true
+  is_chunk_independent_corrupt_history: false
+  noise_corrupt_ratio_history_short: 0.33333333333333
+  noise_corrupt_ratio_history_mid: 0.33333333333333
+  noise_corrupt_ratio_history_long: 0.33333333333333
+  noise_corrupt_clean_prob_history: 0.1
+  downsample_min_corrupt_ratio_history: 0.9
+  downsample_max_corrupt_ratio_history: 1.0
+  # 
+  is_amplify_history: false
+  history_scale_mode: "per_head"
+  # 
+  is_train_full_patch_embedding: false
+  is_train_lora_patch_embedding: true
+  has_multi_term_memory_patch: true
+  is_train_full_multi_term_memory_patchg: true
+  is_train_lora_multi_term_memory_patchg: false
+  zero_history_timestep: true
+  guidance_cross_attn: true
+  restrict_self_attn: false
+  is_train_restrict_lora: false
+  restrict_lora: false
+  restrict_lora_rank: 128
+  #
+

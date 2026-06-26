@@ -1,0 +1,6 @@
+{
+    "_class_name": "Dataset",
+    "config_paths": [
+        "labels/config.json"
+    ]
+}

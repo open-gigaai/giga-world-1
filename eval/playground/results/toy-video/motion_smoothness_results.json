@@ -1,0 +1,17 @@
+{
+  "metric": "motion_smoothness",
+  "average_score": 0.9922347277689807,
+  "num_videos": 2,
+  "per_video_results": [
+    {
+      "id": 2,
+      "video_name": "2_240_ori81.mp4",
+      "motion_smoothness_score": 0.9896801291593404
+    },
+    {
+      "id": 239,
+      "video_name": "239_120_ori129.mp4",
+      "motion_smoothness_score": 0.9947893263786209
+    }
+  ]
+}

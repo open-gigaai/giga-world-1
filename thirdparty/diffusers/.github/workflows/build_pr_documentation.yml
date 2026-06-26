@@ -1,0 +1,52 @@
+name: Build PR Documentation
+
+on:
+  pull_request:
+    paths:
+      - "src/diffusers/**.py"
+      - "examples/**"
+      - "docs/**"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405  # v6
+        with:
+          python-version: '3.10'
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install doc-builder
+        run: |
+          uv pip install --system git+https://github.com/huggingface/doc-builder.git@main
+
+      - name: Check documentation links
+        run: |
+          uv run doc-builder check-links docs/source/en
+
+  build:
+    needs: check-links
+    uses: huggingface/doc-builder/.github/workflows/build_pr_documentation.yml@90b4ee2c10b81b5c1a6367c4e6fc9e2fb510a7e3  # main
+    with:
+      commit_sha: ${{ github.event.pull_request.head.sha }}
+      pr_number: ${{ github.event.number }}
+      install_libgl1: true
+      package: diffusers
+      languages: en ko zh ja pt
+      custom_container: diffusers/diffusers-doc-builder
