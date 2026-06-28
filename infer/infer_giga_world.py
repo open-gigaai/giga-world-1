@@ -3,7 +3,6 @@
 
 import os
 import sys
-import json
 
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
@@ -21,8 +20,6 @@ os.environ["VK_ICD_FILENAMES"] = "/etc/vulkan/icd.d/nvidia_icd.json"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True,max_split_size_mb:512"
 
 import argparse
-import cv2
-from PIL import Image
 
 import torch
 from accelerate import Accelerator
@@ -33,7 +30,7 @@ from transformers import AutoTokenizer, UMT5EncoderModel
 
 from diffusers import AutoencoderKLWan, UniPCMultistepScheduler
 from diffusers.training_utils import cast_training_params, free_memory
-from diffusers.utils import export_to_video, load_image, load_video, convert_unet_state_dict_to_peft
+from diffusers.utils import export_to_video, load_image, convert_unet_state_dict_to_peft
 
 from gigaworld.modules.gigaworld_kernels import (
     replace_all_norms_with_flash_norms,
@@ -50,46 +47,12 @@ from gigaworld.utils.utils_base import (
 )
 
 
-def get_first_frame_image(video_path, width, height):
-    cap = cv2.VideoCapture(video_path)
-    success, frame = cap.read()
-    cap.release()
-    if not success:
-        return None
-    frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    return Image.fromarray(frame_rgb).resize((width, height))
-
-
 def normalize_optional_path(x):
     if x is None:
         return None
     if str(x).lower() in ["none", "null", ""]:
         return None
     return x
-
-
-def str2bool(x):
-    if isinstance(x, bool):
-        return x
-    return str(x).lower() in ["true", "1", "yes", "y"]
-
-
-def align_num_frames(num_frames, frame_multiple):
-    return int(num_frames) // frame_multiple * frame_multiple
-
-
-def get_video_num_frames(video_path):
-    cap = cv2.VideoCapture(video_path)
-    frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    cap.release()
-    return frame_count
-
-
-def load_caption_items(path):
-    with open(path, "r", encoding="utf-8") as f:
-        if path.endswith(".jsonl"):
-            return [json.loads(line) for line in f if line.strip()]
-        return json.load(f)
 
 
 def build_lora_config(args, transformer):
@@ -141,19 +104,6 @@ def build_lora_config(args, transformer):
 
 
 def resolve_transformer_load_path(cli_args, args):
-    """
-    支持两种写法：
-
-    1. 传父目录：
-       --transformer_model_name_or_path /xxx/ablation_xxx/
-       且里面有 transformer/config.json
-       => path=/xxx/ablation_xxx, subfolder=transformer
-
-    2. 直接传 transformer 目录：
-       --transformer_model_name_or_path /xxx/ablation_xxx/transformer
-       => path=/xxx/ablation_xxx/transformer, subfolder=None
-    """
-
     if cli_args.transformer_model_name_or_path is None:
         return cli_args.base_model_path, args.model_config.subfolder or "transformer"
 
@@ -165,35 +115,33 @@ def resolve_transformer_load_path(cli_args, args):
     if os.path.exists(os.path.join(p, "transformer", "config.json")):
         return p, "transformer"
 
-    # fallback：按用户传入路径直接加载
     return p, None
 
 
 @torch.no_grad()
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="GigaWorld Inference (i2v / t2v)")
     parser.add_argument("--config", type=str, required=True)
     parser.add_argument("--base_model_path", type=str, required=True)
     parser.add_argument("--transformer_model_name_or_path", type=str, default=None)
-    parser.add_argument("--checkpoint_path", type=str, required=False)
-    parser.add_argument("--control_video_path", type=str, required=True)
-    parser.add_argument("--image_path", type=str, required=True)
-    parser.add_argument("--prompt", type=str, required=False, default=None)
+    parser.add_argument("--checkpoint_path", type=str, required=False, default=None)
+    parser.add_argument("--image_path", type=str, default=None, help="输入首帧图片路径（提供则为 i2v，不提供则为 t2v）")
+    parser.add_argument("--prompt", type=str, required=True, help="生成视频的文本提示")
+    parser.add_argument("--control_video_path", type=str, default=None, help="控制视频路径（可选）")
     parser.add_argument("--output_dir", type=str, required=True)
+    parser.add_argument("--sample_name", type=str, default="sample")
     parser.add_argument("--seed", type=int, default=42)
     parser.add_argument("--fps", type=int, default=24)
-    parser.add_argument("--num_frames", type=int, default=None)
-    parser.add_argument("--frame_multiple", type=int, default=33)
+    parser.add_argument("--num_frames", type=int, default=99)
     parser.add_argument("--height", type=int, default=480)
     parser.add_argument("--width", type=int, default=1920)
     parser.add_argument("--num_inference_steps", type=int, default=20)
     parser.add_argument("--guidance_scale", type=float, default=5.0)
-    parser.add_argument("--sample_name", type=str, default="sample")
-    parser.add_argument("--dataset_dir", type=str, default=None)
-    parser.add_argument("--captions_path", type=str, default=None)
     parser.add_argument("--enable_tiling", type=bool, default=False)
-    parser.add_argument("--load_lora", type=str2bool, default=True)
     cli_args = parser.parse_args()
+
+    image_path = normalize_optional_path(cli_args.image_path)
+    mode = "i2v" if image_path is not None else "t2v"
 
     os.makedirs(cli_args.output_dir, exist_ok=True)
     output_video_dir = os.path.join(cli_args.output_dir, "videos")
@@ -205,14 +153,14 @@ def main():
     torch.set_grad_enabled(False)
 
     checkpoint_path = normalize_optional_path(cli_args.checkpoint_path)
-    load_lora = cli_args.load_lora and checkpoint_path is not None
+    control_video_path = normalize_optional_path(cli_args.control_video_path)
 
     config = OmegaConf.load(cli_args.config)
     schema = OmegaConf.structured(Args)
     args = OmegaConf.merge(schema, config)
     args.model_config.pretrained_model_name_or_path = cli_args.base_model_path
-    args.model_config.load_checkpoints_custom = load_lora
-    args.model_config.load_model_path = checkpoint_path if load_lora else None
+    args.model_config.load_checkpoints_custom = checkpoint_path is not None
+    args.model_config.load_model_path = checkpoint_path
 
     transformer_load_path, transformer_subfolder = resolve_transformer_load_path(cli_args, args)
 
@@ -234,7 +182,7 @@ def main():
         weight_dtype = torch.bfloat16
 
     accelerator.print("=" * 100)
-    accelerator.print("🚀 Infer like train validation")
+    accelerator.print(f"🚀 GigaWorld {mode.upper()} Inference")
     accelerator.print("=" * 100)
     accelerator.print(f"device               : {device}")
     accelerator.print(f"weight_dtype         : {weight_dtype}")
@@ -242,10 +190,12 @@ def main():
     accelerator.print(f"transformer_path     : {transformer_load_path}")
     accelerator.print(f"transformer_subfolder: {transformer_subfolder}")
     accelerator.print(f"checkpoint           : {checkpoint_path}")
-    accelerator.print(f"load_lora            : {load_lora}")
-    accelerator.print(f"control_video        : {cli_args.control_video_path}")
-    accelerator.print(f"image                : {cli_args.image_path}")
+    accelerator.print(f"mode                 : {mode}")
+    accelerator.print(f"image                : {image_path}")
+    accelerator.print(f"control_video        : {control_video_path}")
+    accelerator.print(f"prompt               : {cli_args.prompt}")
     accelerator.print(f"output_dir           : {cli_args.output_dir}")
+    accelerator.print(f"size                 : {cli_args.width}x{cli_args.height}, frames={cli_args.num_frames}")
     accelerator.print("=" * 100)
 
     tokenizer = AutoTokenizer.from_pretrained(
@@ -295,6 +245,7 @@ def main():
         "restrict_lora_rank": args.training_config.restrict_lora_rank,
         "is_amplify_history": args.training_config.is_amplify_history,
         "history_scale_mode": args.training_config.history_scale_mode,
+        "model_type": args.model_config.model_type,
     }
 
     accelerator.print("🏗️ Loading transformer...")
@@ -315,7 +266,7 @@ def main():
 
     transformer.requires_grad_(False)
 
-    if load_lora:
+    if checkpoint_path is not None:
         transformer_lora_config = build_lora_config(args, transformer)
         transformer.add_adapter(transformer_lora_config)
         accelerator.print("🔁 Loading LoRA checkpoint with train load_model_checkpoint()...")
@@ -345,7 +296,7 @@ def main():
         else:
             accelerator.print(f"⚠️ transformer_partial.pth not found: {partial_path}")
     else:
-        accelerator.print("ℹ️ load_lora is False or checkpoint_path is None, skip LoRA checkpoint and extra components.")
+        accelerator.print("ℹ️ checkpoint_path is None, skip LoRA checkpoint and extra components.")
 
     for name, param in transformer.named_parameters():
         should_keep_fp32 = any(
@@ -359,7 +310,7 @@ def main():
             param.data = param.data.to(weight_dtype)
 
     transformer.to(device)
-    transformer.eval() 
+    transformer.eval()
 
     meta_names = [name for name, p in transformer.named_parameters() if p.is_meta]
 
@@ -375,171 +326,76 @@ def main():
         vae=vae,
         transformer=transformer,
         scheduler=noise_scheduler,
+        pipeline_type=args.model_config.model_type,
     )
 
     pipe = pipe.to(device)
 
     generator = torch.Generator(device=device).manual_seed(cli_args.seed)
 
-    base_folder = cli_args.dataset_dir
-    json_path = cli_args.captions_path
-    if base_folder is None and json_path is not None:
-        base_folder = os.path.dirname(json_path)
-    if json_path is None and base_folder is not None:
-        json_path = os.path.join(base_folder, "helios_giga_ctrl_cc_infer.jsonl")
-        if not os.path.exists(json_path):
-            json_path = os.path.join(base_folder, "helios_giga_ctrl_cc_infer.json")
+    # ---- 加载输入图片（t2v 模式下跳过）----
+    image = None
+    if image_path is not None:
+        image = load_image(image_path).resize((cli_args.width, cli_args.height))
 
-    video_folder = os.path.join(base_folder, "videos") if base_folder is not None else None
-    control_video_folder = os.path.join(base_folder, "control_videos") if base_folder is not None else None
+    # ---- 加载控制视频（可选）----
+    control_video = None
+    if control_video_path is not None:
+        from diffusers.utils import load_video
+        control_video = load_video(control_video_path)
 
-    video_pairs = []
-    if json_path is not None and os.path.exists(json_path):
-        data = load_caption_items(json_path)
+    pipeline_args = {
+        "prompt": cli_args.prompt,
+        "negative_prompt": args.data_config.negative_prompt,
+        "guidance_scale": cli_args.guidance_scale,
+        "num_frames": cli_args.num_frames,
+        "height": cli_args.height,
+        "width": cli_args.width,
+        "num_inference_steps": cli_args.num_inference_steps,
+        "use_dynamic_shifting": args.validation_config.use_dynamic_shifting,
+        "time_shift_type": args.validation_config.time_shift_type,
+        "history_sizes": args.training_config.history_sizes,
+        "latent_window_size": args.validation_config.validation_latent_window_size[0],
+        "is_keep_x0": True,
+        "use_kv_cache": args.validation_config.use_kv_cache,
+        "use_dmd": False,
+    }
 
-        for idx, item in enumerate(data, 1):
-            if item.get("prompt_type") != "short":
-                continue
+    # i2v 模式传入 image
+    if image is not None:
+        pipeline_args["image"] = image
 
-            video_rel_path = item.get("path", "")
-            control_rel_path = item.get("control_path", "")
-            prompt = (item.get("cap") or [""])[0]
-            num_frames = align_num_frames(
-                item.get("num_frames", 0),
-                cli_args.frame_multiple,
-            )
+    # 控制视频（可选）
+    if control_video is not None:
+        pipeline_args["control_video"] = control_video
 
-            if num_frames <= 0 or not video_rel_path or not control_rel_path or not prompt:
-                continue
+    accelerator.print("🎬 Start inference...")
+    accelerator.print(f"📝 prompt: {cli_args.prompt}")
+    accelerator.print(
+        f"📐 {cli_args.width}x{cli_args.height}, "
+        f"frames={cli_args.num_frames}, "
+        f"steps={cli_args.num_inference_steps}, "
+        f"cfg={cli_args.guidance_scale}"
+    )
 
-            assert video_folder is not None
-            assert control_video_folder is not None
-            full_video_path = os.path.join(video_folder, video_rel_path)
-            full_control_path = os.path.join(control_video_folder, control_rel_path)
-            video_exists = os.path.exists(full_video_path)
-            control_exists = os.path.exists(full_control_path)
+    output = pipe(
+        **pipeline_args,
+        generator=generator,
+        output_type="np",
+    ).frames[0]
 
-            status = "✅" if video_exists and control_exists else "⚠️"
-            print(f"{status} {idx:3d}. Video: {video_rel_path}")
-            print(f"    Control: {control_rel_path}")
-            print(f"    Frames: {num_frames}, FPS: {item.get('fps', 0)}")
+    gen_path = os.path.join(output_video_dir, f"{cli_args.sample_name}.mp4")
 
-            if not video_exists:
-                print("    ⚠️ Video file missing")
-            if not control_exists:
-                print("    ⚠️ Control file missing")
-            if not video_exists or not control_exists:
-                continue
+    export_to_video(output, gen_path, fps=cli_args.fps)
 
-            video_pairs.append(
-                {
-                    "video_path": full_video_path,
-                    "control_video_path": full_control_path,
-                    "prompt": prompt,
-                    "num_frames": num_frames,
-                    "fps": item.get("fps", cli_args.fps),
-                    "sample_name": os.path.splitext(os.path.basename(video_rel_path))[0],
-                }
-            )
+    accelerator.print(f"✅ saved: {gen_path}")
 
-        print("=" * 100)
-        print(f"共找到 {len(video_pairs)} 个可推理视频对")
-    else:
-        control_video_path = normalize_optional_path(cli_args.control_video_path)
-        image_path = normalize_optional_path(cli_args.image_path)
-        prompt = normalize_optional_path(cli_args.prompt)
-
-        assert control_video_path is not None
-        assert image_path is not None
-        assert prompt is not None
-        assert os.path.isfile(control_video_path), f"control video not found: {control_video_path}"
-        assert os.path.isfile(image_path), f"image not found: {image_path}"
-
-        num_frames = cli_args.num_frames
-        if num_frames is None:
-            num_frames = get_video_num_frames(control_video_path)
-        num_frames = align_num_frames(num_frames, cli_args.frame_multiple)
-        assert num_frames > 0, f"invalid num_frames after alignment: {num_frames}"
-
-        video_pairs.append(
-            {
-                "control_video_path": control_video_path,
-                "image_path": image_path,
-                "prompt": prompt,
-                "num_frames": num_frames,
-                "fps": cli_args.fps,
-                "sample_name": cli_args.sample_name,
-            }
-        )
-
-    skipped_existing_count = 0
-
-    for idx, pair in enumerate(video_pairs):
-        gen_path = os.path.join(output_video_dir, f"{pair['sample_name']}.mp4")
-        if os.path.exists(gen_path):
-            skipped_existing_count += 1
-            accelerator.print(f"⏭️ skip existing: {gen_path}")
-            continue
-
-        accelerator.print(f"\n🚀 开始推理第 {idx + 1}/{len(video_pairs)} 个视频...")
-
-        control_video = load_video(pair["control_video_path"])
-        control_video = control_video[:pair["num_frames"]]
-        if "image_path" in pair:
-            image = load_image(pair["image_path"]).resize((cli_args.width, cli_args.height))
-        else:
-            image = get_first_frame_image(pair["video_path"], cli_args.width, cli_args.height)
-            if image is None:
-                accelerator.print(f"⚠️ 读取首帧失败，跳过: {pair['video_path']}")
-                continue
-        
-        if "rollout" in pair["video_path"]:
-            pair["prompt"] = "try to" + pair["prompt"] + " but failed"
-        else:
-            pair["prompt"] = "Successfully " + pair["prompt"]
-
-        pipeline_args = {
-            "prompt": pair["prompt"],
-            "negative_prompt": args.data_config.negative_prompt,
-            "guidance_scale": cli_args.guidance_scale,
-            "num_frames": pair["num_frames"],
-            "height": cli_args.height,
-            "width": cli_args.width,
-            "num_inference_steps": cli_args.num_inference_steps,
-            "use_dynamic_shifting": args.validation_config.use_dynamic_shifting,
-            "time_shift_type": args.validation_config.time_shift_type,
-            "history_sizes": args.training_config.history_sizes,
-            "latent_window_size": args.validation_config.validation_latent_window_size[0],
-            "is_keep_x0": True,
-            "use_kv_cache": args.validation_config.use_kv_cache,
-            "use_dmd": False,
-            "control_video": control_video,
-            "image": image,
-        }
-
-        accelerator.print("🎬 Start inference...")
-        accelerator.print(f"📝 prompt: {pair['prompt']}")
-        accelerator.print(
-            f"📐 {cli_args.width}x{cli_args.height}, "
-            f"frames={pair['num_frames']}, "
-            f"steps={cli_args.num_inference_steps}, "
-            f"cfg={cli_args.guidance_scale}"
-        )
-
-        output = pipe(
-            **pipeline_args,
-            generator=generator,
-            output_type="np",
-        ).frames[0]
-
-        export_to_video(output, gen_path, fps=pair["fps"])
-
-        accelerator.print(f"✅ saved gen       : {gen_path}")
-
+    del output
+    if control_video is not None:
         del control_video
+    if image is not None:
         del image
-        del output
-        free_memory()
+    free_memory()
 
     del pipe
     del transformer
@@ -547,10 +403,8 @@ def main():
     del text_encoder
     free_memory()
 
-    accelerator.print(f"⏭️ skipped existing: {skipped_existing_count}")
     accelerator.print("🎉 Done.")
 
 
 if __name__ == "__main__":
     main()
-
