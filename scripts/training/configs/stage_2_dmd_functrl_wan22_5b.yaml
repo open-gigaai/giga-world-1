@@ -26,7 +26,7 @@ data_config:
   # ---- Stage 3 ----
   use_stage2_dataset: true
   gan_data_root:
-    - "/shared_disk/users/zhanqian.wu/data/train_data/helios_data/giga_ctrl_3view_wan22_5b/latents_short_giga_control"
+    - "example/toy_train_dataset/pro" # NOTE: REPLACE WITH YOUR DATA ROOT
 
 model_config:
   # ---- Path ----
