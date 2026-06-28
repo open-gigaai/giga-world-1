@@ -3,14 +3,14 @@ import sys
 import argparse
 from pathlib import Path
 
-# 将项目根目录加入 sys.path，保证 thirdparty / tools 可被导入
+# Add the project root to sys.path so thirdparty/ and tools/ can be imported.
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
 
 def resolve_path(path):
-    """相对路径基于项目根目录解析；绝对路径保持不变。"""
+    """Resolve relative paths against the project root and keep absolute paths unchanged."""
     p = Path(path)
     if not p.is_absolute():
         p = _PROJECT_ROOT / p
@@ -20,7 +20,7 @@ def resolve_path(path):
 def resolve_path_list(paths):
     return [resolve_path(p) for p in paths]
 
-# 强制 stdout/stderr 行缓冲，确保子进程日志实时输出
+# Force line-buffered stdout/stderr so subprocess logs are flushed in real time.
 sys.stdout.reconfigure(line_buffering=True)
 sys.stderr.reconfigure(line_buffering=True)
 
@@ -42,10 +42,10 @@ from tools.image_utils import load_video_frames, save_frames
 # ===================== Config (Can Modify) =====================
 VIDEO_FPS = 30
 VIDEO_CODEC = cv2.VideoWriter_fourcc(*'mp4v')
-TARGET_HEIGHT = 480           # 强制输出高度
-TARGET_WIDTH = 640            # 强制输出宽度
+TARGET_HEIGHT = 480           # Forced output height.
+TARGET_WIDTH = 640            # Forced output width.
 
-# Qwen3-VL 标注相关配置
+# Qwen3-VL captioning configuration
 CAPTION_MODEL_PATH = "/shared_disk/models/huggingface/models--Qwen--Qwen3-VL-8B-Instruct/"
 CAPTION_MAX_PIXELS = 360 * 420
 CAPTION_FPS = 2.0
@@ -64,7 +64,7 @@ Requirements:
 
 Dense Recaption:"""
 
-LONG_PROMPT_SEGMENT_FRAMES = 300  # 每段子视频的帧数
+LONG_PROMPT_SEGMENT_FRAMES = 300  # Number of frames per captioning segment.
 # =================================================================
 
 
@@ -102,8 +102,8 @@ def parse_args():
 
 def resolve_data_dirs(data_dir_list):
     """
-    如果传入的是父目录，自动展开下面的 task 子文件夹。
-    只保留包含 data/ 和 videos/ 子目录的有效 task 文件夹。
+    If a parent directory is provided, automatically expand its task subdirectories.
+    Only keep valid task folders that contain both data/ and videos/.
     """
     resolved = []
     for d in data_dir_list:
@@ -127,8 +127,8 @@ def resolve_data_dirs(data_dir_list):
 
 def load_episode_prompts(data_dir):
     """
-    从 meta/episodes.jsonl 读取每个 episode 的元信息。
-    返回 dict: episode_index -> {"tasks": [...], "length": int}
+    Load per-episode metadata from meta/episodes.jsonl.
+    Returns a dict: episode_index -> {"tasks": [...], "length": int}
     """
     episodes_path = os.path.join(data_dir, "meta", "episodes.jsonl")
     if not os.path.exists(episodes_path):
@@ -155,7 +155,7 @@ def load_episode_prompts(data_dir):
 
 
 def load_caption_model(device):
-    """在指定 GPU 上加载 Qwen3-VL 标注模型，返回 (model, processor)。"""
+    """Load the Qwen3-VL caption model on the specified GPU and return (model, processor)."""
     from transformers import Qwen3VLForConditionalGeneration, Qwen3VLProcessor
 
     print(f"  Loading Qwen3-VL caption model on {device}...")
@@ -170,7 +170,7 @@ def load_caption_model(device):
 
 
 def _write_temp_video(frames_np, fps=VIDEO_FPS):
-    """将 numpy 帧数组写入临时 mp4 文件，返回文件路径。调用方负责删除。"""
+    """Write a numpy frame array to a temporary mp4 file and return its path. The caller is responsible for cleanup."""
     import tempfile
     h, w = frames_np[0].shape[:2]
     tmp = tempfile.NamedTemporaryFile(suffix=".mp4", delete=False)
@@ -184,7 +184,7 @@ def _write_temp_video(frames_np, fps=VIDEO_FPS):
 
 
 def _caption_segment_from_frames(caption_model, caption_processor, frames_np, task_hint, device):
-    """将一组帧写成临时子视频，送入 Qwen3-VL 生成 caption。失败返回空字符串。"""
+    """Write a group of frames into a temporary clip and send it to Qwen3-VL for captioning. Return an empty string on failure."""
     from qwen_vl_utils import process_vision_info
 
     tmp_path = None
@@ -240,9 +240,9 @@ def _caption_segment_from_frames(caption_model, caption_processor, frames_np, ta
 
 def generate_long_prompt(caption_model, caption_processor, cam_high_frames, task_hint, device):
     """
-    将 cam_high 视频帧按每段 LONG_PROMPT_SEGMENT_FRAMES 帧切片，
-    逐段调用 Qwen3-VL 生成 dense caption。
-    返回 dict: {"long prompt 1": {"start_idx": "0", "end_idx": "299", "caption": "..."}, ...}
+    Split cam_high frames into segments of LONG_PROMPT_SEGMENT_FRAMES frames,
+    then call Qwen3-VL on each segment to generate dense captions.
+    Returns a dict: {"long prompt 1": {"start_idx": "0", "end_idx": "299", "caption": "..."}, ...}
     """
     total_frames = len(cam_high_frames)
     result = {}
@@ -263,7 +263,7 @@ def generate_long_prompt(caption_model, caption_processor, cam_high_frames, task
 
 
 def is_episode_processed(output_dir, episode_name):
-    """检查该 episode 是否已经全部处理完成（gt + depth 视频都存在）"""
+    """Check whether an episode has already been fully processed (all gt + depth videos exist)."""
     required_files = [
         f"{output_dir}/gt/cam_high/{episode_name}.mp4",
         f"{output_dir}/gt/cam_left_wrist/{episode_name}.mp4",
@@ -276,7 +276,7 @@ def is_episode_processed(output_dir, episode_name):
 
 
 def load_caption_cache(output_dir):
-    """读取 caption 缓存文件，返回 dict: episode_name -> long_prompt dict。"""
+    """Load the caption cache file and return a dict: episode_name -> long_prompt dict."""
     cache_path = os.path.join(output_dir, "labels", "caption_cache.json")
     if os.path.exists(cache_path):
         try:
@@ -288,7 +288,7 @@ def load_caption_cache(output_dir):
 
 
 def save_caption_cache(output_dir, cache):
-    """将 caption 缓存写回磁盘（原子写：先写临时文件再替换）。"""
+    """Write the caption cache back to disk atomically (write temp file first, then replace)."""
     cache_path = os.path.join(output_dir, "labels", "caption_cache.json")
     tmp_path = cache_path + ".tmp"
     os.makedirs(os.path.dirname(cache_path), exist_ok=True)
@@ -298,7 +298,7 @@ def save_caption_cache(output_dir, cache):
 
 
 def collect_tasks_for_one_dir(data_dir, output_base):
-    """收集单个 data_dir 下所有 episode 任务列表。"""
+    """Collect the full episode task list for a single data_dir."""
     tasks = []
     sub_name = os.path.basename(data_dir)
     output_dir = os.path.join(output_base, sub_name)
@@ -329,10 +329,11 @@ def collect_tasks_for_one_dir(data_dir, output_base):
 
 def process_episode(task, episode_prompts, caption_model, caption_processor, depth_model, depth_processor, device, caption_cache):
     """
-    处理单个 episode。返回 (status, episode_name, meta, error_msg)
-    status ∈ {"done", "skipped", "error"}
+    Process a single episode. Returns (status, episode_name, meta, error_msg)
+    where status is one of {"done", "skipped", "error"}.
 
-    caption_cache: 共享的 dict（episode_name -> long_prompt），用于跨次运行复用标注结果。
+    caption_cache is a shared dict (episode_name -> long_prompt) used to reuse
+    caption results across reruns.
     """
     output_dir = task["output_dir"]
     ep_path = task["ep_path"]
@@ -357,7 +358,7 @@ def process_episode(task, episode_prompts, caption_model, caption_processor, dep
     episode_name = f"episode_{episode_index:06d}"
     total_frames = len(observation)
 
-    # ========== short-prompt：从 episodes.jsonl 读取，构建结构化字典 ==========
+    # ========== short-prompt: read tasks from episodes.jsonl and build a structured dict ==========
     ep_info = episode_prompts.get(episode_index, {})
     ep_tasks = ep_info.get("tasks", []) if isinstance(ep_info, dict) else []
     if not ep_tasks:
@@ -374,11 +375,11 @@ def process_episode(task, episode_prompts, caption_model, caption_processor, dep
 
     video_already_done = is_episode_processed(output_dir, episode_name)
 
-    # ========== long-prompt：优先读缓存，否则调用 Qwen3-VL 标注 ==========
+    # ========== long-prompt: prefer cache; otherwise run Qwen3-VL captioning ==========
     if episode_name in caption_cache:
         long_prompt = caption_cache[episode_name]
     else:
-        # 需要加载视频帧才能做标注
+        # Video frames are required before caption generation can run.
         try:
             cam_high_frames = load_video_frames(gt_cam_high_video_path)
         except Exception as e:
@@ -409,7 +410,7 @@ def process_episode(task, episode_prompts, caption_model, caption_processor, dep
         "long-prompt": long_prompt,
     }
 
-    # 视频已存在则跳过保存
+    # Skip video writing if the episode has already been processed.
     if video_already_done:
         return ("skipped", episode_name, meta, None)
 
@@ -446,8 +447,9 @@ def process_episode(task, episode_prompts, caption_model, caption_processor, dep
 
 def worker(rank, world_size, task_batch, episode_prompts, output_base, total_in_rank):
     """
-    单个 task 的 GPU worker：加载模型并处理本 rank 分配到的 episodes。
-    每次只处理一个 task 的数据，处理完立刻写临时文件并退出，释放显存。
+    Per-task GPU worker: load models and process the episodes assigned to this rank.
+    Each worker handles only one task at a time, writes temporary results immediately,
+    and exits so GPU memory can be released.
     """
     sys.stdout.reconfigure(line_buffering=True)
     sys.stderr.reconfigure(line_buffering=True)
@@ -464,8 +466,9 @@ def worker(rank, world_size, task_batch, episode_prompts, output_base, total_in_
     my_tasks = task_batch[rank::world_size]
     print(f"[Rank {rank}] Processing {len(my_tasks)} episodes", flush=True)
 
-    # 每个 rank 各自维护一份 caption 缓存（以 output_dir 为粒度，多 rank 并发写同一文件，
-    # 用原子替换保证文件不损坏；最终内容以最后写入的 rank 为准，不影响正确性）
+    # Each rank maintains its own caption cache scoped by output_dir.
+    # Multiple ranks may write the same file concurrently, but atomic replacement
+    # prevents corruption; whichever rank writes last still produces a valid cache.
     caption_cache = load_caption_cache(my_tasks[0]["output_dir"]) if my_tasks else {}
     print(f"[Rank {rank}] Loaded {len(caption_cache)} cached captions", flush=True)
 
@@ -518,7 +521,8 @@ def worker(rank, world_size, task_batch, episode_prompts, output_base, total_in_
 
 def aggregate_and_save(data_dir, output_base, world_size):
     """
-    合并当前 task 所有 rank 的临时结果，写 labels，然后删除临时文件。
+    Merge temporary results from all ranks for the current task, write labels,
+    and then delete the temporary files.
     """
     sub_name = os.path.basename(data_dir)
     output_dir = os.path.join(output_base, sub_name)
@@ -530,7 +534,7 @@ def aggregate_and_save(data_dir, output_base, world_size):
             with open(rank_result_path, "rb") as f:
                 all_results.extend(pickle.load(f))
 
-    # 按 episode_name 排序，保证 data_index 稳定
+    # Sort by episode_name to keep data_index stable across runs.
     all_results.sort(key=lambda r: r["episode_name"])
 
     dataset_meta = []
@@ -546,7 +550,7 @@ def aggregate_and_save(data_dir, output_base, world_size):
         elif r["status"] == "error":
             error_episodes.append((r["episode_name"], r["error"]))
 
-    # 写 labels
+    # Write label files.
     os.makedirs(f"{output_dir}/labels", exist_ok=True)
     with open(f"{output_dir}/labels/data.pkl", "wb") as f:
         pickle.dump(dataset_meta, f)
@@ -566,12 +570,12 @@ def aggregate_and_save(data_dir, output_base, world_size):
     with open(os.path.join(output_dir, "config.json"), "w") as f:
         json.dump(dataset_config, f, indent=4)
 
-    # 清理临时文件
+    # Clean up temporary files.
     for rank in range(world_size):
         rank_result_path = os.path.join(output_base, f".rank_{rank}_results.pkl")
         if os.path.exists(rank_result_path):
             os.remove(rank_result_path)
-    # caption 缓存在 labels 写完后删除，下次重跑该 task 时会重新生成
+    # Delete the caption cache after labels are written; it will be regenerated on the next rerun of this task.
     caption_cache_path = os.path.join(output_dir, "labels", "caption_cache.json")
     if os.path.exists(caption_cache_path):
         os.remove(caption_cache_path)
@@ -591,7 +595,7 @@ def aggregate_and_save(data_dir, output_base, world_size):
     print(f"{'='*60}\n")
 
 
-# ===================== 主程序 =====================
+# ===================== Main =====================
 if __name__ == "__main__":
     args = parse_args()
     OUTPUT_BASE = resolve_path(args.output_base)
@@ -612,12 +616,12 @@ if __name__ == "__main__":
     print(f"Found {len(DATA_DIR_LIST)} task(s) to process, using up to {args.num_gpus} GPUs")
     print(f"{'='*60}\n")
 
-    # 逐 task 处理：每个 task 独立跑一轮 mp.spawn，完成后立即写 labels 并释放内存
+    # Process tasks one by one: each task runs in its own mp.spawn round, then labels are written immediately and memory is released.
     for task_idx, data_dir in enumerate(DATA_DIR_LIST):
         sub_name = os.path.basename(data_dir)
         output_dir = os.path.join(OUTPUT_BASE, sub_name)
 
-        # 若 data.pkl 已存在，说明该 task 已完整处理完毕，直接跳过
+        # If data.pkl already exists, this task has already been fully processed and can be skipped.
         data_pkl_path = os.path.join(output_dir, "labels", "data.pkl")
         if os.path.exists(data_pkl_path):
             print(f"\n[Task {task_idx+1}/{len(DATA_DIR_LIST)}] {sub_name} — already done (data.pkl exists), skip.")
@@ -649,7 +653,7 @@ if __name__ == "__main__":
             print(f"Warning: using {world_size} GPUs "
                   f"(requested={args.num_gpus}, available={available_gpus}, episodes={len(task_batch)})")
 
-        # 启动 worker，只处理当前 task 的 episodes
+        # Launch workers for the episodes of the current task only.
         mp.spawn(
             worker,
             args=(world_size, task_batch, episode_prompts, OUTPUT_BASE, len(task_batch)),
@@ -657,7 +661,7 @@ if __name__ == "__main__":
             join=True,
         )
 
-        # 所有 rank 完成后立即聚合、写 labels、清理临时文件
+        # Aggregate results, write labels, and clean temporary files as soon as all ranks finish.
         aggregate_and_save(data_dir, OUTPUT_BASE, world_size)
 
     print("\n" + "="*30)

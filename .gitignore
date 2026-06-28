@@ -39,6 +39,7 @@ ckpt*/
 wandb/
 *.log.*
 logs/
+output/
 output_gigaworld/
 ablation_*/
 profile
