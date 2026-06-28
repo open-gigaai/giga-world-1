@@ -18,7 +18,7 @@ CONTROL_VIDEO_PATH="${PROJECT_ROOT}/example/infer_assest/control_video.mp4"
 PROMPT="stack the box ears . The scene features a flat, gray surface with a subtle wood-grain texture, serving as the entire visible background. The only object present is a plain brown cardboard box lying open and centered on this surface. "
 
 # ---- Output ----
-OUTPUT_DIR="${PROJECT_ROOT}/output/giga_i2v_pro"
+OUTPUT_DIR="${PROJECT_ROOT}/output/infer_results/giga_i2v_pro"
 SAMPLE_NAME="i2v_sample"
 
 # ---- Inference params ----

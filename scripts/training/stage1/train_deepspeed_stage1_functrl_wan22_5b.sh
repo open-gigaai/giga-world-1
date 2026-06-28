@@ -228,7 +228,7 @@ echo -e "\033[32mCUDA_VISIBLE_DEVICES=${CUDA_VISIBLE_DEVICES}\033[0m"
 #################################################################
 accelerate launch \
     ${ACCELERATE_ARGS} \
-    --config_file scripts/accelerate_configs/multi_node_example_zero2.yaml \
+    --config_file scripts/accelerate_configs/example_zero2.yaml \
     train_gigaworld_functrl_uni_stage1.py \
     --config scripts/training/configs/stage_1_post_functrl_wan22.yaml \
     2>&1 | tee ./train.log

@@ -253,7 +253,7 @@ def save_extra_components(args, model=None, model_state_dict=None, output_dir=No
                     state_dict[f"gan_final_head.{k}"] = v.detach().clone().cpu()
 
     torch.save(state_dict, os.path.join(output_dir, "transformer_partial.pth"))
-    print(f"Saved checkpoint with {len(state_dict)} parameters to {output_dir}/transformer_partial.pth")
+    print(f"  {_C['green']}Saved partial: {len(state_dict)} params -> {os.path.basename(output_dir)}/transformer_partial.pth{_C['reset']}")
 
 def _load_state_dict_assign(module, state_dict, strict=False):
     """

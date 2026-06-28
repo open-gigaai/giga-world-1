@@ -1,10 +1,10 @@
-output_dir: ablation_stage_1_post_giga_functrl_lora_0606_debug
-logging_dir: logs
+output_dir: ./output/exp/Giga-world-Nano-Train-Stage-1
+logging_dir: ./output/logs
 seed: 44
 
 report_to:
-  tracker_name: Helios-Train
-  wandb_name: ablation_stage_1_ctrl
+  tracker_name: Giga-world-Nano-Train-Stage-1
+  wandb_name: Giga-world-Nano-Train-Stage-1
   report_to: wandb
 
 data_config:
@@ -64,7 +64,7 @@ validation_config:
   validation_steps: 1000
   validation_height: 480
   validation_width: 1920
-  validation_max_num_frames: 99
+  validation_max_num_frames: 33
   validation_first_image:
     - "/shared_disk/users/zhanqian.wu/data/infer_data/helios_data/giga_ctrl_3view/task3/videos/task3/episode_000007_72ce1f94ca_s000000_e000330.mp4"
   validation_control_video:
@@ -94,7 +94,7 @@ training_config:
   max_train_steps: 1000000
   train_batch_size: 1 #4
   gradient_accumulation_steps: 1
-  checkpointing_steps: 500
+  checkpointing_steps: 5
   resume_from_checkpoint: "latest"
   save_checkpoints_custom: false
   # ---- Optimizer ----

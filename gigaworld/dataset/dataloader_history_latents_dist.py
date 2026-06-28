@@ -86,18 +86,13 @@ class BucketedFeatureDataset(Dataset):
             self.buckets[bucket_key].extend(adjusted_indices)
 
     def _build_folder_metadata(self, folder):
-        # =========================================================
-        # load pt list from json
-        # =========================================================
         if self.filter_tasks is not None:
             feature_files = []
             json_paths = self.filter_tasks
             if isinstance(json_paths, str):
                 json_paths = [json_paths]
-            print(f"📦 loading pt list from jsons: {len(json_paths)}")
-            total_pt = 0
 
-            json_stat = []
+            total_pt = 0
             for json_path in json_paths:
                 with open(json_path, "r") as f:
                     meta = json.load(f)
@@ -114,58 +109,25 @@ class BucketedFeatureDataset(Dataset):
                     match_cnt += 1
 
                 total_pt += raw_cnt
-                print(f"  📄 {os.path.basename(json_path)}: 原始{raw_cnt}条, 匹配当前文件夹{match_cnt}条")
-                json_stat.append((json_path, raw_cnt, match_cnt))
 
             feature_files = sorted(list(set(feature_files)))
-            print(f"✅ 汇总: 最终选中pt文件 {len(feature_files)} / 全部原始pt={total_pt}")
         else:
             feature_files = []
             with os.scandir(folder) as entries:
-                pbar = tqdm(entries, desc="[⚙️ DATA LOADER] Scanning", unit="entry")
-                for entry in pbar:
+                for entry in entries:
                     try:
                         if entry.name.endswith(".pt"):
                             feature_files.append(entry.name)
                     except OSError:
                         continue
-                    pbar.set_postfix(pt=len(feature_files))
-            
-            # # FIXME: ONLY FOR DEBUG
-            # feature_files = []
-            # count = 0  # 遍历条目计数器
-            # with os.scandir(folder) as entries:
-            #     pbar = tqdm(entries, desc="[⚙️ DATA LOADER] Scanning", unit="entry")
-            #     for entry in pbar:
-            #         count += 1
-            #         if count > 100:
-            #             break
-            #         try:
-            #             if entry.name.endswith(".pt"):
-            #                 feature_files.append(entry.name)
-            #         except OSError:
-            #             continue
-            #         pbar.set_postfix(pt=len(feature_files))
-            
+
         samples = []
         buckets = defaultdict(list)
         sample_idx = 0
 
-        print(f"Processing {len(feature_files)} files in {folder}...")
-
-        for i, feature_file in enumerate(feature_files):
-            if i % 10000 == 0:
-                print(f"  Processed {i}/{len(feature_files)} files")
-
+        for feature_file in feature_files:
             feature_path = os.path.join(folder, feature_file)
 
-            # Parse filename
-            # parts = feature_file.split("_")
-            # uttid = "_".join(parts[:-3])
-            # num_frame = int(parts[-3])
-            # height = int(parts[-2])
-            # width = int(parts[-1].replace(".pt", ""))
-            # FIXME: 这里的解析逻辑需要根据实际文件名格式调整
             parts = os.path.splitext(feature_file)[0].split("_")
             if parts[-1] in ["edge", "depth"]:
                 uttid = "_".join(parts[:-4])
@@ -179,19 +141,16 @@ class BucketedFeatureDataset(Dataset):
                 height = int(parts[-2])
                 width = int(parts[-1])
                 latent_type = None
-        
-            # keep length >= 121
+
             if num_frame < 121:
                 continue
 
-            # keep resolution
             allowed_resolutions = [
                 (self.single_height, self.single_width),
                 (self.single_height // 2, self.single_width // 2),
                 (self.single_height // 4, self.single_width // 4),
             ]
             if self.single_res and (height, width) not in allowed_resolutions:
-                print(f"[❌ Error] Skipping {feature_file} due to resolution {height}x{width} not in allowed resolutions.")
                 continue
 
             bucket_key = (num_frame, height, width)

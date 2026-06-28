@@ -555,27 +555,23 @@ def run_validation_functrl(
         all_prompts.append(pipeline_args['prompt'])
 
     os.makedirs(args.output_dir, exist_ok=True)
+    run_infer_dir = os.path.join(args.output_dir, "run_infer")
+    os.makedirs(run_infer_dir, exist_ok=True)
 
     saved_files = []
 
     for i, (video, prompt) in enumerate(zip(all_videos, all_prompts)):
         safe_prompt = prompt[:25].replace(" ", "_").replace("/", "_")
 
-        filename = os.path.join(
-            args.output_dir,
-            f"global_step{global_step}_control_gt_all_{i}_{safe_prompt}.mp4",
-        )
-
         gen_filename = os.path.join(
-            args.output_dir,
+            run_infer_dir,
             f"global_step{global_step}_control_gt_gen_{i}_{safe_prompt}.mp4",
         )
 
-        export_to_video(video, filename, fps=30)
         export_to_video(gen_video_ori, gen_filename, fps=30)
-        saved_files.append(filename)
+        saved_files.append(gen_filename)
 
-        accelerator.print(f"✅ Saved concat validation video: {filename}")
+        accelerator.print(f"✅ Saved validation video: {gen_filename}")
 
     for tracker in accelerator.trackers:
         if tracker.name == "wandb":
@@ -1601,8 +1597,7 @@ def main(args):
                         dynamic_sample_type=args.training_config.generator_dynamic_sample_type,
                         global_step=global_step,
                         dynamic_step=args.training_config.generator_dynamic_step,
-                        # type
-                        model_type=args.model_config.model_type, # NOTE: 0608 ADD HERE 
+                        model_type=args.model_config.model_type,
                     )
 
                     accelerator.backward(generator_loss)
@@ -1716,8 +1711,7 @@ def main(args):
                     dynamic_sample_type=args.training_config.critic_dynamic_sample_type,
                     global_step=global_step,
                     dynamic_step=args.training_config.critic_dynamic_step,
-                    # type
-                    model_type=args.model_config.model_type, # NOTE: 0608 ADD HERE 
+                    model_type=args.model_config.model_type,
                 )
 
                 critic_accelerator.backward(critic_loss)

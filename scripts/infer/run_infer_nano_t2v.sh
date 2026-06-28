@@ -17,7 +17,7 @@ PROMPT="stack the box ears . The scene features a flat, gray surface with a subt
 CONTROL_VIDEO_PATH="${PROJECT_ROOT}/example/infer_assest/control_video.mp4"
 
 # ---- Output ----
-OUTPUT_DIR="${PROJECT_ROOT}/output/giga_t2v_nano"
+OUTPUT_DIR="${PROJECT_ROOT}/output/infer_results/giga_t2v_nano"
 SAMPLE_NAME="t2v_sample"
 
 # ---- Inference params ----

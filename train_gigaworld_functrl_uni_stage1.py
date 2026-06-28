@@ -2,12 +2,26 @@ import os
 os.environ["HF_ENABLE_PARALLEL_LOADING"] = "yes"
 os.environ["HF_PARALLEL_LOADING_WORKERS"] = "8"
 
+# ANSI colors
+_C = {
+    "dim": "\033[90m",
+    "green": "\033[92m",
+    "yellow": "\033[93m",
+    "blue": "\033[94m",
+    "cyan": "\033[96m",
+    "reset": "\033[0m",
+}
+
 import argparse
 import hashlib
 import json
 import logging
 import math
 from datetime import timedelta
+
+# Silence accelerate checkpointing INFO logs (Saving state, scheduler, random_states, etc.)
+logging.getLogger("accelerate.checkpointing").setLevel(logging.WARNING)
+logging.getLogger("accelerate.accelerator").setLevel(logging.WARNING)
 from pathlib import Path
 import cv2
 from PIL import Image
@@ -93,95 +107,6 @@ def safe_item(x):
     return x.item() if hasattr(x, "item") else x
 
 
-def make_sample_hash(batch):
-    keys = ["uttid", "dataset_name", "bucket_key", "num_frame", "height", "width"]
-    parts = []
-
-    for key in keys:
-        if key not in batch:
-            continue
-        value = batch[key]
-        if torch.is_tensor(value):
-            value = value.detach().cpu().tolist()
-        parts.append(f"{key}={value}")
-
-    raw = "|".join(parts)
-    return hashlib.md5(raw.encode("utf-8")).hexdigest()[:12], raw
-
-def latent_chunks_to_video_np(
-    vae,
-    latents,
-    latents_mean,
-    latents_std,
-    vae_dtype,
-    drop_first_frame_after_first_chunk=True,
-):
-    """
-    latents:
-        [N, C, T, H, W]
-        or
-        [B, N, C, T, H, W]
-
-    return:
-        np video [T, H, W, 3], uint8
-    """
-    if latents.ndim == 5:
-        latents = latents.unsqueeze(0)
-
-    assert latents.ndim == 6, (
-        f"latents must be [N,C,T,H,W] or [B,N,C,T,H,W], got {tuple(latents.shape)}"
-    )
-
-    b, n, c, t, h, w = latents.shape
-
-    assert b == 1, (
-        f"visualization only supports batch=1, got {b}"
-    )
-
-    decoded_chunks = []
-
-    for chunk_idx in range(n):
-        cur_latents = latents[:, chunk_idx]  # [1,C,T,H,W]
-
-        cur_latents = cur_latents.to(
-            device=vae.device,
-            dtype=vae_dtype,
-        )
-
-        # Wan latent unnormalize
-        cur_latents = cur_latents / latents_std + latents_mean
-
-        cur_video = vae.decode(
-            cur_latents,
-            return_dict=False,
-        )[0]
-        # [1,3,T,H,W]
-
-        if drop_first_frame_after_first_chunk and chunk_idx > 0:
-            cur_video = cur_video[:, :, 1:]
-
-        decoded_chunks.append(cur_video)
-
-    video = torch.cat(decoded_chunks, dim=2)
-    # [1,3,T,H,W]
-
-    video = video[0]
-    video = (video.clamp(-1, 1) + 1.0) / 2.0
-    video = 1.0 - video
-    video = (video * 255.0).round().clamp(0, 255).to(torch.uint8)
-
-    video = (
-        video
-        .permute(1, 2, 3, 0)
-        .contiguous()
-        .cpu()
-        .numpy()
-    )
-    # [T,H,W,3]
-
-    return video
-
-
 def np_video_to_uint8(video):
     """
     video:
@@ -204,36 +129,6 @@ def np_video_to_uint8(video):
     return np.round(video).clip(0, 255).astype(np.uint8)
 
 
-def concat_videos_horizontally(*videos, fix_bgr=False):
-    """
-    videos:
-        each [T,H,W,3]
-
-    return:
-        [T,H,W_total,3]
-    """
-    videos = [
-        np_video_to_uint8(v)
-        for v in videos
-    ]
-
-    min_t = min(v.shape[0] for v in videos)
-    min_h = min(v.shape[1] for v in videos)
-
-    videos = [
-        v[:min_t, :min_h]
-        for v in videos
-    ]
-
-    concat_video = np.concatenate(videos, axis=2)
-
-    # ✅ 三个视频颜色都反，就最终统一翻转一次
-    if fix_bgr:
-        concat_video = concat_video[..., ::-1].copy()
-
-    return concat_video
-
-
 @torch.no_grad()
 def run_validation_functrl(
     args,
@@ -246,66 +141,14 @@ def run_validation_functrl(
     weight_dtype,
     global_step,
 ):
-    if accelerator.is_main_process is False:
+    if not accelerator.is_main_process:
         return
 
     if args.validation_config.validation_prompts is None:
         return
 
-    control_root = args.data_config.instance_data_root[0]
-
-    pt_files = [
-        os.path.join(control_root, f)
-        for f in os.listdir(control_root)
-        if f.endswith(".pt")
-    ]
-
-    assert len(pt_files) > 0, f"No .pt files found in {control_root}"
-
-    control_file = pt_files[0]
-
-    data = torch.load(
-        control_file,
-        map_location="cpu",
-        weights_only=False,
-    )
-
-    assert "control_latent" in data, (
-        f"`control_latent` not found in {control_file}. "
-        f"Available keys: {list(data.keys())}"
-    )
-
-    assert "vae_latent" in data, (
-        f"`vae_latent` not found in {control_file}. "
-        f"Available keys: {list(data.keys())}"
-    )
-
-    control_latents = data["control_latent"].to(
-        accelerator.device,
-        dtype=torch.float32,
-    )
-
-    gt_latents = data["vae_latent"].to(
-        accelerator.device,
-        dtype=torch.float32,
-    )
-
     vae.to(accelerator.device, non_blocking=True)
     text_encoder.to(accelerator.device, non_blocking=True)
-
-    latents_mean = torch.tensor(
-        vae.config.latents_mean
-    ).view(1, vae.config.z_dim, 1, 1, 1).to(
-        accelerator.device,
-        vae.dtype,
-    )
-
-    latents_std = 1.0 / torch.tensor(
-        vae.config.latents_std
-    ).view(1, vae.config.z_dim, 1, 1, 1).to(
-        accelerator.device,
-        vae.dtype,
-    )
 
     pipe = GigaworldFunCtrlPipeline(
         tokenizer=tokenizer,
@@ -324,76 +167,31 @@ def run_validation_functrl(
         else None
     )
 
-    all_videos = []
-    all_prompts = []
-    prompt = data.get("prompt_raw", "")
-
-    def get_first_frame_image(video_path, width, height, crop_left_third=False):
+    def get_first_frame_image(video_path, width, height):
         cap = cv2.VideoCapture(video_path)
         success, frame = cap.read()
         cap.release()
         if not success:
             return None
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        if crop_left_third:
-            frame_rgb = frame_rgb[:, : frame_rgb.shape[1] // 3]
         img = Image.fromarray(frame_rgb).resize((width, height))
         return img
 
-    def save_left_third_video(video_path, output_path):
-        cap = cv2.VideoCapture(video_path)
-        fps = cap.get(cv2.CAP_PROP_FPS) or 30
-        success, frame = cap.read()
-        if not success:
-            cap.release()
-            return None
+    control_video_path = args.validation_config.validation_control_video[0]
 
-        height, width = frame.shape[:2]
-        crop_width = width // 3
-        writer = cv2.VideoWriter(
-            output_path,
-            cv2.VideoWriter_fourcc(*"mp4v"),
-            fps,
-            (crop_width, height),
-        )
+    run_infer_dir = os.path.join(args.output_dir, "run_infer")
+    os.makedirs(run_infer_dir, exist_ok=True)
 
-        while success:
-            writer.write(frame[:, :crop_width])
-            success, frame = cap.read()
-
-        cap.release()
-        writer.release()
-        return output_path
-
-    is_single_view = getattr(
-        args.validation_config,
-        "validation_view_mode",
-        None,
-    ) == "single_view"
-    temp_control_video = None
-    if is_single_view:
-        temp_control_video = save_left_third_video(
-            args.validation_config.validation_control_video[0],
-            "./temp_control_left_third_0.mp4",
-        )
-    
     if args.validation_config.validation_first_image is not None:
         img = get_first_frame_image(
             args.validation_config.validation_first_image[0],
             args.validation_config.validation_width,
             args.validation_config.validation_height,
-            crop_left_third=is_single_view,
         )
-        temp_img = f"./temp_gt_first_frame_0.jpg"
+        temp_img = os.path.join(run_infer_dir, "temp_gt_first_frame_0.jpg")
         img.save(temp_img)
     else:
         temp_img = None
-
-    control_video_path = (
-        temp_control_video
-        if temp_control_video is not None
-        else args.validation_config.validation_control_video[0]
-    )
 
     pipeline_args = {
         "negative_prompt": args.data_config.negative_prompt,
@@ -412,8 +210,10 @@ def run_validation_functrl(
         "control_video": load_video(control_video_path),
         "image": load_image(temp_img) if temp_img is not None else None,
         "prompt": args.validation_config.validation_prompts[0],
-        
     }
+
+    saved_files = []
+    saved_prompts = []
 
     for sample_idx in range(args.validation_config.num_validation_videos):
         gen_video_ori = pipe(
@@ -422,70 +222,42 @@ def run_validation_functrl(
             output_type="np",
         ).frames[0]
 
-        gen_video = np_video_to_uint8(gen_video_ori)
-
-        all_videos.append(gen_video)
-        all_prompts.append(prompt)
-
-    os.makedirs(args.output_dir, exist_ok=True)
-
-    saved_files = []
-
-    for i, (video, prompt) in enumerate(zip(all_videos, all_prompts)):
+        prompt = pipeline_args["prompt"]
         safe_prompt = prompt[:25].replace(" ", "_").replace("/", "_")
-
-        filename = os.path.join(
-            args.output_dir,
-            f"global_step{global_step}_control_gt_all_{i}_{safe_prompt}.mp4",
-        )
-
         gen_filename = os.path.join(
-            args.output_dir,
-            f"global_step{global_step}_control_gt_gen_{i}_{safe_prompt}.mp4",
+            run_infer_dir,
+            f"global_step{global_step}_control_gt_gen_{sample_idx}_{safe_prompt}.mp4",
         )
 
-        export_to_video(video, filename, fps=30)
         export_to_video(gen_video_ori, gen_filename, fps=30)
-        saved_files.append(filename)
-
-        accelerator.print(f"✅ Saved concat validation video: {filename}")
+        saved_files.append(gen_filename)
+        saved_prompts.append(prompt)
+        accelerator.print(f"✅ Saved validation video: {gen_filename}")
 
     for tracker in accelerator.trackers:
         if tracker.name == "wandb":
-            video_logs = []
-
-            for i, filename in enumerate(saved_files):
-                video_logs.append(
-                    wandb.Video(
-                        filename,
-                        caption=(
-                            f"{i}: control | gt | generated "
-                            f"| prompt={all_prompts[i]} "
-                            f"| control={os.path.basename(control_file)}"
-                        ),
-                        format="mp4",
-                    )
+            video_logs = [
+                wandb.Video(
+                    filename,
+                    caption=(
+                        f"{i}: generated "
+                        f"| prompt={saved_prompts[i]} "
+                        f"| step={global_step}"
+                    ),
+                    format="mp4",
                 )
-
+                for i, filename in enumerate(saved_files)
+            ]
             tracker.log(
-                {
-                    "control_gt_generated_validation": video_logs,
-                },
+                {"validation_videos": video_logs},
                 step=global_step,
             )
 
     del pipe
-    del control_latents
-    del gt_latents
-    del data
-    del latents_mean
-    del latents_std
-
     free_memory()
 
     vae.to("cpu", non_blocking=True)
     text_encoder.to("cpu", non_blocking=True)
-
     free_memory()
 
 def make_functrl_input(
@@ -796,16 +568,7 @@ def main(args):
     # ============================================================
     # LoRA exclude modules
     # ============================================================
-
     lora_exclude_modules = list(args.model_config.lora_exclude_modules)
-
-    # accelerator.print("🧬 LoRA target modules:")
-    # for t in target_modules:
-    #     accelerator.print(f"   🔹 {t}")
-
-    # accelerator.print("🚫 LoRA exclude modules:")
-    # for t in lora_exclude_modules:
-    #     accelerator.print(f"   ❌ {t}")
 
     transformer_lora_config = LoraConfig(
         r=args.model_config.lora_rank,
@@ -839,31 +602,12 @@ def main(args):
             trainable_param_names.append(name)
             trainable_params += numel
 
-    accelerator.print("\n" + "=" * 80)
-    accelerator.print("🧩 Trainable Layers")
-    accelerator.print("=" * 80)
-
-    for idx, name in enumerate(trainable_param_names):
-        accelerator.print(f"[{idx:04d}] {name}")
-
-    accelerator.print("=" * 80)
-
     accelerator.print(
-        f"✅ Trainable params: "
-        f"{trainable_params / 1e6:.2f} M"
+        f"{_C['cyan']}[Trainable]{_C['reset']} "
+        f"{trainable_params / 1e6:.2f}M / {all_params / 1e6:.2f}M "
+        f"({100.0 * trainable_params / all_params:.4f}%) "
+        f"across {len(trainable_param_names)} params"
     )
-
-    accelerator.print(
-        f"📦 Total params: "
-        f"{all_params / 1e6:.2f} M"
-    )
-
-    accelerator.print(
-        f"📊 Trainable ratio: "
-        f"{100.0 * trainable_params / all_params:.4f}%"
-    )
-
-    accelerator.print("=" * 80 + "\n")
       
     # ============================================================
     # 🔁 load checkpoint
@@ -1227,15 +971,17 @@ def main(args):
         * args.training_config.gradient_accumulation_steps
     )
 
-    accelerator.print("***** Running Stage1 SFT training *****")
-    accelerator.print(f"  Num trainable parameters = {num_trainable_parameters}")
-    accelerator.print(f"  Num examples = {len(train_dataset)}")
-    accelerator.print(f"  Num batches each epoch = {len(train_dataloader)}")
-    accelerator.print(f"  Num Epochs = {args.training_config.num_train_epochs}")
-    accelerator.print(f"  Batch size per device = {args.training_config.train_batch_size}")
-    accelerator.print(f"  Total train batch size = {total_batch_size}")
-    accelerator.print(f"  Grad accumulation steps = {args.training_config.gradient_accumulation_steps}")
-    accelerator.print(f"  Total optimization steps = {args.training_config.max_train_steps}")
+    accelerator.print(
+        f"{_C['cyan']}[Training]{_C['reset']} "
+        f"steps={args.training_config.max_train_steps} "
+        f"epochs={args.training_config.num_train_epochs} "
+        f"bs/device={args.training_config.train_batch_size} "
+        f"grad_accum={args.training_config.gradient_accumulation_steps} "
+        f"total_bs={total_batch_size} "
+        f"examples={len(train_dataset)} "
+        f"batches/epoch={len(train_dataloader)} "
+        f"trainable_params={num_trainable_parameters}"
+    )
 
     global_step = 0
     first_epoch = 0
@@ -1461,7 +1207,6 @@ def main(args):
 
             with accelerator.accumulate(transformer):
                 assert len(noisy_model_input_list) == len(sigmas_list) == len(timesteps_list) == len(targets_list)
-                sample_hash, sample_raw = make_sample_hash(batch)
                 logs = _flow_loss(
                     args=args,
                     accelerator=accelerator,
@@ -1484,12 +1229,6 @@ def main(args):
                     global_step=global_step,
                     noise_scheduler_copy=noise_scheduler_copy,
                     use_clean_input=use_clean_input,
-                    debug_info={
-                        "sample_hash": sample_hash,
-                        "sample_raw": sample_raw,
-                        "epoch": epoch,
-                        "step": step,
-                    },
                 )
 
                 if accelerator.sync_gradients:
@@ -1548,11 +1287,10 @@ def main(args):
                         else:
                             accelerator.save_state(save_path)
 
-                        accelerator.print(f"💾 Saved checkpoint to {save_path}")
+                        accelerator.print(f"{_C['green']}[Checkpoint]{_C['reset']} step={global_step} saved to {save_path}")
                         # ============================================================
                         # 💾 Save FULL transformer for inference
                         # ============================================================
-
                         if accelerator.is_main_process:
                             full_transformer_dir = os.path.join(
                                 save_path,
@@ -1638,7 +1376,7 @@ def main(args):
 
         model_to_save.to(original_dtype)
 
-        accelerator.print(f"🎉 Final checkpoint saved to {save_path}")
+        accelerator.print(f"{_C['green']}[Final]{_C['reset']} checkpoint saved to {save_path}")
 
     accelerator.end_training()
 

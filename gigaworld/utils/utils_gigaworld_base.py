@@ -103,28 +103,6 @@ def _flow_loss(
         assert loss.requires_grad, f"Loss should have gradient! Got {loss.requires_grad}"
         assert loss.grad_fn is not None, "Loss should have grad_fn!"
 
-        debug_steps = int(os.environ.get("GIGAWORLD_DEBUG_LOSS_STEPS", "50"))
-        debug_step = debug_info.get("step", global_step) if debug_info is not None else global_step
-        if debug_info is not None and (debug_steps < 0 or debug_step < debug_steps):
-            rank = accelerator.process_index
-            local_rank = accelerator.local_process_index
-            world_size = accelerator.num_processes
-            device = noisy_model_input.device
-            loss_value = loss.detach().float().item()
-            print(
-                f"[LOSS_DEBUG] "
-                f"global_step={global_step} "
-                f"epoch={debug_info.get('epoch')} "
-                f"step={debug_info.get('step')} "
-                f"rank={rank}/{world_size} "
-                f"local_rank={local_rank} "
-                f"device={device} "
-                f"sample_hash={debug_info.get('sample_hash')} "
-                f"loss={loss_value:.8f} "
-                f"sample={debug_info.get('sample_raw')}",
-                flush=True,
-            )
-
         accelerator.backward(loss)
 
         if args.training_config.use_error_recycling:
