@@ -1,0 +1,74 @@
+collision_spheres:
+    base_link:
+        - "center": [0.0, 0.0, 0.0]
+          "radius": 0.02
+    link1:
+        - "center": [0.0, 0.0, 0.0]
+          "radius": 0.04
+    link2:
+        - "center": [0.0, 0.0, 0.0]
+          "radius": 0.03
+        - "center": [0.03, 0.0, 0.0]
+          "radius": 0.03
+        - "center": [0.06, 0.0, 0.0]
+          "radius": 0.03
+        - "center": [0.09, -0.007, 0.0]
+          "radius": 0.03
+        - "center": [0.12, -0.009, 0.0]
+          "radius": 0.03
+        - "center": [0.15, -0.011, 0.0]
+          "radius": 0.03
+        - "center": [0.18, -0.014, 0.0]
+          "radius": 0.03
+        - "center": [0.21, -0.017, 0.0]
+          "radius": 0.03
+        - "center": [0.146, -0.003, 0.0]
+          "radius": 0.03
+    link3:
+        - "center": [0.0, 0.0, 0.0]
+          "radius": 0.03
+        - "center": [-0.033, 0.021, 0.0]
+          "radius": 0.03
+        - "center": [-0.048, 0.024, -0.0]
+          "radius": 0.02
+        - "center": [-0.067, 0.033, 0.0]
+          "radius": 0.02
+        - "center": [-0.08, 0.039, 0.0]
+          "radius": 0.02
+        - "center": [-0.102, 0.04, -0.003]
+          "radius": 0.02
+        - "center": [-0.137, 0.047, -0.003]
+          "radius": 0.02
+        - "center": [-0.161, 0.052, 0.0]
+          "radius": 0.02
+        - "center": [-0.17, 0.055, 0.0]
+          "radius": 0.03
+    link4:
+        - "center": [-0.005, 0.0, 0.004]
+          "radius": 0.03
+    link5:
+        - "center": [0.0, 0.064, -0.0]
+          "radius": 0.03
+    link6:
+        - "center": [0.005, 0.0, 0.03]
+          "radius": 0.03
+        - "center": [0.001, 0.055, 0.055]
+          "radius": 0.01
+        - "center": [0.001, 0.033, 0.054]
+          "radius": 0.01
+        - "center": [-0.001, -0.037, 0.056]
+          "radius": 0.01
+    link7:
+        - "center": [-0.0, -0.008, -0.007]
+          "radius": 0.01
+        - "center": [0.003, -0.047, -0.019]
+          "radius": 0.01
+    link8:
+        - "center": [-0.001, -0.031, -0.009]
+          "radius": 0.01
+        - "center": [-0.001, 0.007, -0.008]
+          "radius": 0.01
+        - "center": [-0.001, 0.05, -0.012]
+          "radius": 0.01
+        - "center": [-0.001, 0.03, -0.011]
+          "radius": 0.01

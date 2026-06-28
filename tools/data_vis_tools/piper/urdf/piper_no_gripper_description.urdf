@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="piper_description">
+  <link
+    name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.00979274765955341 1.82905827587138E-06 0.0410100126360189"
+        rpy="0 0 0" />
+      <mass
+        value="0.162548567403693" />
+      <inertia
+        ixx="0.000226596924525071"
+        ixy="-7.33972270153965E-08"
+        ixz="2.13249977802622E-06"
+        iyy="0.000269444772561524"
+        iyz="8.15169009611054E-09"
+        izz="0.000222318258878636" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://piper_description/meshes/base_link.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://piper_description/meshes/base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="link1">
+    <inertial>
+      <origin
+        xyz="0.00131676031927024 0.000310288842008612 -0.00922874512303437"
+        rpy="0 0 0" />
+      <mass
+        value="0.0978679932242825" />
+      <inertia
+        ixx="7.76684558296782E-05"
+        ixy="1.09084650459924E-07"
+        ixz="-1.9748053243241E-06"
+        iyy="9.24967780161547E-05"
+        iyz="9.91284646834582E-07"
+        izz="8.24589062407807E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://piper_description/meshes/link1.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://piper_description/meshes/link1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint1"
+    type="revolute">
+    <origin
+      xyz="0 0 0.123"
+      rpy="0 0 -1.5708" />
+    <parent
+      link="base_link" />
+    <child
+      link="link1" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.618"
+      upper="2.618"
+      effort="100"
+      velocity="3" />
+  </joint>
+  <link
+    name="link2">
+    <inertial>
+      <origin
+        xyz="0.148793602378802 -0.00242026983944119 0.00175154638467948"
+        rpy="0 0 0" />
+      <mass
+        value="0.290888938633388" />
+      <inertia
+        ixx="0.000148959640166183"
+        ixy="-7.37750384371657E-05"
+        ixz="-9.68688405196236E-07"
+        iyy="0.00172800946632652"
+        iyz="-1.09692225564224E-06"
+        izz="0.0017754628344594" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://piper_description/meshes/link2.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://piper_description/meshes/link2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint2"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.5708 0 -1.5708" />
+    <parent
+      link="link1" />
+    <child
+      link="link2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="3.14"
+      effort="100"
+      velocity="3" />
+  </joint>
+  <link
+    name="link3">
+    <inertial>
+      <origin
+        xyz="-0.0996835215213704 0.0349477226691318 0.000508025815507312"
+        rpy="0 0 0" />
+      <mass
+        value="0.290847697793211" />
+      <inertia
+        ixx="0.000107879011637167"
+        ixy="2.92669521203626E-05"
+        ixz="6.825922326238E-07"
+        iyy="0.000214751671792086"
+        iyz="-7.78469047878196E-07"
+        izz="0.000241923439340319" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://piper_description/meshes/link3.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://piper_description/meshes/link3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint3"
+    type="revolute">
+    <origin
+      xyz="0.28358 0.028726 0"
+      rpy="0 0 0.10095" />
+    <parent
+      link="link2" />
+    <child
+      link="link3" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-2.697"
+      upper="0"
+      effort="100"
+      velocity="3" />
+  </joint>
+  <link
+    name="link4">
+    <inertial>
+      <origin
+        xyz="0.000276464622387979 -0.00102803669324875 -0.00472830700561663"
+        rpy="0 0 0" />
+      <mass
+        value="0.127087348341362" />
+      <inertia
+        ixx="3.82011730423416E-05"
+        ixy="-4.92358350897513E-08"
+        ixz="4.89589432973119E-08"
+        iyy="4.87048555222578E-05"
+        iyz="6.70802942500512E-08"
+        izz="4.10592077565559E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://piper_description/meshes/link4.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://piper_description/meshes/link4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint4"
+    type="revolute">
+    <origin
+      xyz="-0.24221 0.068514 0"
+      rpy="-1.5708 0 1.3826" />
+    <parent
+      link="link3" />
+    <child
+      link="link4" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.832"
+      upper="1.832"
+      effort="100"
+      velocity="3" />
+  </joint>
+  <link
+    name="link5">
+    <inertial>
+      <origin
+        xyz="8.82262433516967E-05 0.0566829014808256 -0.00196119720482461"
+        rpy="0 0 0" />
+      <mass
+        value="0.144711242639457" />
+      <inertia
+        ixx="4.39644313662493E-05"
+        ixy="-3.59259686444846E-08"
+        ixz="-1.89747741386183E-08"
+        iyy="5.63173920951307E-05"
+        iyz="-2.1540716689785E-07"
+        izz="4.88713664675268E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://piper_description/meshes/link5.dae" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://piper_description/meshes/link5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="joint5"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="1.5708 0 0" />
+    <parent
+      link="link4" />
+    <child
+      link="link5" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="-1.22"
+      upper="1.22"
+      effort="100"
+      velocity="3" />
+  </joint>
+
+</robot>
