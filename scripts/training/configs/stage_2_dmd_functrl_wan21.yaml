@@ -1,10 +1,10 @@
-output_dir: /shared_disk/users/xuancheng.xu/output/experiment/helios/ablation_stage_2_dmd_wode_wan21
-logging_dir: logs
+output_dir: ./output/exp/Giga-world-Nano-Train-DMD
+logging_dir: ./output/logs
 seed: 47
 
 report_to:
-  tracker_name: Helios-Train
-  wandb_name: ablation_stage_2_dmd
+  tracker_name: Giga-world-Nano-Train-DMD
+  wandb_name: Giga-world-Nano-Train-DMD
   report_to: wandb
 
 data_config:
@@ -31,8 +31,8 @@ model_config:
   # ---- Path ----
   model_type: "wan2.1"
   pretrained_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-1/stage1_final"
-  transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage3_ODE_3v_uni_s0P6k/"
-  #transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage1_final_3v_uni_s16k/"
+  # transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage3_ODE_3v_uni_s0P6k/"
+  transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage1_final_3v_uni_s16k/"
   subfolder: "transformer" # TODO: subfolder: "transformer_ode"
   real_score_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage1_final_3v_uni_s16k"  #FIXME: real score model path should be checked
   load_checkpoints_custom: false
@@ -76,9 +76,9 @@ validation_config:
   validation_width: 1920
   validation_max_num_frames: 66
   validation_first_image:
-    - "/shared_disk/users/zhanqian.wu/data/infer_data/helios_data/giga_ctrl_3view/task3/videos/task3/episode_000007_72ce1f94ca_s000000_e000330.mp4"
+    - "example/infer_assest/input_image.png"
   validation_control_video:
-    - "/shared_disk/users/zhanqian.wu/data/infer_data/helios_data/giga_ctrl_3view/task3/control_videos/task3/episode_000007_72ce1f94ca_s000000_e000330.mp4"
+    - "example/infer_assest/control_video.mp4"
   validation_prompts:
     - "A robot with black and white grippers approaches an open cardboard box on a gray wooden floor. The grippers, attached to articulated arms, position themselves on either side of the box’s flaps. The left gripper grasps the left flap, while the right gripper secures the right flap. The robot then lifts both flaps simultaneously, folding them inward to close the box. The grippers maintain a firm but controlled grip throughout, ensuring the box remains stable. The environment is minimalistic, with no other objects visible. The robot’s motion is precise, demonstrating coordinated manipulation to complete the box-closing task."
   validation_guidance_scale: 1.0
@@ -109,7 +109,7 @@ training_config:
   max_train_steps: 1000000
   train_batch_size: 1
   gradient_accumulation_steps: 2
-  checkpointing_steps: 250
+  checkpointing_steps: 5
   resume_from_checkpoint: "latest"
   save_checkpoints_custom: true
   # ---- Optimizer ----
@@ -175,18 +175,6 @@ training_config:
   restrict_lora_rank: 128
   # ---- Stage 2 Parameters ----
   is_navit_pyramid: false
-  # stage2_num_stages: 3
-  # stage2_timestep_shift: 1.0
-  # stage2_scheduler_gamma: 0.333333333333333333333333333333333   # Approximate value of 1/3
-  # stage2_stage_range:
-  #   - 0
-  #   - 0.333333333333333333333333333333333   # Approximate value of 1/3
-  #   - 0.666666666666666666666666666666666   # Approximate value of 2/3
-  #   - 1
-  # stage2_sample_ratios:
-  #   - 1
-  #   - 1
-  #   - 1
   # efficient_sample: false
   # ---- Stage 3 VRAM Parameters ----
   dmd_is_low_vram_mode: true

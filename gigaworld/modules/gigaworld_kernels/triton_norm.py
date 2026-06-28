@@ -7,6 +7,12 @@ from diffusers.models.normalization import FP32LayerNorm, LayerNorm, RMSNorm
 from .fp32_rmsnorm import FP32RMSNorm
 from .utils import calculate_settings, torch_gpu_device
 
+# ANSI color codes
+_C = {
+    "reset": "\033[0m",
+    "green": "\033[92m",
+}
+
 
 # ------------------------------- replace funtion -------------------------------
 
@@ -24,8 +30,8 @@ def replace_all_norms_with_flash_norms(model):
             module.forward = (lambda self, x: flash_rms_layernorm(self, x)).__get__(module, module.__class__)
             patched_count["RMSNorm"] += 1
 
-    print(f"Patched {patched_count['LayerNorm']} Flash_LayerNorm modules\n")
-    print(f"Patched {patched_count['RMSNorm']} Flash_RMSNorm modules\n")
+    print(f"{_C['green']}Patched {patched_count['LayerNorm']} Flash_LayerNorm modules{_C['reset']}\n")
+    print(f"{_C['green']}Patched {patched_count['RMSNorm']} Flash_RMSNorm modules{_C['reset']}\n")
 
     return model
 

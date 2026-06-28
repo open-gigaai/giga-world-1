@@ -1,3 +1,19 @@
+# Copyright 2025 The Gigaworld Team and The HuggingFace Team. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Additional contributions by zkey@GigaAI.
+
 import os
 os.environ["HF_ENABLE_PARALLEL_LOADING"] = "yes"
 os.environ["HF_PARALLEL_LOADING_WORKERS"] = "8"
@@ -107,28 +123,6 @@ def safe_item(x):
     return x.item() if hasattr(x, "item") else x
 
 
-def np_video_to_uint8(video):
-    """
-    video:
-        [T,H,W,3]
-        uint8 [0,255]
-        or float [0,1]
-        or float [0,255]
-    """
-    if not isinstance(video, np.ndarray):
-        video = np.asarray(video)
-
-    if video.dtype == np.uint8:
-        return video
-
-    video = video.astype(np.float32)
-
-    if video.max() <= 1.5:
-        video = video * 255.0
-
-    return np.round(video).clip(0, 255).astype(np.uint8)
-
-
 @torch.no_grad()
 def run_validation_functrl(
     args,
@@ -168,6 +162,10 @@ def run_validation_functrl(
     )
 
     def get_first_frame_image(video_path, width, height):
+        ext = os.path.splitext(video_path)[-1].lower()
+        if ext in [".png", ".jpg", ".jpeg", ".bmp", ".webp"]:
+            img = Image.open(video_path).convert("RGB").resize((width, height))
+            return img
         cap = cv2.VideoCapture(video_path)
         success, frame = cap.read()
         cap.release()
@@ -229,7 +227,7 @@ def run_validation_functrl(
             f"global_step{global_step}_control_gt_gen_{sample_idx}_{safe_prompt}.mp4",
         )
 
-        export_to_video(gen_video_ori, gen_filename, fps=30)
+        export_to_video(gen_video_ori, gen_filename, fps=10)
         saved_files.append(gen_filename)
         saved_prompts.append(prompt)
         accelerator.print(f"✅ Saved validation video: {gen_filename}")
@@ -959,7 +957,7 @@ def main(args):
         accelerator.init_trackers(
             tracker_name,
             config=OmegaConf.to_container(args, resolve=True),
-            init_kwargs={"wandb": {"name": wandb_name}},
+            init_kwargs={"wandb": {"name": wandb_name, "dir": args.output_dir}},
         )
 
     # ============================================================

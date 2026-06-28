@@ -66,9 +66,9 @@ validation_config:
   validation_width: 1920
   validation_max_num_frames: 33
   validation_first_image:
-    - "/shared_disk/users/zhanqian.wu/data/infer_data/helios_data/giga_ctrl_3view/task3/videos/task3/episode_000007_72ce1f94ca_s000000_e000330.mp4"
+    - "example/infer_assest/input_image.png"
   validation_control_video:
-    - "/shared_disk/users/zhanqian.wu/data/infer_data/helios_data/giga_ctrl_3view/task3/control_videos/task3/episode_000007_72ce1f94ca_s000000_e000330.mp4"
+    - "example/infer_assest/control_video.mp4"
   validation_prompts:
     - "A robot with black and white grippers approaches an open cardboard box on a gray wooden floor. The grippers, attached to articulated arms, position themselves on either side of the box’s flaps. The left gripper grasps the left flap, while the right gripper secures the right flap. The robot then lifts both flaps simultaneously, folding them inward to close the box. The grippers maintain a firm but controlled grip throughout, ensuring the box remains stable. The environment is minimalistic, with no other objects visible. The robot’s motion is precise, demonstrating coordinated manipulation to complete the box-closing task."
   validation_guidance_scale: 5.0

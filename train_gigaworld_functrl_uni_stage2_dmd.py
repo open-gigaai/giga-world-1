@@ -1,3 +1,19 @@
+# Copyright 2025 The Gigaworld Team and The HuggingFace Team. All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Additional contributions by zkey@GigaAI.
+
 import os
 
 os.environ["HF_ENABLE_PARALLEL_LOADING"] = "yes"
@@ -134,6 +150,19 @@ def safe_item(value):
     return value.item() if hasattr(value, "item") else value
 
 
+# ANSI color codes
+_C = {
+    "reset": "\033[0m",
+    "dim": "\033[90m",
+    "red": "\033[91m",
+    "green": "\033[92m",
+    "yellow": "\033[93m",
+    "blue": "\033[94m",
+    "magenta": "\033[95m",
+    "cyan": "\033[96m",
+}
+
+
 def rank0_print(accelerator, *args, **kwargs):
     if accelerator.is_main_process:
         print(*args, **kwargs)
@@ -150,56 +179,35 @@ def print_model_info(accelerator, name, model):
         device = "N/A"
     total_params = sum(p.numel() for p in model.parameters())
     trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    rank0_print(accelerator, f"\n================ {name} Info ================")
-    rank0_print(accelerator, f"Class            : {model.__class__}")
-    rank0_print(accelerator, f"Dtype            : {dtype}")
-    rank0_print(accelerator, f"Device           : {device}")
-    rank0_print(accelerator, f"Total params     : {total_params / 1e9:.3f}B")
-    rank0_print(accelerator, f"Trainable params : {trainable_params / 1e6:.3f}M")
-    rank0_print(accelerator, f"============================================\n")
+    rank0_print(
+        accelerator,
+        f"\033[96m[{name}]\033[0m "
+        f"\033[90mclass={model.__class__.__name__} "
+        f"dtype={dtype} device={device}\033[0m "
+        f"\033[92mtotal={total_params / 1e9:.3f}B\033[0m "
+        f"\033[93mtrainable={trainable_params / 1e6:.3f}M\033[0m",
+    )
 
-def print_lora_target_modules(args, accelerator ,target_modules):
+def print_lora_target_modules(args, accelerator, target_modules):
     """
-    打印 LoRA target_modules 配置信息
+    Print a compact summary of LoRA target_modules configuration.
     """
-    rank0_print(accelerator, "\n" + "=" * 80)
-    rank0_print(accelerator, "🔍 LoRA Target Modules Configuration")
-    rank0_print(accelerator, "=" * 80)
+    n_patch_embedding = sum(1 for t in target_modules if "patch_embedding" in t)
+    n_patch = sum(1 for t in target_modules if any(p in t for p in ["patch_short", "patch_mid", "patch_long"]))
+    n_norm = sum(1 for t in target_modules if "norm" in t.lower())
+    n_linear = len(target_modules) - n_patch_embedding - n_patch - n_norm
 
-    # 基础配置
-    rank0_print(accelerator, f"✅ lora_layers config: {args.model_config.lora_layers}")
-    rank0_print(accelerator, f"✅ train_lora_patch_embedding: {args.training_config.is_train_lora_patch_embedding}")
-    rank0_print(accelerator, f"✅ train_lora_multi_term_memory_patch: {args.training_config.is_train_lora_multi_term_memory_patchg}")
-
-    rank0_print(accelerator, f"\n✅ Final target_modules (total: {len(target_modules)})")
-
-    # 分类
-    norm_modules = [t for t in target_modules if "norm" in t.lower()]
-    patch_embedding = [t for t in target_modules if "patch_embedding" in t]
-    patch_modules = [t for t in target_modules if any(p in t for p in ["patch_short", "patch_mid", "patch_long"])]
-    linear_modules = [t for t in target_modules if t not in norm_modules + patch_embedding + patch_modules]
-
-    rank0_print(accelerator, f"\n  🧩 patch_embedding: {patch_embedding}")
-    rank0_print(accelerator, f"  🧩 patch layers (short/mid/long): {patch_modules}")
-    rank0_print(accelerator, f"  🔢 linear layers: {len(linear_modules)} items")
-    rank0_print(accelerator, f"  🚫 excluded norm layers: {len(norm_modules)} items")
-
-    rank0_print(accelerator, "\n  📌 All target modules (sorted):")
-    for i, name in enumerate(sorted(target_modules), 1):
-        rank0_print(accelerator, f"    {i:2d}. {name}")
-
-    rank0_print(accelerator, "\n" + "=" * 80)
-    rank0_print(accelerator, "✅ LoRA 配置打印完成！")
-    rank0_print(accelerator, "=" * 80 + "\n")
+    rank0_print(
+        accelerator,
+        f"\033[96m[LoRA]\033[0m "
+        f"\033[92mtarget_modules={len(target_modules)}\033[0m "
+        f"\033[94mlinear={n_linear} patch_embed={n_patch_embedding} patch={n_patch} norm_excluded={n_norm}\033[0m",
+    )
 
 def print_trainable_parameters(model, accelerator, title="Trainable Parameters"):
     """
-    打印模型可训练参数详情 & 统计
+    Print a compact summary of model trainable parameters.
     """
-    rank0_print(accelerator, "\n" + "="*100)
-    rank0_print(accelerator, f"📊 {title}")
-    rank0_print(accelerator, "="*100)
-
     total_params = 0
     trainable_params = 0
     trainable_names = []
@@ -210,187 +218,58 @@ def print_trainable_parameters(model, accelerator, title="Trainable Parameters")
             trainable_params += param.numel()
             trainable_names.append(name)
 
-    # 百分比
     trainable_percent = 100 * trainable_params / total_params if total_params > 0 else 0
 
-    # 基础统计
-    rank0_print(accelerator, f"🔹 Total parameters: {total_params:,}")
-    rank0_print(accelerator, f"✅ Trainable parameters: {trainable_params:,} ({trainable_percent:.2f}%)")
-    rank0_print(accelerator, f"🔒 Frozen parameters: {total_params - trainable_params:,}")
+    if not trainable_names:
+        rank0_print(accelerator, f"\033[91m[NoTrainable] {title}: 0 parameters!\033[0m")
+        return
 
-    rank0_print(accelerator, f"\n🎯 Trainable parameter count: {len(trainable_names)}")
+    # Classify by name pattern (avoid materializing sorted list)
+    n_lora = sum(1 for n in trainable_names if "lora" in n.lower())
+    n_patch = sum(1 for n in trainable_names if any(p in n for p in ["patch_", "short", "mid", "long"]))
+    n_norm = sum(1 for n in trainable_names if "norm" in n.lower())
+    n_scale = sum(1 for n in trainable_names if "scale" in n.lower())
 
-    if len(trainable_names) == 0:
-        rank0_print(accelerator, "❌ NO TRAINABLE PARAMETERS!")
-    else:
-        # 分类打印（LoRA / patch / norm / scale 等）
-        lora_names = [n for n in trainable_names if "lora" in n.lower()]
-        patch_names = [n for n in trainable_names if any(p in n for p in ["patch_", "short", "mid", "long"])]
-        norm_names = [n for n in trainable_names if "norm" in n.lower()]
-        scale_names = [n for n in trainable_names if "scale" in n.lower()]
-        other_names = [n for n in trainable_names if n not in lora_names + patch_names + norm_names + scale_names]
-
-        rank0_print(accelerator, f"\n  🧩 LoRA params: {len(lora_names)}")
-        rank0_print(accelerator, f"  🧩 Patch params: {len(patch_names)}")
-        rank0_print(accelerator, f"  🧩 Norm params: {len(norm_names)}")
-        rank0_print(accelerator, f"  🧩 Scale params: {len(scale_names)}")
-        rank0_print(accelerator, f"  🧩 Other params: {len(other_names)}")
-
-        # 全部列表
-        rank0_print(accelerator, f"\n📌 Full trainable parameters list:")
-        for i, name in enumerate(sorted(trainable_names), 1):
-            rank0_print(accelerator, f"    {i:2d}. {name}")
-
-    rank0_print(accelerator, "="*100 + "\n")
+    summary = (
+        f"\033[96m[{title}]\033[0m "
+        f"\033[92mtrainable={trainable_params / 1e6:.3f}M\033[0m "
+        f"({trainable_percent:.4f}%) "
+        f"\033[90mfrozen={(total_params - trainable_params) / 1e6:.3f}M\033[0m "
+        f"\033[94mlora={n_lora} patch={n_patch} norm={n_norm} scale={n_scale}\033[0m"
+    )
+    rank0_print(accelerator, summary)
 
 def print_dataset_info(accelerator, dataset_kwargs, train_dataset, train_dataloader, sampler):
     if not accelerator.is_main_process:
         return
-    rank0_print(accelerator, "\n" + "=" * 80)
-    rank0_print(accelerator, "📂 DMD Dataset Summary")
-    rank0_print(accelerator, "=" * 80)
-    rank0_print(accelerator, f"text_folders   : {dataset_kwargs.get('text_folders')}")
-    rank0_print(accelerator, f"gan_folders    : {dataset_kwargs.get('gan_folders')}")
-    rank0_print(accelerator, f"ode_folders    : {dataset_kwargs.get('ode_folders')}")
-    rank0_print(accelerator, f"single_res     : {dataset_kwargs.get('single_res')}")
-    rank0_print(accelerator, f"single_length  : {dataset_kwargs.get('single_length')}")
-    rank0_print(accelerator, f"single_num_frame: {dataset_kwargs.get('single_num_frame')}")
-    rank0_print(accelerator, f"single_height  : {dataset_kwargs.get('single_height')}")
-    rank0_print(accelerator, f"single_width   : {dataset_kwargs.get('single_width')}")
-    rank0_print(accelerator, "-" * 80)
-    rank0_print(accelerator, f"Num examples   : {len(train_dataset):,}")
-    rank0_print(accelerator, f"Num batches    : {len(train_dataloader):,}")
+    rank0_print(
+        accelerator,
+        f"\033[96m[Dataset]\033[0m "
+        f"\033[94mtext={dataset_kwargs.get('text_folders')} "
+        f"gan={dataset_kwargs.get('gan_folders')} "
+        f"ode={dataset_kwargs.get('ode_folders')}\033[0m "
+        f"\033[90mshape={dataset_kwargs.get('single_res')} "
+        f"frames={dataset_kwargs.get('single_num_frame')} "
+        f"len={dataset_kwargs.get('single_length')}\033[0m",
+    )
+    rank0_print(
+        accelerator,
+        f"\033[96m[Dataset]\033[0m "
+        f"\033[92mexamples={len(train_dataset):,} "
+        f"batches={len(train_dataloader):,}\033[0m",
+    )
     if hasattr(sampler, 'buckets'):
         rank0_print(accelerator, f"Num buckets    : {len(sampler.buckets):,}")
     rank0_print(accelerator, "=" * 80 + "\n")
 
-def print_dmd_trainable_params(model, name, lr,accelerator):
-    params = [p for p in model.parameters() if p.requires_grad]
-    rank0_print(accelerator, f"✅{name} 可训练参数量：{len(params)} 📊 学习率：{lr:.2e}")
-
-def latent_chunks_to_video_np(
-    vae,
-    latents,
-    latents_mean,
-    latents_std,
-    vae_dtype,
-    drop_first_frame_after_first_chunk=True,
-):
-    """
-    latents:
-        [N, C, T, H, W]
-        or
-        [B, N, C, T, H, W]
-
-    return:
-        np video [T, H, W, 3], uint8
-    """
-    if latents.ndim == 5:
-        latents = latents.unsqueeze(0)
-
-    assert latents.ndim == 6, (
-        f"latents must be [N,C,T,H,W] or [B,N,C,T,H,W], got {tuple(latents.shape)}"
+def print_dmd_trainable_params(model, name, lr, accelerator):
+    n_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    rank0_print(
+        accelerator,
+        f"\033[93m[{name}]\033[0m "
+        f"\033[92mtrainable={n_params / 1e6:.3f}M\033[0m "
+        f"\033[94mlr={lr:.2e}\033[0m",
     )
-
-    b, n, c, t, h, w = latents.shape
-
-    assert b == 1, (
-        f"visualization only supports batch=1, got {b}"
-    )
-
-    decoded_chunks = []
-
-    for chunk_idx in range(n):
-        cur_latents = latents[:, chunk_idx]  # [1,C,T,H,W]
-
-        cur_latents = cur_latents.to(
-            device=vae.device,
-            dtype=vae_dtype,
-        )
-
-        # Wan latent unnormalize
-        cur_latents = cur_latents / latents_std + latents_mean
-
-        cur_video = vae.decode(
-            cur_latents,
-            return_dict=False,
-        )[0]
-        # [1,3,T,H,W]
-
-        if drop_first_frame_after_first_chunk and chunk_idx > 0:
-            cur_video = cur_video[:, :, 1:]
-
-        decoded_chunks.append(cur_video)
-
-    video = torch.cat(decoded_chunks, dim=2)
-    # [1,3,T,H,W]
-
-    video = video[0]
-    video = (video.clamp(-1, 1) + 1.0) / 2.0
-    video = 1.0 - video
-    video = (video * 255.0).round().clamp(0, 255).to(torch.uint8)
-
-    video = (
-        video
-        .permute(1, 2, 3, 0)
-        .contiguous()
-        .cpu()
-        .numpy()
-    )
-    # [T,H,W,3]
-
-    return video
-
-def np_video_to_uint8(video):
-    """
-    video:
-        [T,H,W,3]
-        uint8 [0,255]
-        or float [0,1]
-        or float [0,255]
-    """
-    if not isinstance(video, np.ndarray):
-        video = np.asarray(video)
-
-    if video.dtype == np.uint8:
-        return video
-
-    video = video.astype(np.float32)
-
-    if video.max() <= 1.5:
-        video = video * 255.0
-
-    return np.round(video).clip(0, 255).astype(np.uint8)
-
-def concat_videos_horizontally(*videos, fix_bgr=False):
-    """
-    videos:
-        each [T,H,W,3]
-
-    return:
-        [T,H,W_total,3]
-    """
-    videos = [
-        np_video_to_uint8(v)
-        for v in videos
-    ]
-
-    min_t = min(v.shape[0] for v in videos)
-    min_h = min(v.shape[1] for v in videos)
-
-    videos = [
-        v[:min_t, :min_h]
-        for v in videos
-    ]
-
-    concat_video = np.concatenate(videos, axis=2)
-
-    # ✅ 三个视频颜色都反，就最终统一翻转一次
-    if fix_bgr:
-        concat_video = concat_video[..., ::-1].copy()
-
-    return concat_video
-
 
 @torch.no_grad()
 def run_validation_functrl(
@@ -412,18 +291,6 @@ def run_validation_functrl(
 
     accelerator.print("🧪 Running CONTROL validation...")
 
-    # pipe = GigaworldFunCtrlPipeline.from_pretrained(
-    #     args.model_config.pretrained_model_name_or_path,
-    #     vae=vae,
-    #     transformer=transformer,
-    #     tokenizer=tokenizer,
-    #     text_encoder=text_encoder,
-    #     scheduler=noise_scheduler,
-    #     revision=args.model_config.revision,
-    #     variant=args.model_config.variant,
-    #     torch_dtype=weight_dtype,
-    # )
-
     pipe = GigaworldFunCtrlPipeline(
         tokenizer=tokenizer,
         text_encoder=text_encoder,
@@ -441,67 +308,36 @@ def run_validation_functrl(
         else None
     )
 
+    os.makedirs(args.output_dir, exist_ok=True)
+    run_infer_dir = os.path.join(args.output_dir, "run_infer")
+    os.makedirs(run_infer_dir, exist_ok=True)
+
     all_videos = []
     all_prompts = []
 
-
-    def get_first_frame_image(video_path, width, height, crop_left_third=False):
+    def get_first_frame_image(video_path, width, height):
+        ext = os.path.splitext(video_path)[-1].lower()
+        if ext in [".png", ".jpg", ".jpeg", ".bmp", ".webp"]:
+            img = Image.open(video_path).convert("RGB").resize((width, height))
+            return img
         cap = cv2.VideoCapture(video_path)
         success, frame = cap.read()
         cap.release()
         if not success:
             return None
         frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        if crop_left_third:
-            frame_rgb = frame_rgb[:, : frame_rgb.shape[1] // 3]
         img = Image.fromarray(frame_rgb).resize((width, height))
         return img
 
-    def save_left_third_video(video_path, output_path):
-        cap = cv2.VideoCapture(video_path)
-        fps = cap.get(cv2.CAP_PROP_FPS) or 30
-        success, frame = cap.read()
-        if not success:
-            cap.release()
-            return None
-
-        height, width = frame.shape[:2]
-        crop_width = width // 3
-        writer = cv2.VideoWriter(
-            output_path,
-            cv2.VideoWriter_fourcc(*"mp4v"),
-            fps,
-            (crop_width, height),
-        )
-
-        while success:
-            writer.write(frame[:, :crop_width])
-            success, frame = cap.read()
-
-        cap.release()
-        writer.release()
-        return output_path
-
-    is_single_view = getattr(
-        args.validation_config,
-        "validation_view_mode",
-        None,
-    ) == "single_view"
     temp_control_video = None
-    if is_single_view:
-        temp_control_video = save_left_third_video(
-            args.validation_config.validation_control_video[0],
-            "./temp_control_left_third_0.mp4",
-        )
     
     if args.validation_config.validation_first_image is not None:
         img = get_first_frame_image(
             args.validation_config.validation_first_image[0],
             args.validation_config.validation_width,
             args.validation_config.validation_height,
-            crop_left_third=is_single_view,
         )
-        temp_img = f"./temp_gt_first_frame_0.jpg"
+        temp_img = os.path.join(run_infer_dir, "temp_gt_first_frame_0.jpg")
         img.save(temp_img)
     else:
         temp_img = None
@@ -542,24 +378,10 @@ def run_validation_functrl(
             output_type="np",
         ).frames[0]
 
-        gen_video = np_video_to_uint8(gen_video_ori)
-       
-        # concat_video = concat_videos_horizontally(
-        #     control_video,
-        #     gt_video,
-        #     #gen_video,
-        #     fix_bgr=False,
-        # )
-
-        all_videos.append(gen_video)
+        all_videos.append(gen_video_ori)
         all_prompts.append(pipeline_args['prompt'])
 
-    os.makedirs(args.output_dir, exist_ok=True)
-    run_infer_dir = os.path.join(args.output_dir, "run_infer")
-    os.makedirs(run_infer_dir, exist_ok=True)
-
     saved_files = []
-
     for i, (video, prompt) in enumerate(zip(all_videos, all_prompts)):
         safe_prompt = prompt[:25].replace(" ", "_").replace("/", "_")
 
@@ -568,41 +390,34 @@ def run_validation_functrl(
             f"global_step{global_step}_control_gt_gen_{i}_{safe_prompt}.mp4",
         )
 
-        export_to_video(gen_video_ori, gen_filename, fps=30)
+        export_to_video(video, gen_filename, fps=10)
         saved_files.append(gen_filename)
 
         accelerator.print(f"✅ Saved validation video: {gen_filename}")
 
     for tracker in accelerator.trackers:
         if tracker.name == "wandb":
-            video_logs = []
-
-            for i, filename in enumerate(saved_files):
-                video_logs.append(
-                    wandb.Video(
-                        filename,
-                        caption=(
-                            f"{i}: control | gt | generated "
-                            f"| prompt={all_prompts[i]} "
-                        ),
-                        format="mp4",
-                    )
+            video_logs = [
+                wandb.Video(
+                    filename,
+                    caption=(
+                        f"{i}: generated "
+                        f"| prompt={all_prompts[i]} "
+                        f"| step={global_step}"
+                    ),
+                    format="mp4",
                 )
-
+                for i, filename in enumerate(saved_files)
+            ]
             tracker.log(
-                {
-                    "control_gt_generated_validation": video_logs,
-                },
+                {"validation_videos": video_logs},
                 step=global_step,
             )
 
     del pipe
-
     free_memory()
-
     vae.to("cpu", non_blocking=True)
     text_encoder.to("cpu", non_blocking=True)
-
     free_memory()
 
 
@@ -1161,30 +976,6 @@ def main(args):
         num_workers=args.data_config.dataloader_num_workers,
     )
 
-    # # ====================== DEBUG MODE 单线程调试 ======================
-    # # 强制单线程、单进程、关闭所有加速、方便打断点
-    # # =================================================================
-    # from torch.utils.data import DataLoader, RandomSampler
-    # train_dataset = BucketedFeatureDataset(**dataset_kwargs)
-
-    # # 【DEBUG】关闭分布式采样，用普通 RandomSampler
-    # from torch.utils.data import RandomSampler
-    # sampler = RandomSampler(train_dataset)  # 单进程随机采样
-
-    # # 【DEBUG】StatefulDataLoader 改成普通 DataLoader，num_workers=0 单线程
-    # train_dataloader = DataLoader(
-    #     train_dataset,
-    #     batch_size=1,          # 【DEBUG】强制 batch=1
-    #     sampler=sampler,
-    #     collate_fn=collate_fn,
-    #     num_workers=0,         # 【关键】单线程，能打断点
-    #     pin_memory=False,      # 【DEBUG】关闭 pin_memory，避免卡死
-    #     prefetch_factor=None,
-    #     persistent_workers=False,
-    #     drop_last=True
-    # )
-
-
     print_dataset_info(accelerator, dataset_kwargs, train_dataset, train_dataloader, sampler)
 
     if args.model_config.load_dcp:
@@ -1281,7 +1072,7 @@ def main(args):
         accelerator.init_trackers(
             tracker_name,
             config=OmegaConf.to_container(args, resolve=True),
-            init_kwargs={"wandb": {"name": wandb_name}},
+            init_kwargs={"wandb": {"name": wandb_name, "dir": args.output_dir}},
         )
 
     total_batch_size = (
@@ -1403,7 +1194,6 @@ def main(args):
     for epoch in range(first_epoch, args.training_config.num_train_epochs):
         transformer.train()
         real_score_model.train()
-        #sampler.set_epoch(epoch) #TODO: REMOVE WHEN TRAINING
         train_dataset.set_epoch(epoch)
 
         for step, batch in enumerate(train_dataloader):

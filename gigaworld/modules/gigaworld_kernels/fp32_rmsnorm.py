@@ -5,6 +5,13 @@ from diffusers.models.normalization import RMSNorm
 from diffusers.utils import is_torch_npu_available, is_torch_version
 
 
+# ANSI color codes
+_C = {
+    "reset": "\033[0m",
+    "green": "\033[92m",
+}
+
+
 # ------------------------------- replace funtion -------------------------------
 
 
@@ -18,7 +25,7 @@ def replace_rmsnorm_with_fp32(model):
 
             module.forward = new_forward.__get__(module, module.__class__)
             patched_count += 1
-    print(f"Patched {patched_count} FP32_RMSNorm modules\n")
+    print(f"{_C['green']}Patched {patched_count} FP32_RMSNorm modules{_C['reset']}\n")
     return model
 
 

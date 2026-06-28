@@ -4,6 +4,12 @@ import triton.language as tl
 
 from .utils import calculate_settings, torch_gpu_device
 
+# ANSI color codes
+_C = {
+    "reset": "\033[0m",
+    "green": "\033[92m",
+}
+
 
 # ------------------------------- replace funtion -------------------------------
 
@@ -18,7 +24,7 @@ def replace_rope_with_flash_rope():
 
     transformer_gigaworld_diffusers.apply_rotary_emb_transposed = apply_rotary_emb_transposed_flash
     transformer_gigaworld.apply_rotary_emb_transposed = apply_rotary_emb_transposed_flash
-    print("Patched Flash_RoPE globally\n")
+    print(f"{_C['green']}Patched Flash_RoPE globally{_C['reset']}\n")
 
 
 # ------------------------------- layer norm -------------------------------

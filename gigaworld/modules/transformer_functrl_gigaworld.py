@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#
+# Additional contributions by zkey@GigaAI.
 
 import glob
 import json
@@ -43,6 +45,17 @@ from diffusers.utils.torch_utils import maybe_allow_in_graph
 
 from .gigaworld_kernels import attn_varlen_func, create_navit_attention_masks
 
+# ANSI color codes
+_C = {
+    "reset": "\033[0m",
+    "dim": "\033[90m",
+    "red": "\033[91m",
+    "green": "\033[92m",
+    "yellow": "\033[93m",
+    "blue": "\033[94m",
+    "magenta": "\033[95m",
+    "cyan": "\033[96m",
+}
 
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 
@@ -1620,7 +1633,7 @@ class GigaworldTransformer3DModelFunCtrl(
             if subfolder is not None:
                 pretrained_model_path = os.path.join(pretrained_model_path, subfolder)
         else:
-            print(f"Downloading from Hugging Face Hub: {pretrained_model_path}")
+            print(f"{_C['yellow']}Downloading from Hugging Face Hub: {pretrained_model_path}{_C['reset']}")
             cache_dir = snapshot_download(
                 repo_id=pretrained_model_path,
                 # allow_patterns=["*.json", "*.safetensors", "*.bin"],
@@ -1628,7 +1641,7 @@ class GigaworldTransformer3DModelFunCtrl(
             pretrained_model_path = cache_dir
             if subfolder is not None:
                 pretrained_model_path = os.path.join(cache_dir, subfolder)
-        print(f"loaded 3D transformer's pretrained weights from {pretrained_model_path} ...")
+        print(f"{_C['cyan']}loaded 3D transformer's pretrained weights from {pretrained_model_path} ...{_C['reset']}")
 
         config_file = os.path.join(pretrained_model_path, "config.json")
         if not os.path.isfile(config_file):
@@ -1651,7 +1664,7 @@ class GigaworldTransformer3DModelFunCtrl(
                 # Only remap top-level scale_shift_table, not blocks.*.scale_shift_table
                 if key == "scale_shift_table":
                     new_key = "norm_out.scale_shift_table"
-                    print(f"Remapping key: {key} -> {new_key}")
+                    print(f"{_C['dim']}Remapping key: {key} -> {new_key}{_C['reset']}")
                 remapped[new_key] = value
             return remapped
 
@@ -1682,7 +1695,7 @@ class GigaworldTransformer3DModelFunCtrl(
 
                     model_files_safetensors = glob.glob(os.path.join(pretrained_model_path, "*.safetensors"))
                     state_dict = {}
-                    print(f"Loading {len(model_files_safetensors)} safetensors files with {max_workers} workers...")
+                    print(f"{_C['dim']}Loading {len(model_files_safetensors)} safetensors files with {max_workers} workers...{_C['reset']}")
                     with ThreadPoolExecutor(max_workers=max_workers) as executor:
                         future_to_file = {executor.submit(load_file, f): f for f in model_files_safetensors}
                         for future in as_completed(future_to_file):
@@ -1728,12 +1741,12 @@ class GigaworldTransformer3DModelFunCtrl(
 
                     if len(unexpected_keys) > 0:
                         print(
-                            f"Some weights of the model checkpoint were not used when initializing {cls.__name__}: \n {[', '.join(unexpected_keys)]}"
+                            f"{_C['yellow']}Some weights of the model checkpoint were not used when initializing {cls.__name__}: \n {[', '.join(unexpected_keys)]}{_C['reset']}"
                         )
 
                 return model
             except Exception as e:
-                print(f"The low_cpu_mem_usage mode is not work because {e}. Use low_cpu_mem_usage=False instead.")
+                print(f"{_C['yellow']}The low_cpu_mem_usage mode is not work because {e}. Use low_cpu_mem_usage=False instead.{_C['reset']}")
 
         model = cls.from_config(config, **transformer_additional_kwargs)
         if os.path.exists(model_file):
@@ -1747,7 +1760,7 @@ class GigaworldTransformer3DModelFunCtrl(
 
             model_files_safetensors = glob.glob(os.path.join(pretrained_model_path, "*.safetensors"))
             state_dict = {}
-            print(f"Loading {len(model_files_safetensors)} safetensors files with {max_workers} workers...")
+            print(f"{_C['dim']}Loading {len(model_files_safetensors)} safetensors files with {max_workers} workers...{_C['reset']}")
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
                 future_to_file = {executor.submit(load_file, f): f for f in model_files_safetensors}
                 for future in as_completed(future_to_file):
@@ -1762,13 +1775,15 @@ class GigaworldTransformer3DModelFunCtrl(
             if key in model.state_dict().keys() and model.state_dict()[key].size() == state_dict[key].size():
                 tmp_state_dict[key] = state_dict[key]
             else:
-                print(key, "Size don't match, skip")
+                print(f"{_C['yellow']}{key} Size don't match, skip{_C['reset']}")
 
         state_dict = tmp_state_dict
 
         m, u = model.load_state_dict(state_dict, strict=False)
-        print(f"### missing keys: {len(m)}; \n### unexpected keys: {len(u)};")
-        print(m)
+        m_color = _C['yellow'] if len(m) > 0 else _C['green']
+        u_color = _C['yellow'] if len(u) > 0 else _C['green']
+        print(f"{m_color}### missing keys: {len(m)};{_C['reset']}\n{u_color}### unexpected keys: {len(u)};{_C['reset']}")
+        print(f"{_C['dim']}{m}{_C['reset']}")
 
         for name, param in model.named_parameters():
             should_keep_fp32 = any(pattern in name for pattern in cls._keep_in_fp32_modules)
@@ -1780,13 +1795,13 @@ class GigaworldTransformer3DModelFunCtrl(
         model = model.to(device_map)
 
         params = [p.numel() if "." in n else 0 for n, p in model.named_parameters()]
-        print(f"### All Parameters: {sum(params) / 1e6} M")
+        print(f"{_C['blue']}### All Parameters: {sum(params) / 1e6:.3f} M{_C['reset']}")
 
         params = [p.numel() if "attn1." in n else 0 for n, p in model.named_parameters()]
-        print(f"### attn1 Parameters: {sum(params) / 1e6} M")
+        print(f"{_C['magenta']}### attn1 Parameters: {sum(params) / 1e6:.3f} M{_C['reset']}")
 
         params = [p.numel() if "attn2." in n else 0 for n, p in model.named_parameters()]
-        print(f"### attn2 Parameters: {sum(params) / 1e6} M")
+        print(f"{_C['magenta']}### attn2 Parameters: {sum(params) / 1e6:.3f} M{_C['reset']}")
 
         return model
 
