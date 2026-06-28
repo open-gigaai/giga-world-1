@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GigaWorld-1: A Roadmap to World Models for Robot Policy Evaluation</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png" />
+    <link rel="apple-touch-icon" href="assets/page-logo.png" />
+    <link rel="stylesheet" href="style.css?v=40" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+</head>
+
+<body>
+
+    <!-- Main Content -->
+    <div id="main-content" class="main-content">
+
+        <!-- Background Particles Canvas -->
+        <canvas id="main-particles"></canvas>
+
+        <!-- Cursor Trail -->
+        <div class="cursor-trail" id="cursor-trail"></div>
+
+        <!-- Scroll Progress Bar -->
+        <div class="scroll-progress" id="scroll-progress"></div>
+
+        <!-- Side Scroll Indicator -->
+        <nav class="scroll-indicator" id="scroll-indicator">
+            <div class="scroll-dot active" data-section="abstract" aria-selected="true">
+                <span class="scroll-dot-label">Abstract</span>
+            </div>
+            <div class="scroll-dot" data-section="findings" aria-selected="false">
+                <span class="scroll-dot-label">Findings</span>
+            </div>
+            <div class="scroll-dot" data-section="wmbench" aria-selected="false">
+                <span class="scroll-dot-label">WMBench</span>
+            </div>
+            <div class="scroll-dot" data-section="data" aria-selected="false">
+                <span class="scroll-dot-label">Data</span>
+            </div>
+            <div class="scroll-dot" data-section="model" aria-selected="false">
+                <span class="scroll-dot-label">Model</span>
+            </div>
+            <div class="scroll-dot" data-section="cc" aria-selected="false">
+                <span class="scroll-dot-label">CC</span>
+            </div>
+            <div class="scroll-dot" data-section="rl" aria-selected="false">
+                <span class="scroll-dot-label">RL</span>
+            </div>
+            <div class="scroll-dot" data-section="ood" aria-selected="false">
+                <span class="scroll-dot-label">OOD</span>
+            </div>
+            <div class="scroll-dot" data-section="transfer" aria-selected="false">
+                <span class="scroll-dot-label">Transfer</span>
+            </div>
+            <div class="scroll-dot" data-section="flash" aria-selected="false">
+                <span class="scroll-dot-label">Flash</span>
+            </div>
+            <div class="scroll-dot" data-section="team" aria-selected="false">
+                <span class="scroll-dot-label">Team</span>
+            </div>
+        </nav>
+
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-inner">
+                <a class="nav-brand" href="#">GigaWorld-1</a>
+                <ul class="nav-links">
+                    <li><a href="#abstract">Abstract</a></li>
+                    <li><a href="#findings">Findings</a></li>
+                    <li><a href="#wmbench">WMBench</a></li>
+                    <li><a href="#data">Data</a></li>
+                    <li><a href="#model">Model</a></li>
+                    <li><a href="#cc">CC</a></li>
+                    <li><a href="#rl">RL</a></li>
+                    <li><a href="#ood">OOD</a></li>
+                    <li><a href="#transfer">Transfer</a></li>
+                    <li><a href="#flash">Flash</a></li>
+                    <li><a href="#team">Team</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Hero -->
+        <header class="hero">
+            <img class="hero-video-wall" src="video/video_Wall/video_wall.gif?v=2" alt="Video wall background" />
+            <div class="hero-overlay"></div>
+            <img class="hero-humanoid" src="assets/h01_white.png?v=1" alt="Humanoid silhouette" />
+            <img src="assets/Giga.png?v=2" alt="Giga Logo" style="height: 60px; margin-bottom: 1.2rem; opacity: 0.9;" />
+            <div class="hero-title-wrap">
+                <h1 id="hero-title-source"
+                    data-text="GigaWorld-1: A Roadmap to World Models for Robot Policy Evaluation">GigaWorld-1: A
+                    Roadmap to<br />World Models for Robot Policy Evaluation</h1>
+                <canvas id="hero-particles"></canvas>
+            </div>
+            <p class="subtitle">
+                <span>A systematic study of world models as policy evaluators, introducing WMBench and a practical
+                    design roadmap for building evaluator-oriented world models.</span>
+            </p>
+            <p class="venue">GigaAI &nbsp;|&nbsp; CVPR 2026</p>
+            <div class="btn-group">
+                <a class="btn btn-primary btn-arxiv btn-with-logo" href="#"><span class="btn-logo btn-logo-arxiv">arXiv</span>Paper (PDF)</a>
+                <a class="btn btn-secondary btn-with-logo" href="#"><svg class="btn-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56v-2.14c-3.2.7-3.87-1.36-3.87-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.76 2.7 1.25 3.36.95.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.17 1.18A10.9 10.9 0 0 1 12 6.07c.98 0 1.96.13 2.88.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.8 1.19 1.83 1.19 3.08 0 4.42-2.69 5.39-5.25 5.67.42.36.79 1.07.79 2.16v3.14c0 .31.21.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>Code</a>
+                <a class="btn btn-secondary btn-with-logo" href="#"><span class="btn-logo btn-logo-huggingface" aria-hidden="true">🤗</span>Dataset<span class="btn-beta-tag">Beta</span></a>
+                <a class="btn btn-secondary btn-with-logo" href="#"><span class="btn-logo btn-logo-huggingface" aria-hidden="true">🤗</span>Model</a>
+                <span class="btn btn-secondary btn-with-logo btn-coming-soon" aria-disabled="true">
+                    <span class="btn-logo btn-logo-bench" aria-hidden="true">📊</span>Benchmark
+                    <span class="btn-soon-tag">Coming Soon</span>
+                </span>
+            </div>
+        </header>
+
+        <!-- Teaser Figure -->
+        <section id="teaser" class="section" style="padding-top: 2rem; padding-bottom: 0;">
+            <div class="fig-container" style="margin: 0 auto;">
+                <img src="images/teaser/teaser_page-0001.jpg" alt="GigaWorld-1 teaser" style="width: 100%; max-width: 1100px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.12);" />
+            </div>
+        </section>
+
+        <!-- Abstract -->
+        <section id="abstract" class="section">
+            <h2>Abstract</h2>
+            <div class="section-divider"></div>
+            <div class="abstract-text">
+                <p>
+                    Evaluation remains a fundamental bottleneck for robot foundation model development. Unlike large
+                    language models,
+                    where models can be screened quickly through efficient online benchmarks, embodied policies
+                    often
+                    require repeated
+                    real-world rollouts that are slow, expensive, and limited by hardware availability and human
+                    supervision. This
+                    motivates the use of world models as policy evaluators: if a learned world model can faithfully
+                    preserve the
+                    relative success and failure of policy rollouts, it could substantially reduce the cost of
+                    policy
+                    iteration.
+                </p>
+                <br />
+                <p>
+                    In this work, we present a systematic study of world models for robot policy evaluation and
+                    introduce
+                    <strong>WMBench</strong>, a benchmark built from real-robot teleoperation data and paired policy
+                    rollouts across
+                    eight manipulation task families. Using this benchmark, we study <strong>ten video world
+                        models</strong>,
+                    <strong>three action representation schemes</strong>, and more than <strong>20,000 world-model
+                        policy rollouts</strong>
+                    together with paired real-world executions.
+                </p>
+                <br />
+                <p>
+                    Our experiments reveal three main findings. First, evaluator quality depends much more on
+                    long-horizon,
+                    action-faithful rollout consistency than on short-horizon visual realism alone. Second,
+                    pretraining
+                    and data
+                    composition matter not only through scale, but through balancing broad world knowledge with
+                    robot-specific
+                    controllability. Third, architectural choices such as action representation, memory, and
+                    evaluator-oriented
+                    post-training substantially affect agreement with real-world outcomes. Based on these findings,
+                    we
+                    derive a
+                    practical design roadmap and instantiate it in <strong>GigaWorld-1</strong>.
+                </p>
+            </div>
+
+        </section>
+
+        
+
+<!-- Key Findings -->
+        <div class="section-alt">
+            <section id="findings" class="section" style="padding-top: 0; padding-bottom: 0;">
+                <h2>Key Findings</h2>
+                <div class="section-divider"></div>
+
+                <!-- Key Metrics -->
+                <div class="counter-grid fade-up">
+                    <div class="counter-item">
+                        <span class="counter-value" data-target="12980" data-suffix="h">0</span>
+                        <span class="counter-label">Data</span>
+                    </div>
+                    <div class="counter-item">
+                        <span class="counter-value" data-target="20" data-suffix="+">0</span>
+                        <span class="counter-label">Model Evaluations</span>
+                    </div>
+                    <div class="counter-item">
+                        <span class="counter-value is-static">1.3B / 5B</span>
+                        <span class="counter-label">Model Variants</span>
+                    </div>
+                    <div class="counter-item">
+                        <span class="counter-value is-static">&lt;24GB / 20FPS</span>
+                        <span class="counter-label">Fast Generation</span>
+                    </div>
+                    <div class="counter-item">
+                        <span class="counter-value is-static">∞ Horizon</span>
+                        <span class="counter-label">Infinite Generation</span>
+                    </div>
+                </div>
+
+                <!-- Key Findings cards moved into the Model section's two-column row below. -->
+
+            </section>
+        </div>
+
+        
+
+<!-- Data -->
+        <div class="section-alt">
+            <section id="data" class="section" style="padding-top: 0; padding-bottom: 0;">
+                <h2>Data Sources &amp; Curation</h2>
+                <div class="section-divider"></div>
+                <p style="text-align: center; color: var(--text-light); max-width: 800px; margin: 0 auto 2rem;">
+                    We construct a heterogeneous corpus of approximately <strong>12,980 hours</strong> from four
+                    complementary sources,
+                    covering broad visual-physical priors and embodiment-specific manipulation behaviors.
+                </p>
+
+                <div class="data-video-wall-block">
+                    <div class="data-video-wall-label">Data Snapshot — Sample Trajectories</div>
+                    <div class="data-video-wall-panel">
+                        <img src="video/video_Wall/video_wall.gif?v=2" alt="Robot manipulation video wall" />
+                        <div class="data-video-wall-overlay">
+                            <div class="data-video-wall-title">GigaWorld-1</div>
+                            <div class="data-video-wall-subtitle">12,980 hours</div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="data-table data-table--colored">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Representative Sources</th>
+                            <th>Robot Type</th>
+                            <th>Hours</th>
+                            <th>Modality</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="row-physical">
+                            <td><span class="row-tag tag-physical">Physical</span></td>
+                            <td>Internet Videos, Physics Videos</td>
+                            <td><span class="cell-tag cell-robottype cell-robottype-na">⚙️ N/A</span></td>
+                            <td>~1,298</td>
+                            <td><span class="cell-tag cell-modality cell-modality-rgbvideo">🎥 RGB Video</span></td>
+                        </tr>
+                        <tr class="row-robot">
+                            <td><span class="row-tag tag-robot">Robot</span></td>
+                            <td>Open X, AgiBot</td>
+                            <td><span class="cell-tag-group">
+                                <span class="cell-tag cell-robottype cell-robottype-singlearm">🦿 Single-arm</span>
+                                <span class="cell-tag cell-robottype cell-robottype-dualarm">🤖 Dual-arm</span>
+                                <span class="cell-tag cell-robottype cell-robottype-humanoid">🧍 Humanoid</span>
+                            </span></td>
+                            <td>~5,377</td>
+                            <td><span class="cell-tag cell-modality cell-modality-robotdemo">🦾 Robot Demonstration</span></td>
+                        </tr>
+                        <tr class="row-human">
+                            <td><span class="row-tag tag-human">Human</span></td>
+                            <td>EgoDex, SynData</td>
+                            <td><span class="cell-tag cell-robottype cell-robottype-humanhands">✋ Human Hands</span></td>
+                            <td>~2,411</td>
+                            <td><span class="cell-tag-group">
+                                <span class="cell-tag cell-modality cell-modality-rgbvideo">🎥 RGB Video</span>
+                                <span class="cell-tag cell-modality cell-modality-handpose">🖐️ Hand Pose</span>
+                            </span></td>
+                        </tr>
+                        <tr class="row-giga">
+                            <td><span class="row-tag tag-giga">Giga</span></td>
+                            <td>Giga Humanoid, Giga Dual-arm</td>
+                            <td><span class="cell-tag-group">
+                                <span class="cell-tag cell-robottype cell-robottype-humanoid">🧍 Humanoid</span>
+                                <span class="cell-tag cell-robottype cell-robottype-dualarm">🤖 Dual-arm</span>
+                            </span></td>
+                            <td>~3,894</td>
+                            <td><span class="cell-tag cell-modality cell-modality-robotdemo">🦾 Robot Demonstration</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </section>
+        </div>
+
+        
+
+<!-- Model Architecture -->
+        <section id="model" class="section">
+            <h2>GigaWorld-1: Model Architecture</h2>
+            <div class="section-divider"></div>
+            <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 2rem;">
+                GigaWorld-1 is built as an autoregressive diffusion-transformer world generator with
+                parameter-efficient
+                LoRA adaptation,
+                designed for evaluator-oriented policy evaluation rather than generic video generation.
+            </p>
+
+            <div class="fig-container">
+                <img src="images/model/model_arch_compare.png" alt="Architecture Comparison" />
+                <p class="fig-caption">
+                    <strong>Figure:</strong> Architecture comparison of GigaWorld-1 against representative video
+                    world model
+                    designs, highlighting the differences in action conditioning, memory mechanism, and
+                    evaluator-oriented
+                    post-training.
+                </p>
+            </div>
+
+            <h3 class="control-row-label">Evaluator Benchmark — WMBench Leaderboard</h3>
+            <div class="leaderboard-wrap">
+                <div class="lb-legend">
+                    <span class="lb-legend-item"><span class="lb-legend-swatch lb-legend-green"></span>1st</span>
+                    <span class="lb-legend-item"><span class="lb-legend-swatch lb-legend-yellow"></span>2nd</span>
+                    <span class="lb-legend-item"><span class="lb-legend-swatch lb-legend-red"></span>Last</span>
+                    <span class="lb-legend-note">All metrics are higher-is-better (↑)</span>
+                </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Model</th>
+                        <th>Size</th>
+                        <th>Type</th>
+                        <th>Aesthetic↑</th>
+                        <th>Image↑</th>
+                        <th>JEPA↑</th>
+                        <th>Semantic↑</th>
+                        <th>Subject↑</th>
+                        <th>Trajectory↑</th>
+                        <th class="avg-col">AVG↑</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td><strong>GigaWorld-1-Plus</strong></td>
+                        <td>5B</td>
+                        <td>Robot/Auto</td>
+                        <td>0.3534</td>
+                        <td>0.6765</td>
+                        <td class="metric-best">0.9337</td>
+                        <td class="metric-best">0.8926</td>
+                        <td class="metric-best">0.8883</td>
+                        <td class="metric-best">0.3561</td>
+                        <td class="metric-best avg-col"><strong>0.6834</strong></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td><strong>GigaWorld-1-Nano</strong></td>
+                        <td>1.3B</td>
+                        <td>Robot/Auto</td>
+                        <td class="metric-second">0.3538</td>
+                        <td>0.6802</td>
+                        <td class="metric-second">0.8911</td>
+                        <td class="metric-second">0.8920</td>
+                        <td>0.8600</td>
+                        <td class="metric-second">0.3528</td>
+                        <td class="metric-second avg-col"><strong>0.6716</strong></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Cosmos-Predict2.5</td>
+                        <td>2B</td>
+                        <td>Robot/Auto</td>
+                        <td>0.3491</td>
+                        <td class="metric-best">0.7184</td>
+                        <td>0.6781</td>
+                        <td>0.8764</td>
+                        <td class="metric-second">0.8747</td>
+                        <td>0.1770</td>
+                        <td class="avg-col">0.6123</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>Wan 2.2</td>
+                        <td>5B</td>
+                        <td>TI2V 5B General</td>
+                        <td class="metric-second">0.3538</td>
+                        <td class="metric-second">0.6980</td>
+                        <td>0.5853</td>
+                        <td>0.8789</td>
+                        <td class="metric-best">0.8883</td>
+                        <td>0.1643</td>
+                        <td class="avg-col">0.5948</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>LTX 2.3</td>
+                        <td>22B</td>
+                        <td>General</td>
+                        <td class="metric-best">0.3900</td>
+                        <td>0.6967</td>
+                        <td class="metric-last">0.5380</td>
+                        <td>0.8678</td>
+                        <td>0.8248</td>
+                        <td>0.1479</td>
+                        <td class="avg-col">0.5775</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>CogVideoX</td>
+                        <td>5B</td>
+                        <td>General</td>
+                        <td>0.3303</td>
+                        <td>0.6775</td>
+                        <td>0.6437</td>
+                        <td>0.8633</td>
+                        <td>0.6963</td>
+                        <td>0.1609</td>
+                        <td class="avg-col">0.5620</td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>SVD</td>
+                        <td>1.5B</td>
+                        <td>General</td>
+                        <td class="metric-last">0.2861</td>
+                        <td class="metric-last">0.6497</td>
+                        <td>0.6454</td>
+                        <td class="metric-last">0.8411</td>
+                        <td>0.8267</td>
+                        <td class="metric-last">0.0926</td>
+                        <td class="metric-last avg-col">0.5569</td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>Wan 2.1</td>
+                        <td>1.3B</td>
+                        <td>I2V 1.3B General</td>
+                        <td>0.3422</td>
+                        <td>0.6856</td>
+                        <td>0.6002</td>
+                        <td>0.8705</td>
+                        <td class="metric-last">0.5568</td>
+                        <td>0.1576</td>
+                        <td class="metric-last avg-col">0.5355</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>
+            <p class="fig-caption">
+                <strong>Table:</strong> Robot-oriented models generally outperform generic video backbones on
+                embodied rollout evaluation. Cell background colors indicate ranking: green = 1st, yellow = 2nd,
+                red = last. All metrics are higher-is-better (↑).
+            </p>
+
+            <!-- Precise Multi-View Control + Trajectory Accuracy: two-column layout -->
+            <h3 class="control-row-label">Control Quality — Trajectory &amp; Multi-View</h3>
+            <div class="control-row">
+                <div class="control-acc-col">
+                    <div class="fig-container" style="margin: 0;">
+                        <img src="images/model/traj_acc.png" alt="Trajectory Accuracy" />
+                    </div>
+                    <p class="fig-caption">
+                        <strong>Trajectory Accuracy.</strong> Trajectory accuracy under multi-view control. The
+                        same control signal is faithfully reflected in both head and wrist views, with sub-pixel
+                        alignment between predicted and ground-truth keypoints.
+                    </p>
+                </div>
+                <div class="control-gif-col">
+                    <div class="fig-container" style="margin: 0;">
+                        <img src="video/control_gif/control_grid_4rows.gif"
+                            alt="Multi-view control rollout grid" />
+                    </div>
+                    <p class="fig-caption">
+                        <strong>Precise Multi-View Control.</strong> Pixel-aligned, view-specific control
+                        signals keep every camera anchored to the same underlying action — head view follows the
+                        EE pose while the wrist view tracks its own ray map, so multi-view rollouts stay
+                        temporally and geometrically consistent over long horizons.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        
+
+<!-- Closed-Loop Control -->
+        <section id="cc" class="section">
+            <h2>Closed-Loop Control <span class="title-suffix">(CC)</span></h2>
+            <div class="section-divider"></div>
+            <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 2rem;">
+                We further evaluate the world model under closed-loop control, where the generated
+                observation is fed back into the policy to produce the next action. The following
+                rollouts show how the model behaves across different manipulation tasks.
+            </p>
+
+            <div class="cc-tabs cc-section-tabs" role="tablist">
+                <button class="cc-tab active" role="tab" data-tab="task3" aria-selected="true">Fold the box</button>
+                <button class="cc-tab" role="tab" data-tab="task1" aria-selected="false">Put banana in basket</button>
+                <button class="cc-tab" role="tab" data-tab="task2" aria-selected="false">Put bowl on plate</button>
+                <button class="cc-tab" role="tab" data-tab="task4" aria-selected="false">Pour fries on plate</button>
+            </div>
+
+            <div class="cc-layout">
+                <div class="cc-figure-col">
+                    <div class="fig-container cc-correlation-figure">
+                        <img src="images/exp/cc.png" alt="Closed-loop success-rate correlation" />
+                        <p class="fig-caption">
+                            <strong>Closed-loop Success Correlation.</strong> Linear correlation between
+                            world-model rollout scores and real-world closed-loop policy success rate.
+                        </p>
+                    </div>
+                    <div class="fig-container cc-correlation-figure">
+                        <img src="images/exp/cc_rate.png" alt="Closed-loop success-rate per model" />
+                        <p class="fig-caption">
+                            <strong>Closed-loop Success Rate.</strong> Closed-loop success rate per
+                            model across the four manipulation task families.
+                        </p>
+                    </div>
+                </div>
+                <div class="cc-rollout-col">
+
+            <div class="cc-panel active" role="tabpanel" data-panel="task3">
+                <div class="ood-subgroup-title">Fold the box <span>— closed-loop rollout</span></div>
+                <div class="video-grid cc-video-stack">
+                    <div class="video-card">
+                        <video src="video/cc/task3/episode_000005_ff0c9e53ba_s000000_e000495.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label fail">❌ Fail</div>
+                    </div>
+                    <div class="video-card">
+                        <video src="video/cc/task3/episode_000005_ff0c9e53ba_s000000_e0004951.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label fail">❌ Fail</div>
+                    </div>
+                    <div class="video-card">
+                        <video src="video/cc/task3/episode_000007_72ce1f94ca_s000000_e000429.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label fail">❌ Fail</div>
+                    </div>
+                    <div class="video-card">
+                        <video src="video/cc/task3/episode_000013_ee5fa91d2a_s000000_e000330.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label success">✅ Success</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cc-panel" role="tabpanel" data-panel="task1">
+                <div class="ood-subgroup-title">Put banana in basket <span>— closed-loop rollout</span></div>
+                <div class="video-grid cc-video-stack">
+                    <div class="video-card">
+                        <video src="video/cc/task1/episode_000001_cc840e6778_s000000_e000231.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label fail">❌ Fail</div>
+                    </div>
+                    <div class="video-card">
+                        <video src="video/cc/task1/episode_000003_5158314f8e_s000000_e000231.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label success">✅ Success</div>
+                    </div>
+                    <div class="video-card">
+                        <video src="video/cc/task1/episode_000016_f3fb6a6657_s000000_e000297.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label fail">❌ Fail</div>
+                    </div>
+                    <div class="video-card">
+                        <video src="video/cc/task1/episode_000019_fea387f1b6_s000000_e000231.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label success">✅ Success</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cc-panel" role="tabpanel" data-panel="task2">
+                <div class="ood-subgroup-title">Put bowl on plate <span>— closed-loop rollout</span></div>
+                <div class="video-grid cc-video-stack">
+                    <div class="video-card">
+                        <video src="video/cc/task2/episode_000000_7e130c9f69_s000000_e000198.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label success">✅ Success</div>
+                    </div>
+                    <div class="video-card">
+                        <video src="video/cc/task2/episode_000004_f980e34e0e_s000000_e000165.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label success">✅ Success</div>
+                    </div>
+                    <div class="video-card">
+                        <video src="video/cc/task2/episode_000005_7321adc265_s000000_e000297.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label fail">❌ Fail</div>
+                    </div>
+                    <div class="video-card">
+                        <video src="video/cc/task2/episode_000017_10f3b1b305_s000000_e000198.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label success">✅ Success</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cc-panel" role="tabpanel" data-panel="task4">
+                <div class="ood-subgroup-title">Pour fries on plate <span>— closed-loop rollout</span></div>
+                <div class="video-grid cc-video-stack">
+                    <div class="video-card">
+                        <video src="video/cc/task4/episode_000007_590a5a2d66_s000000_e001221.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label success">✅ Success</div>
+                    </div>
+                    <div class="video-card">
+                        <video src="video/cc/task4/episode_000008_4c74f217d0_s000000_e000528.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label success">✅ Success</div>
+                    </div>
+                    <div class="video-card">
+                        <video src="video/cc/task4/episode_000008_ac039ab105_s000000_e001122.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label fail">❌ Fail</div>
+                    </div>
+                    <div class="video-card">
+                        <video src="video/cc/task4/episode_000010_cdd1aeea4a_s000000_e000462.mp4" controls autoplay
+                            muted loop playsinline preload="metadata"></video>
+                        <div class="video-label fail">❌ Fail</div>
+                    </div>
+                </div>
+            </div>
+                </div>
+            </div>
+        </section>
+
+
+        
+
+<!-- RL Results -->
+        <section id="rl" class="section">
+            <h2>3D Reinforcement Learning</h2>
+            <div class="section-divider"></div>
+            <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 2rem;">
+                Our reinforcement learning strategy strengthens the model's 3D scene modeling capability,
+                leading to more faithful physical dynamics in generated rollouts.
+                Across five representative cases, ours consistently outperforms the backbone baseline.
+            </p>
+
+            <div class="rl-carousel" data-interval="7000">
+                <div class="rl-dots" aria-label="RL case indicators">
+                    <button class="rl-dot active" aria-label="Go to case 1">Case 1</button>
+                    <button class="rl-dot" aria-label="Go to case 2">Case 2</button>
+                    <button class="rl-dot" aria-label="Go to case 3">Case 3</button>
+                    <button class="rl-dot" aria-label="Go to case 4">Case 4</button>
+                    <button class="rl-dot" aria-label="Go to case 5">Case 5</button>
+                </div>
+
+                <div class="rl-track">
+                    <div class="rl-slide active">
+                        <div class="rl-case-layout">
+                            <div class="rl-pipeline-col">
+                                <figure class="rl-pipeline-figure">
+                                    <img src="images/rl/rl.png" alt="RL pipeline" />
+                                </figure>
+                            </div>
+                            <div class="rl-videos-col">
+                                <div class="rl-video-stack">
+                                    <div class="video-cell">
+                                        <div class="video-cell-title">backbone</div>
+                                        <div class="video-card">
+                                            <video src="video/rl_video/ep00002_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video>
+                                        </div>
+                                    </div>
+                                    <div class="video-cell">
+                                        <div class="video-cell-title">ours</div>
+                                        <div class="video-card">
+                                            <video src="video/rl_video/ep00002.mp4" autoplay muted loop playsinline preload="metadata"></video>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rl-slide">
+                        <div class="rl-case-layout">
+                            <div class="rl-pipeline-col">
+                                <figure class="rl-pipeline-figure">
+                                    <img src="images/rl/rl.png" alt="RL pipeline" />
+                                </figure>
+                            </div>
+                            <div class="rl-videos-col">
+                                <div class="rl-video-stack">
+                                    <div class="video-cell">
+                                        <div class="video-cell-title">backbone</div>
+                                        <div class="video-card">
+                                            <video src="video/rl_video/ep00018_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video>
+                                        </div>
+                                    </div>
+                                    <div class="video-cell">
+                                        <div class="video-cell-title">ours</div>
+                                        <div class="video-card">
+                                            <video src="video/rl_video/ep00018.mp4" autoplay muted loop playsinline preload="metadata"></video>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rl-slide">
+                        <div class="rl-case-layout">
+                            <div class="rl-pipeline-col">
+                                <figure class="rl-pipeline-figure">
+                                    <img src="images/rl/rl.png" alt="RL pipeline" />
+                                </figure>
+                            </div>
+                            <div class="rl-videos-col">
+                                <div class="rl-video-stack">
+                                    <div class="video-cell">
+                                        <div class="video-cell-title">backbone</div>
+                                        <div class="video-card">
+                                            <video src="video/rl_video/ep00029_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video>
+                                        </div>
+                                    </div>
+                                    <div class="video-cell">
+                                        <div class="video-cell-title">ours</div>
+                                        <div class="video-card">
+                                            <video src="video/rl_video/ep00029.mp4" autoplay muted loop playsinline preload="metadata"></video>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rl-slide">
+                        <div class="rl-case-layout">
+                            <div class="rl-pipeline-col">
+                                <figure class="rl-pipeline-figure">
+                                    <img src="images/rl/rl.png" alt="RL pipeline" />
+                                </figure>
+                            </div>
+                            <div class="rl-videos-col">
+                                <div class="rl-video-stack">
+                                    <div class="video-cell">
+                                        <div class="video-cell-title">backbone</div>
+                                        <div class="video-card">
+                                            <video src="video/rl_video/ep00044_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video>
+                                        </div>
+                                    </div>
+                                    <div class="video-cell">
+                                        <div class="video-cell-title">ours</div>
+                                        <div class="video-card">
+                                            <video src="video/rl_video/ep00044.mp4" autoplay muted loop playsinline preload="metadata"></video>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rl-slide">
+                        <div class="rl-case-layout">
+                            <div class="rl-pipeline-col">
+                                <figure class="rl-pipeline-figure">
+                                    <img src="images/rl/rl.png" alt="RL pipeline" />
+                                </figure>
+                            </div>
+                            <div class="rl-videos-col">
+                                <div class="rl-video-stack">
+                                    <div class="video-cell">
+                                        <div class="video-cell-title">backbone</div>
+                                        <div class="video-card">
+                                            <video src="video/rl_video/ep00051_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video>
+                                        </div>
+                                    </div>
+                                    <div class="video-cell">
+                                        <div class="video-cell-title">ours</div>
+                                        <div class="video-card">
+                                            <video src="video/rl_video/ep00051.mp4" autoplay muted loop playsinline preload="metadata"></video>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+<!-- OOD Generalization -->
+        <div class="section-alt">
+            <section id="ood" class="section" style="padding-top: 0; padding-bottom: 0;">
+                <h2>OOD Generalization</h2>
+                <div class="section-divider"></div>
+                <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 2rem;">
+                    Beyond the in-distribution WMBench, we probe the world model under out-of-distribution
+                    conditions along four axes: novel action trajectories, unseen background materials,
+                    unseen foreground containers, and unseen food categories. The model is expected to
+                    preserve rollout consistency across all of these shifts.
+                </p>
+
+                <div class="ood-tabs" role="tablist">
+                    <button class="ood-tab active" role="tab" data-tab="background" aria-selected="true">Background</button>
+                    <button class="ood-tab" role="tab" data-tab="container" aria-selected="false">Container</button>
+                    <button class="ood-tab" role="tab" data-tab="food" aria-selected="false">Food</button>
+                    <button class="ood-tab" role="tab" data-tab="action" aria-selected="false">Action</button>
+                </div>
+
+                <div class="ood-panel active" role="tabpanel" data-panel="background">
+                    <div class="ood-subgroup-title">Background Material <span>— unseen table surface</span></div>
+                    <div class="video-grid video-grid--4col">
+                        <div class="video-card">
+                            <video src="video/ood/change_bg/gen_rollout1_0_81_woodtable.mp4" controls autoplay muted
+                                loop playsinline preload="metadata"></video>
+                            <div class="video-label">Wood Table</div>
+                        </div>
+                        <div class="video-card">
+                            <video src="video/ood/change_bg/gen_rollout1_0_81_metaltable.mp4" controls autoplay muted
+                                loop playsinline preload="metadata"></video>
+                            <div class="video-label">Metal Table</div>
+                        </div>
+                        <div class="video-card">
+                            <video src="video/ood/change_bg/gen_rollout1_0_81_phototable.mp4" controls autoplay muted
+                                loop playsinline preload="metadata"></video>
+                            <div class="video-label">Photo Table</div>
+                        </div>
+                        <div class="video-card">
+                            <video src="video/ood/change_bg/gen_rollout1_0_81_tablecloth.mp4" controls autoplay muted
+                                loop playsinline preload="metadata"></video>
+                            <div class="video-label">Tablecloth</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ood-panel" role="tabpanel" data-panel="container">
+                    <div class="ood-subgroup-title">Foreground Container <span>— unseen bowl types</span></div>
+                    <div class="video-grid video-grid--4col">
+                        <div class="video-card">
+                            <video src="video/ood/change_fg/白碗.mp4" controls autoplay muted loop playsinline
+                                preload="metadata"></video>
+                            <div class="video-label">White Bowl</div>
+                        </div>
+                        <div class="video-card">
+                            <video src="video/ood/change_fg/木碗.mp4" controls autoplay muted loop playsinline
+                                preload="metadata"></video>
+                            <div class="video-label">Wooden Bowl</div>
+                        </div>
+                        <div class="video-card">
+                            <video src="video/ood/change_fg/红碗.mp4" controls autoplay muted loop playsinline
+                                preload="metadata"></video>
+                            <div class="video-label">Red Bowl</div>
+                        </div>
+                        <div class="video-card">
+                            <video src="video/ood/change_fg/不锈钢碗.mp4" controls autoplay muted loop playsinline
+                                preload="metadata"></video>
+                            <div class="video-label">Stainless Steel Bowl</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ood-panel" role="tabpanel" data-panel="food">
+                    <div class="ood-subgroup-title">Food Category <span>— unseen food types</span></div>
+                    <div class="video-grid video-grid--4col">
+                        <div class="video-card">
+                            <video src="video/ood/change_food/米饭.mp4" controls autoplay muted loop playsinline
+                                preload="metadata"></video>
+                            <div class="video-label">Rice</div>
+                        </div>
+                        <div class="video-card">
+                            <video src="video/ood/change_food/面条.mp4" controls autoplay muted loop playsinline
+                                preload="metadata"></video>
+                            <div class="video-label">Noodles</div>
+                        </div>
+                        <div class="video-card">
+                            <video src="video/ood/change_food/牛排.mp4" controls autoplay muted loop playsinline
+                                preload="metadata"></video>
+                            <div class="video-label">Steak</div>
+                        </div>
+                        <div class="video-card">
+                            <video src="video/ood/change_food/红烧肉.mp4" controls autoplay muted loop playsinline
+                                preload="metadata"></video>
+                            <div class="video-label">Braised Pork</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ood-panel" role="tabpanel" data-panel="action">
+                    <div class="ood-subgroup-title">Action Trajectory <span>— unseen manipulation patterns</span></div>
+                    <div class="video-grid video-grid--4col">
+                        <div class="video-card">
+                            <video src="video/action_ood/gen_bottom_left_0-49_white-.mp4" controls autoplay muted loop
+                                playsinline preload="metadata"></video>
+                            <div class="video-label success">✅ Bottom-Left</div>
+                        </div>
+                        <div class="video-card">
+                            <video src="video/action_ood/gen_center_0-49_white.mp4" controls autoplay muted loop
+                                playsinline preload="metadata"></video>
+                            <div class="video-label success">✅ Center</div>
+                        </div>
+                        <div class="video-card">
+                            <video src="video/action_ood/gen_fail2_0-49_white.mp4" controls autoplay muted loop
+                                playsinline preload="metadata"></video>
+                            <div class="video-label fail">❌ Failure</div>
+                        </div>
+                        <div class="video-card">
+                            <video src="video/action_ood/gen_fail3_0-49_white.mp4" controls autoplay muted loop
+                                playsinline preload="metadata"></video>
+                            <div class="video-label fail">❌ Failure</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        
+
+<!-- Transfer & Generalization -->
+        <section id="transfer" class="section">
+            <h2>Transfer &amp; Generalization</h2>
+            <div class="section-divider"></div>
+            <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 2rem;">
+                Beyond standard OOD evaluation, GigaWorld-1 demonstrates strong transfer capabilities across
+                new domains and conditioning modalities. The same world-model design can be rapidly adapted
+                to <strong>autonomous driving</strong>, supports <strong>edge / depth map conditioning</strong>,
+                generalizes across <strong>different robot embodiments</strong>, and produces
+                <strong>long-horizon rollouts</strong> of arbitrary length.
+            </p>
+
+            <div class="ood-subgroup">
+                <div class="ood-subgroup-title">Cross-Domain Transfer</div>
+                <div class="video-grid video-grid--2col video-grid--fixed-h">
+                    <div class="video-cell">
+                        <div class="video-cell-title">NUScenes driving</div>
+                        <div class="video-card">
+                            <video src="video/model_trans/nus/combined_annotated.mp4" controls autoplay muted loop
+                                playsinline preload="metadata"></video>
+                        </div>
+                    </div>
+                    <div class="video-cell">
+                        <div class="video-cell-title">AGI manipulation</div>
+                        <div class="video-card">
+                            <video src="video/model_trans/agi/global_step1600_validation_video_0_A_robotic_arm_with_black,_annotated.mp4" controls autoplay muted loop
+                                playsinline preload="metadata"></video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ood-subgroup">
+                <div class="ood-subgroup-title">Geometric Conditioning</div>
+                <div class="video-grid video-grid--2col video-grid--aspect">
+                    <div class="video-cell">
+                        <div class="video-cell-title">Sobel + Video</div>
+                        <div class="video-card">
+                            <video src="video/model_trans/trans/stack_sobel_video_annotated.mp4" controls autoplay muted loop
+                                playsinline preload="metadata"></video>
+                        </div>
+                    </div>
+                    <div class="video-cell">
+                        <div class="video-cell-title">Depth (Plasma) + Video</div>
+                        <div class="video-card">
+                            <video src="video/model_trans/trans/stack_depth_video_annotated.mp4" controls autoplay muted loop
+                                playsinline preload="metadata"></video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </section>
+
+        
+
+<!-- Flash & Long-Horizon Generation -->
+        <div class="section-alt">
+            <section id="flash" class="section" style="padding-top: 0; padding-bottom: 0;">
+                <h2>Flash &amp; Long-Horizon Generation</h2>
+                <div class="section-divider"></div>
+                <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 1.8rem;">
+                    GigaWorld-1 combines a step-distilled diffusion sampler (DMD2) with hierarchical memory
+                    to deliver both <strong>real-time flash generation</strong> and
+                    <strong>unbounded long-horizon rollouts</strong> without quality collapse.
+                </p>
+
+                <div class="flash-highlights">
+                    <div class="flash-highlight-card">
+                        <div class="flash-heading">🖥️ Consumer-Ready</div>
+                        <div class="flash-metric">&lt; 24 GB</div>
+                        <div class="flash-desc">
+                            Peak VRAM fits in a single <strong>RTX 4090</strong> — runs on
+                            off-the-shelf consumer hardware, no datacenter required.
+                        </div>
+                    </div>
+                    <div class="flash-highlight-card">
+                        <div class="flash-heading">⚡ Flash Inference</div>
+                        <div class="flash-metric">&gt; 20 FPS</div>
+                        <div class="flash-desc">
+                            <strong>12 s</strong> produces <strong>33 s</strong> of 1280×720 video on a
+                            single H20 — fast enough for interactive use.
+                        </div>
+                    </div>
+                    <div class="flash-highlight-card">
+                        <div class="flash-heading">♾️ Infinite Horizon</div>
+                        <div class="flash-metric">&gt; 10 min</div>
+                        <div class="flash-desc">
+                            Sustained <strong>10,000+ frames</strong> of autoregressive rollout
+                            without crashing or quality drift.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flash-content">
+                    <div class="flash-cell">
+                        <div class="flash-frame">
+                            <img src="images/accel/acceleration_benchmark.svg" alt="Inference Acceleration Benchmark" />
+                            <div class="video-label">📊 Acceleration Benchmark</div>
+                        </div>
+                        <p class="fig-caption">
+                            <strong>Acceleration benchmark.</strong> Speedup over the xformers baseline.
+                            DMD2 step-distillation + tensor-parallel scaling pushes the world model
+                            to 27.23× on 4 GPUs, unlocking real-time interactive use.
+                        </p>
+                    </div>
+                    <div class="flash-cell">
+                        <div class="flash-frame">
+                            <video src="video/flash_and_ultra_gen/6186ad95000000001000e5b0178244085455887899.mp4"
+                                controls autoplay muted loop playsinline></video>
+                            <div class="video-label">♾️ Real-time Generation</div>
+                        </div>
+                        <p class="fig-caption">
+                            <strong>Long-horizon demo.</strong> Continuous autoregressive rollout.
+                            The hierarchical memory keeps scene identity and dynamics stable across
+                            thousands of frames without explicit restart.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        
+
+<!-- WMBench Highlights (moved before Team) -->
+        <div class="section-alt">
+            <section id="wmbench" class="section" style="padding-top: 0; padding-bottom: 0;">
+                <h2>WMBench at a Glance</h2>
+                <div class="section-divider"></div>
+
+                <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 1.5rem auto 2rem;">
+                    WMBench evaluates every rollout along <strong>15 fine-grained metrics</strong>,
+                    organised across two axes: <strong>rollout source (rows)</strong> and
+                    <strong>evaluation dimensions (columns)</strong>.
+                </p>
+
+                <div class="wmbench-features">
+                    <div class="feature-card">
+                        <div class="feature-icon">🌐</div>
+                        <h4>Multi-dimensional Evaluation</h4>
+                        <p>15 fine-grained metrics covering perceptual quality, temporal
+                            consistency, geometry, motion, and instruction grounding — a
+                            holistic view of every rollout.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🧠</div>
+                        <h4>Metrics + VLM</h4>
+                        <p>Pair deterministic metric scoring with vision-language model
+                            judgements to capture both measurable fidelity and semantic
+                            correctness of the rollout.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔁</div>
+                        <h4>Closed-loop Policy Evaluation</h4>
+                        <p>Generated observations are fed back into the policy to produce the
+                            next action — paired against real-world rollouts for true
+                            evaluator agreement.</p>
+                    </div>
+                </div>
+
+                <div class="benchmark-metrics">
+                    <h4 class="metrics-title">Evaluation Metrics</h4>
+                    <ul class="metrics-list">
+                        <li class="cat-perceptual">Aesthetic Quality</li>
+                        <li class="cat-temporal">Background Consistency</li>
+                        <li class="cat-geometry">Depth Accuracy</li>
+                        <li class="cat-temporal">Dynamic Degree</li>
+                        <li class="cat-temporal">Flow Score</li>
+                        <li class="cat-perceptual">Image Quality</li>
+                        <li class="cat-semantic">Instruction Following</li>
+                        <li class="cat-semantic">Interaction Quality</li>
+                        <li class="cat-representation">JEPA Similarity</li>
+                        <li class="cat-temporal">Motion Smoothness</li>
+                        <li class="cat-geometry">Perspectivity</li>
+                        <li class="cat-geometry">Photometric Consistency</li>
+                        <li class="cat-semantic">Semantic Alignment</li>
+                        <li class="cat-perceptual">Subject Consistency</li>
+                        <li class="cat-trajectory">Trajectory Accuracy</li>
+                    </ul>
+                    <div class="metrics-legend">
+                        <span class="legend-dot cat-perceptual"></span> Perceptual
+                        <span class="legend-dot cat-temporal"></span> Temporal / Motion
+                        <span class="legend-dot cat-geometry"></span> Geometry
+                        <span class="legend-dot cat-semantic"></span> Semantic / Instruction
+                        <span class="legend-dot cat-representation"></span> Representation
+                        <span class="legend-dot cat-trajectory"></span> Trajectory
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        
+
+<!-- Team -->
+        <section id="team" class="section">
+            <h2>Team</h2>
+            <div class="section-divider"></div>
+            <p style="text-align: center; color: var(--text-light); margin-bottom: 1rem;">
+                GigaWorld Team, GigaAI
+            </p>
+            <div class="team-grid">
+                <span class="team-tag">GigaAI</span>
+            </div>
+        </section>
+
+        
+
+<!-- BibTeX -->
+        <div class="section-alt">
+            <section class="section" style="padding-top: 0; padding-bottom: 0;">
+                <h2>Citation</h2>
+                <div class="section-divider"></div>
+                <pre
+                    style="background: #1a1a2e; color: #eee; padding: 1.5rem; border-radius: 8px; overflow-x: auto; font-size: 0.82rem; line-height: 1.6;">
+@article{gigaworld2025,
+  title     = {GigaWorld-1: A Roadmap to World Models for Robot Policy Evaluation},
+  author    = {{GigaAI}},
+  journal   = {arXiv preprint},
+  year      = {2025}
+}</pre>
+            </section>
+        </div>
+
+
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="visitor-counter">
+                <div class="visitor-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                        <circle cx="12" cy="12" r="3" />
+                    </svg>
+                </div>
+                <span class="visitor-label">VISITORS</span>
+                <span class="visitor-num" id="visitor-count">0</span>
+            </div>
+            <p>&copy; 2025 GigaAI. All rights reserved.</p>
+            <p style="margin-top: 0.3rem;">
+                <a href="#">GitHub</a> &nbsp;|&nbsp; <a href="#">Paper</a> &nbsp;|&nbsp; <a href="#">Contact</a>
+            </p>
+        </footer>
+
+    </div><!-- end main-content -->
+
+    <!-- Main Content Fancy Effects -->
+    <script>
+        (function () {
+            var mainContent = document.getElementById('main-content');
+            if (!mainContent) return;
+
+            /* ========== 1. SCROLL-TRIGGERED FADE-IN ========== */
+            function setupScrollAnimations() {
+                var fadeEls = document.querySelectorAll('.fade-up, .highlight-card, .section-divider, .fig-container, .data-table');
+                var observer = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                        }
+                    });
+                }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+                fadeEls.forEach(function (el) {
+                    observer.observe(el);
+                });
+            }
+
+            /* ========== 2. ANIMATED COUNTER ========== */
+            function setupCounters() {
+                var counters = document.querySelectorAll('.counter-value[data-target]');
+                var animated = new Set();
+                var counterObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting && !animated.has(entry.target)) {
+                            animated.add(entry.target);
+                            animateCounter(entry.target);
+                        }
+                    });
+                }, { threshold: 0.5 });
+
+                counters.forEach(function (c) {
+                    counterObserver.observe(c);
+                });
+            }
+
+            function animateCounter(el) {
+                var target = parseFloat(el.getAttribute('data-target'));
+                var suffix = el.getAttribute('data-suffix') || '';
+                var isDecimal = el.getAttribute('data-decimal') === 'true';
+                var duration = 2000;
+                var start = performance.now();
+
+                function easeOut(t) {
+                    return 1 - Math.pow(1 - t, 3);
+                }
+
+                function tick(now) {
+                    var elapsed = now - start;
+                    var progress = Math.min(elapsed / duration, 1);
+                    var value = easeOut(progress) * target;
+
+                    if (isDecimal) {
+                        el.textContent = value.toFixed(1) + suffix;
+                    } else {
+                        el.textContent = Math.floor(value).toLocaleString() + suffix;
+                    }
+
+                    if (progress < 1) {
+                        requestAnimationFrame(tick);
+                    }
+                }
+                requestAnimationFrame(tick);
+            }
+
+            /* ========== 3. NAVBAR SCROLL EFFECT ========== */
+            function setupNavbar() {
+                var navbar = document.querySelector('.navbar');
+                if (!navbar) return;
+
+                window.addEventListener('scroll', function () {
+                    if (window.scrollY > 60) {
+                        navbar.classList.add('scrolled');
+                    } else {
+                        navbar.classList.remove('scrolled');
+                    }
+                });
+            }
+
+            /* ========== 4. BACKGROUND FLOATING PARTICLES ========== */
+            function setupParticles() {
+                var canvas = document.getElementById('main-particles');
+                if (!canvas) return;
+                var ctx = canvas.getContext('2d');
+
+                function resize() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                resize();
+                window.addEventListener('resize', resize);
+
+                var dots = [];
+                var dotCount = 40;
+                for (var i = 0; i < dotCount; i++) {
+                    dots.push({
+                        x: Math.random() * window.innerWidth,
+                        y: Math.random() * window.innerHeight,
+                        vx: (Math.random() - 0.5) * 0.3,
+                        vy: (Math.random() - 0.5) * 0.3,
+                        r: Math.random() * 1.5 + 0.5,
+                        a: Math.random() * 0.3 + 0.1
+                    });
+                }
+
+                function draw() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    dots.forEach(function (d) {
+                        d.x += d.vx;
+                        d.y += d.vy;
+                        if (d.x < 0) d.x = canvas.width;
+                        if (d.x > canvas.width) d.x = 0;
+                        if (d.y < 0) d.y = canvas.height;
+                        if (d.y > canvas.height) d.y = 0;
+
+                        ctx.beginPath();
+                        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(0, 212, 255, ' + d.a + ')';
+                        ctx.fill();
+                    });
+
+                    for (var i = 0; i < dots.length; i++) {
+                        for (var j = i + 1; j < dots.length; j++) {
+                            var dx = dots[i].x - dots[j].x;
+                            var dy = dots[i].y - dots[j].y;
+                            var dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < 150) {
+                                ctx.beginPath();
+                                ctx.moveTo(dots[i].x, dots[i].y);
+                                ctx.lineTo(dots[j].x, dots[j].y);
+                                ctx.strokeStyle = 'rgba(0, 212, 255, ' + (0.06 * (1 - dist / 150)) + ')';
+                                ctx.lineWidth = 0.5;
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                    requestAnimationFrame(draw);
+                }
+                draw();
+            }
+
+            /* ========== 5. SMOOTH SCROLL FOR NAV LINKS ========== */
+            function setupSmoothScroll() {
+                document.querySelectorAll('.nav-links a, .scroll-dot').forEach(function (link) {
+                    link.addEventListener('click', function (e) {
+                        var sectionId = this.getAttribute('data-section') || this.getAttribute('href');
+                        if (sectionId && sectionId.startsWith('#')) sectionId = sectionId.slice(1);
+                        if (!sectionId) return;
+                        e.preventDefault();
+                        var target = document.getElementById(sectionId);
+                        if (target) {
+                            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    });
+                });
+            }
+
+            /* ========== 6. TABLE ROW RIPPLE EFFECT ========== */
+            function setupTableRipple() {
+                document.querySelectorAll('.data-table tbody tr').forEach(function (row) {
+                    row.addEventListener('mouseenter', function () {
+                        this.style.transition = 'background 0.3s ease';
+                    });
+                });
+            }
+
+            /* ========== 7. VISITOR COUNTER ========== */
+            function setupVisitorCounter() {
+                var counterEl = document.getElementById('visitor-count');
+                if (!counterEl) return;
+
+                var key = 'gigaworld_visit_count';
+                var baseVisits = 327;
+                var stored = localStorage.getItem(key);
+                var currentCount;
+
+                if (stored) {
+                    currentCount = parseInt(stored, 10);
+                } else {
+                    currentCount = baseVisits + Math.floor(Math.random() * 20);
+                    localStorage.setItem(key, currentCount);
+                }
+
+                var duration = 1500;
+                var start = performance.now();
+                var startVal = Math.max(0, currentCount - 3);
+
+                function tick(now) {
+                    var elapsed = now - start;
+                    var progress = Math.min(elapsed / duration, 1);
+                    var eased = 1 - Math.pow(1 - progress, 3);
+                    var display = Math.floor(startVal + (currentCount - startVal) * eased);
+                    counterEl.textContent = display.toLocaleString();
+                    if (progress < 1) requestAnimationFrame(tick);
+                }
+                requestAnimationFrame(tick);
+            }
+
+            /* ========== 8. CURSOR TRAIL ========== */
+            function setupCursorTrail() {
+                var trail = document.getElementById('cursor-trail');
+                if (!trail) return;
+                var mx = 0, my = 0, tx = 0, ty = 0;
+
+                document.addEventListener('mousemove', function (e) {
+                    mx = e.clientX;
+                    my = e.clientY;
+                });
+
+                // Check hoverable elements
+                var hoverEls = 'a, button, .highlight-card, .btn, .team-tag, .scroll-dot, .counter-item';
+                document.addEventListener('mouseover', function (e) {
+                    if (e.target.closest(hoverEls)) {
+                        trail.classList.add('hovering');
+                    }
+                });
+                document.addEventListener('mouseout', function (e) {
+                    if (e.target.closest(hoverEls)) {
+                        trail.classList.remove('hovering');
+                    }
+                });
+
+                function animate() {
+                    tx += (mx - tx) * 0.15;
+                    ty += (my - ty) * 0.15;
+                    trail.style.left = tx + 'px';
+                    trail.style.top = ty + 'px';
+                    requestAnimationFrame(animate);
+                }
+                animate();
+            }
+
+            /* ========== 9. CLICK RIPPLE ========== */
+            function setupClickRipple() {
+                mainContent.addEventListener('click', function (e) {
+                    // Create two ripple rings
+                    for (var i = 0; i < 2; i++) {
+                        var ripple = document.createElement('div');
+                        ripple.className = 'click-ripple';
+                        var size = 80 + i * 40;
+                        ripple.style.width = size + 'px';
+                        ripple.style.height = size + 'px';
+                        ripple.style.left = e.clientX + 'px';
+                        ripple.style.top = e.clientY + 'px';
+                        ripple.style.animationDelay = (i * 0.1) + 's';
+                        document.body.appendChild(ripple);
+                        (function (r) {
+                            setTimeout(function () { r.remove(); }, 1000);
+                        })(ripple);
+                    }
+                });
+            }
+
+            /* ========== 10. SCROLL PROGRESS BAR ========== */
+            function setupScrollProgress() {
+                var bar = document.getElementById('scroll-progress');
+                if (!bar) return;
+                window.addEventListener('scroll', function () {
+                    var scrollTop = window.scrollY;
+                    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    var progress = docHeight > 0 ? scrollTop / docHeight : 0;
+                    bar.style.transform = 'scaleX(' + progress + ')';
+                });
+            }
+
+            /* ========== 11. SIDE SCROLL INDICATOR ========== */
+            function setupScrollIndicator() {
+                var dots = document.querySelectorAll('.scroll-dot');
+                var sections = [];
+                dots.forEach(function (dot) {
+                    var id = dot.getAttribute('data-section');
+                    var el = document.getElementById(id);
+                    if (el) sections.push({ dot: dot, el: el });
+                });
+
+                function update() {
+                    var scrollY = window.scrollY + window.innerHeight * 0.35;
+                    var current = 0;
+                    for (var i = 0; i < sections.length; i++) {
+                        if (sections[i].el.offsetTop <= scrollY) {
+                            current = i;
+                        }
+                    }
+                    dots.forEach(function (d) { d.classList.remove('active'); });
+                    if (sections[current]) sections[current].dot.classList.add('active');
+                }
+                window.addEventListener('scroll', update);
+                update();
+            }
+
+            /* ========== 12. NAV ACTIVE HIGHLIGHT ========== */
+            function setupNavActive() {
+                var links = document.querySelectorAll('.nav-links a');
+                var sectionIds = [];
+                links.forEach(function (link) {
+                    var href = link.getAttribute('href');
+                    if (href && href.startsWith('#')) {
+                        var el = document.getElementById(href.slice(1));
+                        if (el) sectionIds.push({ link: link, el: el });
+                    }
+                });
+
+                function update() {
+                    var scrollY = window.scrollY + window.innerHeight * 0.35;
+                    var current = 0;
+                    for (var i = 0; i < sectionIds.length; i++) {
+                        if (sectionIds[i].el.offsetTop <= scrollY) {
+                            current = i;
+                        }
+                    }
+                    links.forEach(function (l) { l.classList.remove('active'); });
+                    if (sectionIds[current]) sectionIds[current].link.classList.add('active');
+                }
+                window.addEventListener('scroll', update);
+                update();
+            }
+
+            /* ========== 13. 3D CARD TILT ========== */
+            function setupCardTilt() {
+                var cards = document.querySelectorAll('.highlight-card');
+                cards.forEach(function (card) {
+                    // Add shine overlay
+                    var shine = document.createElement('div');
+                    shine.className = 'card-shine';
+                    card.style.position = 'relative';
+                    card.appendChild(shine);
+
+                    card.addEventListener('mousemove', function (e) {
+                        var rect = card.getBoundingClientRect();
+                        var x = (e.clientX - rect.left) / rect.width;
+                        var y = (e.clientY - rect.top) / rect.height;
+                        var rotateX = (0.5 - y) * 12;
+                        var rotateY = (x - 0.5) * 12;
+                        card.style.transform = 'perspective(800px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale(1.03)';
+                        shine.style.setProperty('--mx', (x * 100) + '%');
+                        shine.style.setProperty('--my', (y * 100) + '%');
+                    });
+
+                    card.addEventListener('mouseleave', function () {
+                        card.style.transform = '';
+                    });
+                });
+            }
+
+            /* ========== 14. MAGNETIC BUTTONS ========== */
+            function setupMagneticButtons() {
+                var btns = document.querySelectorAll('.hero .btn');
+                btns.forEach(function (btn) {
+                    btn.addEventListener('mousemove', function (e) {
+                        var rect = btn.getBoundingClientRect();
+                        var cx = rect.left + rect.width / 2;
+                        var cy = rect.top + rect.height / 2;
+                        var dx = (e.clientX - cx) * 0.2;
+                        var dy = (e.clientY - cy) * 0.2;
+                        btn.style.transform = 'translate(' + dx + 'px, ' + dy + 'px)';
+                    });
+
+                    btn.addEventListener('mouseleave', function () {
+                        btn.style.transform = '';
+                    });
+                });
+            }
+
+            /* ========== 15. HERO 3D PARTICLE CLOUD ========== */
+            function setupHeroParticles() {
+                var source = document.getElementById('hero-title-source');
+                var canvas = document.getElementById('hero-particles');
+                if (!source || !canvas) return;
+                var ctx = canvas.getContext('2d');
+                var wrap = source.parentElement;
+
+                var particles = [];
+                var mouseX = -10000;
+                var mouseY = -10000;
+                var mouseActive = false;
+                var dpr = window.devicePixelRatio || 1;
+
+                var sampleCanvas = document.createElement('canvas');
+                var sampleCtx = sampleCanvas.getContext('2d', { willReadFrequently: true });
+
+                function resize() {
+                    var rect = wrap.getBoundingClientRect();
+                    var cssW = rect.width;
+                    var cssH = rect.height;
+
+                    canvas.width = cssW * dpr;
+                    canvas.height = cssH * dpr;
+                    canvas.style.width = cssW + 'px';
+                    canvas.style.height = cssH + 'px';
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+                    var style = window.getComputedStyle(source);
+                    var fontSize = parseFloat(style.fontSize);
+                    var fontWeight = style.fontWeight;
+                    var fontFamily = style.fontFamily;
+
+                    var text = source.getAttribute('data-text') || source.textContent;
+
+                    sampleCanvas.width = Math.floor(cssW);
+                    sampleCanvas.height = Math.floor(cssH);
+                    sampleCtx.clearRect(0, 0, sampleCanvas.width, sampleCanvas.height);
+                    sampleCtx.fillStyle = '#fff';
+                    sampleCtx.font = fontWeight + ' ' + fontSize + 'px ' + fontFamily;
+                    sampleCtx.textAlign = 'center';
+                    sampleCtx.textBaseline = 'middle';
+
+                    var words = text.split(' ');
+                    var lines = [];
+                    var current = '';
+                    var maxWidth = cssW * 0.95;
+                    for (var i = 0; i < words.length; i++) {
+                        var test = current ? current + ' ' + words[i] : words[i];
+                        if (sampleCtx.measureText(test).width > maxWidth && current) {
+                            lines.push(current);
+                            current = words[i];
+                        } else {
+                            current = test;
+                        }
+                    }
+                    if (current) lines.push(current);
+
+                    var lineH = fontSize * 1.15;
+                    var totalH = lines.length * lineH;
+                    var startY = (sampleCanvas.height - totalH) / 2 + lineH / 2;
+
+                    lines.forEach(function (line, i) {
+                        sampleCtx.fillText(line, sampleCanvas.width / 2, startY + i * lineH);
+                    });
+
+                    var imgData = sampleCtx.getImageData(0, 0, sampleCanvas.width, sampleCanvas.height);
+                    var data = imgData.data;
+                    particles = [];
+
+                    // Sample at full pixel resolution - pick ONE particle per filled pixel block
+                    var step = 2; // 2px grid -> very dense, ~4000 particles
+
+                    for (var y = 0; y < sampleCanvas.height; y += step) {
+                        for (var x = 0; x < sampleCanvas.width; x += step) {
+                            var idx = (y * sampleCanvas.width + x) * 4;
+                            var alpha = data[idx + 3];
+                            if (alpha > 100) {
+                                particles.push({
+                                    hx: x + step / 2,
+                                    hy: y + step / 2,
+                                    x: Math.random() * cssW,
+                                    y: Math.random() * cssH,
+                                    vx: 0,
+                                    vy: 0,
+                                    size: 1.0, // tiny crisp dot
+                                    phase: Math.random() * Math.PI * 2
+                                });
+                            }
+                        }
+                    }
+                }
+
+                function animate() {
+                    var cssW = canvas.width / dpr;
+                    var cssH = canvas.height / dpr;
+                    ctx.clearRect(0, 0, cssW, cssH);
+                    var t = performance.now() * 0.001;
+
+                    for (var i = 0; i < particles.length; i++) {
+                        var p = particles[i];
+
+                        if (mouseActive) {
+                            var dx = p.x - mouseX;
+                            var dy = p.y - mouseY;
+                            var dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < 90) {
+                                var force = (90 - dist) / 90;
+                                p.vx += (dx / (dist || 1)) * force * 1.2;
+                                p.vy += (dy / (dist || 1)) * force * 1.2;
+                            }
+                        }
+
+                        p.vx += (p.hx - p.x) * 0.03;
+                        p.vy += (p.hy - p.y) * 0.03;
+                        p.vx *= 0.86;
+                        p.vy *= 0.86;
+                        p.x += p.vx;
+                        p.y += p.vy;
+
+                        var float = Math.sin(t * 2 + p.phase) * 0.4;
+                        var px = p.x;
+                        var py = p.y + float;
+
+                        // Single pure white crisp dot - no glow, no halo, no blur
+                        ctx.fillStyle = '#ffffff';
+                        ctx.fillRect(px - p.size / 2, py - p.size / 2, p.size, p.size);
+                    }
+                    requestAnimationFrame(animate);
+                }
+
+                wrap.addEventListener('mousemove', function (e) {
+                    var r = wrap.getBoundingClientRect();
+                    mouseX = e.clientX - r.left;
+                    mouseY = e.clientY - r.top;
+                    mouseActive = true;
+                });
+                wrap.addEventListener('mouseleave', function () {
+                    mouseActive = false;
+                });
+
+                window.addEventListener('resize', resize);
+                setTimeout(function () {
+                    resize();
+                    animate();
+                }, 100);
+            }
+
+            /* ========== 16. TEXT SCRAMBLE EFFECT ========== */
+            function setupScrambleText() {
+                var scrambleEls = document.querySelectorAll('.scramble-text');
+                var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*';
+
+                scrambleEls.forEach(function (el) {
+                    var targetText = el.getAttribute('data-text') || el.textContent;
+                    el.textContent = '';
+                    var charSpans = [];
+                    for (var i = 0; i < targetText.length; i++) {
+                        var span = document.createElement('span');
+                        span.className = 'scramble-char';
+                        if (targetText[i] === ' ') {
+                            span.innerHTML = '&nbsp;';
+                        } else {
+                            span.textContent = targetText[i];
+                        }
+                        el.appendChild(span);
+                        charSpans.push(span);
+                    }
+
+                    // Scramble animation
+                    var lockedCount = 0;
+                    function scrambleOnce() {
+                        for (var i = 0; i < charSpans.length; i++) {
+                            if (targetText[i] === ' ') continue;
+                            if (i < lockedCount) {
+                                charSpans[i].textContent = targetText[i];
+                                charSpans[i].classList.add('locked');
+                                charSpans[i].classList.remove('scrambling');
+                            } else {
+                                charSpans[i].textContent = chars[Math.floor(Math.random() * chars.length)];
+                                charSpans[i].classList.add('scrambling');
+                                charSpans[i].classList.remove('locked');
+                            }
+                        }
+                    }
+
+                    var scrambleInterval;
+                    var lockInterval;
+                    var totalDuration = Math.min(2500, targetText.length * 30);
+
+                    // Start scrambling immediately
+                    scrambleInterval = setInterval(scrambleOnce, 50);
+
+                    // Lock characters progressively
+                    lockInterval = setInterval(function () {
+                        lockedCount++;
+                        if (lockedCount >= targetText.length) {
+                            clearInterval(lockInterval);
+                            clearInterval(scrambleInterval);
+                            // Final settle: ensure exact text
+                            for (var i = 0; i < charSpans.length; i++) {
+                                if (targetText[i] !== ' ') {
+                                    charSpans[i].textContent = targetText[i];
+                                    charSpans[i].classList.add('locked');
+                                    charSpans[i].classList.remove('scrambling');
+                                }
+                            }
+                            setTimeout(function () {
+                                charSpans.forEach(function (s) { s.classList.remove('locked'); });
+                            }, 600);
+                        }
+                    }, totalDuration / targetText.length);
+                });
+            }
+
+            /* ========== CC TABS ========== */
+            function setupCcTabs() {
+                var tabs = document.querySelectorAll('.cc-tab');
+                var panels = document.querySelectorAll('.cc-panel');
+                if (!tabs.length || !panels.length) return;
+
+                tabs.forEach(function (tab) {
+                    tab.addEventListener('click', function () {
+                        var target = tab.getAttribute('data-tab');
+                        tabs.forEach(function (t) {
+                            t.classList.remove('active');
+                            t.setAttribute('aria-selected', 'false');
+                        });
+                        panels.forEach(function (p) {
+                            p.classList.remove('active');
+                        });
+                        tab.classList.add('active');
+                        tab.setAttribute('aria-selected', 'true');
+                        var panel = document.querySelector('.cc-panel[data-panel="' + target + '"]');
+                        if (panel) panel.classList.add('active');
+                    });
+                });
+            }
+
+            /* ========== OOD TABS ========== */
+            function setupOodTabs() {
+                var tabs = document.querySelectorAll('.ood-tab');
+                var panels = document.querySelectorAll('.ood-panel');
+                if (!tabs.length || !panels.length) return;
+
+                tabs.forEach(function (tab) {
+                    tab.addEventListener('click', function () {
+                        var target = tab.getAttribute('data-tab');
+                        tabs.forEach(function (t) {
+                            t.classList.remove('active');
+                            t.setAttribute('aria-selected', 'false');
+                        });
+                        panels.forEach(function (p) {
+                            p.classList.remove('active');
+                            p.querySelectorAll('video').forEach(function (v) { v.pause(); });
+                        });
+                        tab.classList.add('active');
+                        tab.setAttribute('aria-selected', 'true');
+                        var panel = document.querySelector('.ood-panel[data-panel="' + target + '"]');
+                        if (panel) {
+                            panel.classList.add('active');
+                            panel.querySelectorAll('video').forEach(function (v) { v.play().catch(function () {}); });
+                        }
+                    });
+                });
+            }
+
+            /* ========== RL AUTO CAROUSEL ========== */
+            function setupRlResults() {
+                document.querySelectorAll('.rl-carousel').forEach(function (carousel) {
+                    var track = carousel.querySelector('.rl-track');
+                    var slides = carousel.querySelectorAll('.rl-slide');
+                    var dots = carousel.querySelectorAll('.rl-dot');
+                    var intervalMs = Number(carousel.getAttribute('data-interval')) || 7000;
+                    if (!track || !slides.length) return;
+
+                    var activeIndex = 0;
+                    var timerId = null;
+
+                    function setActive(nextIndex, resetTime) {
+                        activeIndex = (nextIndex + slides.length) % slides.length;
+                        track.style.transform = 'translateX(-' + (activeIndex * 100) + '%)';
+
+                        slides.forEach(function (slide, idx) {
+                            var isActive = idx === activeIndex;
+                            slide.classList.toggle('active', isActive);
+                            slide.querySelectorAll('video').forEach(function (v) {
+                                if (isActive) {
+                                    if (resetTime) {
+                                        try { v.currentTime = 0; } catch (e) {}
+                                    }
+                                    v.play().catch(function () {});
+                                } else {
+                                    v.pause();
+                                }
+                            });
+                        });
+
+                        dots.forEach(function (dot, idx) {
+                            dot.classList.toggle('active', idx === activeIndex);
+                        });
+                    }
+
+                    function stopAuto() {
+                        if (timerId) {
+                            clearInterval(timerId);
+                            timerId = null;
+                        }
+                    }
+
+                    function startAuto() {
+                        stopAuto();
+                        timerId = setInterval(function () {
+                            setActive(activeIndex + 1, true);
+                        }, intervalMs);
+                    }
+
+                    dots.forEach(function (dot, idx) {
+                        dot.addEventListener('click', function () {
+                            setActive(idx, true);
+                            startAuto();
+                        });
+                    });
+
+                    carousel.addEventListener('mouseenter', stopAuto);
+                    carousel.addEventListener('mouseleave', startAuto);
+                    carousel.addEventListener('focusin', stopAuto);
+                    carousel.addEventListener('focusout', startAuto);
+
+                    setActive(0, false);
+                    startAuto();
+                });
+            }
+
+            /* ========== INITIALIZE ALL ========== */
+            function init() {
+                setupScrollAnimations();
+                setupCounters();
+                setupNavbar();
+                setupParticles();
+                setupSmoothScroll();
+                setupCcTabs();
+                setupOodTabs();
+                setupRlResults();
+                setupTableRipple();
+                setupVisitorCounter();
+                setupCursorTrail();
+                setupClickRipple();
+                setupScrollProgress();
+                setupScrollIndicator();
+                setupNavActive();
+                setupCardTilt();
+                setupMagneticButtons();
+                setupHeroParticles();
+                setupScrambleText();
+            }
+
+            // Wait for main content to be visible
+            if (mainContent.classList.contains('hidden')) {
+                var checkInterval = setInterval(function () {
+                    if (!mainContent.classList.contains('hidden')) {
+                        clearInterval(checkInterval);
+                        init();
+                    }
+                }, 100);
+            } else {
+                init();
+            }
+        })();
+    </script>
+
+</body>
+
+</html>
