@@ -4,6 +4,16 @@
 import os
 import sys
 
+# ANSI colors
+_C = {
+    "dim": "\033[90m",
+    "green": "\033[92m",
+    "yellow": "\033[93m",
+    "blue": "\033[94m",
+    "cyan": "\033[96m",
+    "reset": "\033[0m",
+}
+
 sys.path.append(os.path.join(os.path.dirname(__file__), ".."))
 
 # ============================================================
@@ -181,22 +191,26 @@ def main():
     elif accelerator.mixed_precision == "bf16":
         weight_dtype = torch.bfloat16
 
-    accelerator.print("=" * 100)
-    accelerator.print(f"🚀 GigaWorld {mode.upper()} Inference")
-    accelerator.print("=" * 100)
-    accelerator.print(f"device               : {device}")
-    accelerator.print(f"weight_dtype         : {weight_dtype}")
-    accelerator.print(f"base_model           : {cli_args.base_model_path}")
-    accelerator.print(f"transformer_path     : {transformer_load_path}")
-    accelerator.print(f"transformer_subfolder: {transformer_subfolder}")
-    accelerator.print(f"checkpoint           : {checkpoint_path}")
-    accelerator.print(f"mode                 : {mode}")
-    accelerator.print(f"image                : {image_path}")
-    accelerator.print(f"control_video        : {control_video_path}")
-    accelerator.print(f"prompt               : {cli_args.prompt}")
-    accelerator.print(f"output_dir           : {cli_args.output_dir}")
-    accelerator.print(f"size                 : {cli_args.width}x{cli_args.height}, frames={cli_args.num_frames}")
-    accelerator.print("=" * 100)
+    ck = os.path.basename(checkpoint_path) if checkpoint_path else "base"
+    ctrl = os.path.basename(control_video_path) if control_video_path else "None"
+    img = os.path.basename(image_path) if image_path else "None"
+    print(
+        f"{_C['cyan']}[GigaWorld]{_C['reset']} {_C['yellow']}{mode.upper()}{_C['reset']} "
+        f"device={device} dtype={weight_dtype} "
+        f"size={cli_args.width}x{cli_args.height} frames={cli_args.num_frames} "
+        f"steps={cli_args.num_inference_steps} cfg={cli_args.guidance_scale}"
+    )
+    print(
+        f"  base={os.path.basename(cli_args.base_model_path)} "
+        f"transformer={os.path.basename(transformer_load_path)}"
+    )
+    print(
+        f"  checkpoint={_C['green']}{ck}{_C['reset']} "
+        f"image={img} control={ctrl}"
+    )
+    print(
+        f"  prompt={_C['dim']}{cli_args.prompt[:80]}{'...' if len(cli_args.prompt) > 80 else ''}{_C['reset']}"
+    )
 
     tokenizer = AutoTokenizer.from_pretrained(
         cli_args.base_model_path,
@@ -218,7 +232,7 @@ def main():
     )
 
     if args.model_config.enable_slicing:
-        print("[🐱 INFO] 启用 VAE slicing")
+        print(f"  {_C['dim']}VAE slicing enabled{_C['reset']}")
         vae.enable_slicing()
 
     vae.enable_tiling()
@@ -248,9 +262,7 @@ def main():
         "model_type": args.model_config.model_type,
     }
 
-    accelerator.print("🏗️ Loading transformer...")
-    accelerator.print(f"   path     : {transformer_load_path}")
-    accelerator.print(f"   subfolder: {transformer_subfolder}")
+    print(f"{_C['cyan']}[Loading]{_C['reset']} transformer from {os.path.basename(transformer_load_path)}/{transformer_subfolder or '.'}")
 
     transformer = GigaworldTransformer3DModelFunCtrl.from_pretrained(
         transformer_load_path,
@@ -258,7 +270,7 @@ def main():
         transformer_additional_kwargs=transformer_additional_kwargs,
     )
 
-    accelerator.print("✅ Transformer loaded.")
+    print(f"  {_C['green']}Transformer loaded{_C['reset']}")
 
     transformer = replace_rmsnorm_with_fp32(transformer)
     transformer = replace_all_norms_with_flash_norms(transformer)
@@ -269,7 +281,7 @@ def main():
     if checkpoint_path is not None:
         transformer_lora_config = build_lora_config(args, transformer)
         transformer.add_adapter(transformer_lora_config)
-        accelerator.print("🔁 Loading LoRA checkpoint with train load_model_checkpoint()...")
+        print(f"  {_C['cyan']}[LoRA]{_C['reset']} loading checkpoint...")
         load_model_checkpoint(
             args=args,
             checkpoint_path=checkpoint_path,
@@ -287,16 +299,15 @@ def main():
         )
 
         if os.path.exists(partial_path):
-            accelerator.print(f"🔁 Loading extra components: {partial_path}")
             load_extra_components(
                 args,
                 transformer,
                 partial_path,
             )
         else:
-            accelerator.print(f"⚠️ transformer_partial.pth not found: {partial_path}")
+            print(f"  {_C['yellow']}transformer_partial.pth not found: {os.path.basename(partial_path)}{_C['reset']}")
     else:
-        accelerator.print("ℹ️ checkpoint_path is None, skip LoRA checkpoint and extra components.")
+        print(f"  {_C['dim']}No LoRA checkpoint, using base model{_C['reset']}")
 
     for name, param in transformer.named_parameters():
         should_keep_fp32 = any(
@@ -315,9 +326,9 @@ def main():
     meta_names = [name for name, p in transformer.named_parameters() if p.is_meta]
 
     if len(meta_names) > 0:
-        accelerator.print("❌ Found meta parameters:")
+        print(f"{_C['yellow']}[Meta]{_C['reset']} found {len(meta_names)} meta parameters:")
         for name in meta_names:
-            accelerator.print(f"   {name}")
+            print(f"  {name}")
         raise RuntimeError("Meta parameters still exist after loading checkpoint.")
 
     pipe = GigaworldFunCtrlPipeline(
@@ -369,14 +380,7 @@ def main():
     if control_video is not None:
         pipeline_args["control_video"] = control_video
 
-    accelerator.print("🎬 Start inference...")
-    accelerator.print(f"📝 prompt: {cli_args.prompt}")
-    accelerator.print(
-        f"📐 {cli_args.width}x{cli_args.height}, "
-        f"frames={cli_args.num_frames}, "
-        f"steps={cli_args.num_inference_steps}, "
-        f"cfg={cli_args.guidance_scale}"
-    )
+    accelerator.print(f"{_C['cyan']}[Inference]{_C['reset']} {cli_args.num_inference_steps} steps starting...")
 
     output = pipe(
         **pipeline_args,
@@ -388,7 +392,7 @@ def main():
 
     export_to_video(output, gen_path, fps=cli_args.fps)
 
-    accelerator.print(f"✅ saved: {gen_path}")
+    print(f"{_C['green']}[Saved]{_C['reset']} {gen_path}")
 
     del output
     if control_video is not None:
@@ -403,7 +407,7 @@ def main():
     del text_encoder
     free_memory()
 
-    accelerator.print("🎉 Done.")
+    accelerator.print(f"{_C['green']}[Done]{_C['reset']} inference finished")
 
 
 if __name__ == "__main__":

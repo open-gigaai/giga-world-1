@@ -4,36 +4,36 @@ set -euo pipefail
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 SCRIPT_PATH="${PROJECT_ROOT}/infer/infer_giga_world.py"
 
-# ---- 模型路径 ----
-CONFIG_PATH="${PROJECT_ROOT}/scripts/training/configs/stage_1_post_functrl_wan21.yaml"
-BASE_MODEL_PATH="/mnt/pfs/users/zhanqian.wu/ckpt/stage-1/stage1_final"
-TRANSFORMER_MODEL_PATH="/mnt/pfs/users/zhanqian.wu/ckpt/stage-1/stage1_final"
+# ---- Model paths (Wan2.2 5B) ----
+CONFIG_PATH="${PROJECT_ROOT}/scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml"
+BASE_MODEL_PATH="/shared_disk/users/zhanqian.wu/model/Wan2.2-Fun-5B-Control-diffusers"
+TRANSFORMER_MODEL_PATH="/mnt/pfs/users/zhanqian.wu/ckpt/wan22-5b_stage-1-16gpus-21k"
 
-# ---- LoRA checkpoint----
-CHECKPOINT_PATH="/shared_disk/users/zhanqian.wu/output/experiment/helios/ablation_stage_1_post_giga_functrl_lora_0526_task3_overfit/checkpoint-4000"
+# ---- LoRA checkpoint ----
+CHECKPOINT_PATH="/shared_disk/users/zhanqian.wu/output/experiment/helios/ablation_stage_1_post_giga_functrl_lora_wan22_5b_overfit_task3/checkpoint-2000"
 
-# ---- 输入（t2v：不需要 image_path）----
+# ---- Inputs (t2v: no image_path needed) ----
 PROMPT="stack the box ears . The scene features a flat, gray surface with a subtle wood-grain texture, serving as the entire visible background. The only object present is a plain brown cardboard box lying open and centered on this surface. "
 CONTROL_VIDEO_PATH="${PROJECT_ROOT}/example/infer_assest/control_video.mp4"
 
-# ---- 输出 ----
-OUTPUT_DIR="/mnt/pfs/users/zhanqian.wu/output/giga_t2v"
+# ---- Output ----
+OUTPUT_DIR="${PROJECT_ROOT}/output/giga_t2v_pro"
 SAMPLE_NAME="t2v_sample"
 
-# ---- 推理参数 ----
+# ---- Inference params ----
 SEED=42
-FPS=24
-NUM_FRAMES=33
+FPS=10
+NUM_FRAMES=330
 HEIGHT=480
 WIDTH=1920
 NUM_INFERENCE_STEPS=20
 GUIDANCE_SCALE=5.0
 
-# ---- GPU 配置 ----
-CUDA_DEVICES="0"
+# ---- GPU config ----
+CUDA_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
 export CUDA_VISIBLE_DEVICES="${CUDA_DEVICES}"
 
-# ---- 环境变量 ----
+# ---- Environment variables ----
 export HF_ENABLE_PARALLEL_LOADING=yes
 export HF_PARALLEL_LOADING_WORKERS=8
 export TOKENIZERS_PARALLELISM=false
@@ -44,7 +44,7 @@ export NCCL_DEBUG=WARN
 export VK_ICD_FILENAMES=/etc/vulkan/icd.d/nvidia_icd.json
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:512
 
-echo "使用 GPU: ${CUDA_VISIBLE_DEVICES}"
+echo "Using GPU: ${CUDA_VISIBLE_DEVICES}"
 cd "${PROJECT_ROOT}"
 
 mkdir -p "${OUTPUT_DIR}"
@@ -66,16 +66,16 @@ ARGS=(
   --enable_tiling True
 )
 
-# 可选：控制视频
+# Optional: control video
 if [[ -n "${CONTROL_VIDEO_PATH}" ]]; then
   ARGS+=(--control_video_path "${CONTROL_VIDEO_PATH}")
 fi
 
-# 可选：LoRA checkpoint
+# Optional: LoRA checkpoint
 if [[ -n "${CHECKPOINT_PATH}" ]]; then
   ARGS+=(--checkpoint_path "${CHECKPOINT_PATH}")
 fi
 
 python "${SCRIPT_PATH}" "${ARGS[@]}"
 
-echo "推理完成！"
+echo "Inference done!"

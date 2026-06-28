@@ -2,11 +2,15 @@ import os
 import torch
 import torch.nn.functional as F
 
-sparge_attn_func = None
+# ANSI colors
+_C_DIM = "\033[90m"
+_C_GREEN = "\033[92m"
+_C_YELLOW = "\033[93m"
+_C_CYAN = "\033[96m"
+_C_RESET = "\033[0m"
+
 flash_attn_func = None
 flash_attn_varlen_func = None
-sageattn = None
-sageattn_varlen = None
 xformers_attn_func = None
 
 ATTN_BACKEND = os.environ.get("GIGAWORLD_ATTN_BACKEND", "auto").lower()
@@ -15,15 +19,14 @@ ATTN_BACKEND = os.environ.get("GIGAWORLD_ATTN_BACKEND", "auto").lower()
 # ============================================================
 # Local FlashAttention2
 # ============================================================
-
 def _try_load_flash_attn():
     global flash_attn_func, flash_attn_varlen_func
 
     try:
         from flash_attn import flash_attn_func, flash_attn_varlen_func
-        print("✅ Local Flash Attn 2 is installed!")
+        _fa2_status = "ok"
     except Exception as e:
-        print(f"⚠️ Local Flash Attn 2 unavailable: {repr(e)}")
+        _fa2_status = repr(e)
         flash_attn_func = None
         flash_attn_varlen_func = None
 
@@ -32,42 +35,25 @@ _try_load_flash_attn()
 
 
 # ============================================================
-# SageAttention
-# ============================================================
-
-try:
-    from sageattention import sageattn, sageattn_varlen
-    print("✅ Sage Attn is installed!")
-except Exception as e:
-    print(f"⚠️ Sage Attn is not installed: {repr(e)}")
-    sageattn = None
-    sageattn_varlen = None
-
-# ============================================================
-# SpargeAttention
-# ============================================================
-
-try:
-    from spas_sage_attn import spas_sage2_attn_meansim_cuda
-    sparge_attn_func = spas_sage2_attn_meansim_cuda
-    print("✅ SpargeAttn is installed!")
-except Exception as e:
-    print(f"⚠️ SpargeAttn is not installed: {repr(e)}")
-    sparge_attn_func = None
-
-# ============================================================
 # xFormers
 # ============================================================
 
 try:
     from xformers.ops import memory_efficient_attention as xformers_attn_func
-    print("✅ Xformers is installed!")
+    _xformers_status = "ok"
 except Exception as e:
-    print(f"⚠️ Xformers is not installed: {repr(e)}")
+    _xformers_status = repr(e)
     xformers_attn_func = None
 
-
-print(f"🚀 GIGAWORLD_ATTN_BACKEND = {ATTN_BACKEND}")
+# Print one concise summary line
+_backends = []
+_backends.append(("FA2", flash_attn_func is not None))
+_backends.append(("xFormers", xformers_attn_func is not None))
+_backends_str = "  ".join(
+    f"{_C_GREEN if ok else _C_DIM}{'[x]' if ok else '[ ]'} {name}{_C_RESET}"
+    for name, ok in _backends
+)
+print(f"{_C_CYAN}[Attn]{_C_RESET} backend={_C_YELLOW}{ATTN_BACKEND}{_C_RESET}  {_backends_str}")
 
 
 # ============================================================
@@ -220,48 +206,6 @@ def _flash_attn_varlen_wrapper(
     )
 
 
-@torch.compiler.disable
-def _sage_attn_wrapper(q, k, v):
-    return sageattn(
-        q,
-        k,
-        v,
-        tensor_layout="NHD",
-        is_causal=False,
-    )
-
-
-@torch.compiler.disable
-def _sage_attn_varlen_wrapper(
-    q,
-    k,
-    v,
-    cu_seqlens_q,
-    cu_seqlens_kv,
-    max_seqlen_q,
-    max_seqlen_kv,
-):
-    return sageattn_varlen(
-        q,
-        k,
-        v,
-        cu_seqlens_q,
-        cu_seqlens_kv,
-        max_seqlen_q,
-        max_seqlen_kv,
-    )
-
-@torch.compiler.disable
-def _sparge_attn_wrapper(q, k, v):
-    return sparge_attn_func(
-        q,
-        k,
-        v,
-        simthreshd1=float(os.environ.get("SPARGE_SIMTHRESHD1", "0.6")),
-        cdfthreshd=float(os.environ.get("SPARGE_CDFTHRESHD", "0.98")),
-        is_causal=False,
-    )
-
 def _torch_sdpa_nhd(q, k, v):
     return F.scaled_dot_product_attention(
         q.transpose(1, 2),
@@ -308,16 +252,7 @@ def _dense_attention(q, k, v):
             raise RuntimeError("GIGAWORLD_ATTN_BACKEND=fa2 but flash-attn is not available")
         return _flash_attn_wrapper(q, k, v)
     
-    if ATTN_BACKEND in ["sparge", "sparge_ckpt"]:
-        if sparge_attn_func is None:
-            raise RuntimeError("GIGAWORLD_ATTN_BACKEND=sparge but SpargeAttn is not available")
-        return _sparge_attn_wrapper(q, k, v)
-
-    if ATTN_BACKEND == "sage":
-        if sageattn is None:
-            raise RuntimeError("GIGAWORLD_ATTN_BACKEND=sage but sageattention is not available")
-        return _sage_attn_wrapper(q, k, v)
-
+    # auto: FA2 > xFormers > SDPA
     if ATTN_BACKEND == "xformers":
         if xformers_attn_func is None:
             raise RuntimeError("GIGAWORLD_ATTN_BACKEND=xformers but xformers is not available")
@@ -326,12 +261,9 @@ def _dense_attention(q, k, v):
     if ATTN_BACKEND == "sdpa":
         return _torch_sdpa_nhd(q, k, v)
 
-    # auto: FA2 > Sage > xFormers > SDPA
+    # auto: FA2 > xFormers > SDPA
     # if flash_attn_func is not None:
     #     return _flash_attn_wrapper(q, k, v)
-
-    # if sageattn is not None:
-    #     return _sage_attn_wrapper(q, k, v)
 
     if xformers_attn_func is not None:
         return xformers_attn_func(q, k, v)
@@ -361,19 +293,6 @@ def _varlen_attention(
             max_seqlen_kv,
         )
 
-    if ATTN_BACKEND == "sage":
-        if sageattn_varlen is None:
-            raise RuntimeError("GIGAWORLD_ATTN_BACKEND=sage but sageattn_varlen is not available")
-        return _sage_attn_varlen_wrapper(
-            q,
-            k,
-            v,
-            cu_seqlens_q,
-            cu_seqlens_kv,
-            max_seqlen_q,
-            max_seqlen_kv,
-        )
-
     if ATTN_BACKEND == "xformers":
         return _torch_sdpa_varlen_fallback(
             q,
@@ -392,20 +311,9 @@ def _varlen_attention(
             cu_seqlens_kv,
         )
 
-    # auto: FA2 > Sage > SDPA fallback
+    # auto: FA2 > xFormers > SDPA fallback
     if flash_attn_varlen_func is not None:
         return _flash_attn_varlen_wrapper(
-            q,
-            k,
-            v,
-            cu_seqlens_q,
-            cu_seqlens_kv,
-            max_seqlen_q,
-            max_seqlen_kv,
-        )
-
-    if sageattn_varlen is not None:
-        return _sage_attn_varlen_wrapper(
             q,
             k,
             v,
@@ -433,9 +341,8 @@ def attn_varlen_func(q, k, v, attention_mask=None):
     q/k/v layout: [B, L, H, D]
 
     GIGAWORLD_ATTN_BACKEND:
-        auto      : FA2 > Sage > xFormers > SDPA
+        auto      : FA2 > xFormers > SDPA
         fa2       : force FlashAttention2
-        sage      : force SageAttention
         xformers  : force xFormers
         sdpa      : force PyTorch SDPA
     """

@@ -18,20 +18,20 @@ CONTROL_VIDEO_PATH="${PROJECT_ROOT}/example/infer_assest/control_video.mp4"
 PROMPT="stack the box ears . The scene features a flat, gray surface with a subtle wood-grain texture, serving as the entire visible background. The only object present is a plain brown cardboard box lying open and centered on this surface. "
 
 # ---- Output ----
-OUTPUT_DIR="/mnt/pfs/users/zhanqian.wu/output/giga_i2v"
+OUTPUT_DIR="${PROJECT_ROOT}/output/giga_i2v_nano"
 SAMPLE_NAME="i2v_sample"
 
 # ---- Inference params ----
 SEED=42
-FPS=24
-NUM_FRAMES=99
+FPS=10
+NUM_FRAMES=330
 HEIGHT=480
 WIDTH=1920
 NUM_INFERENCE_STEPS=20
 GUIDANCE_SCALE=5.0
 
 # ---- GPU config ----
-CUDA_DEVICES="0"
+CUDA_DEVICES="${CUDA_VISIBLE_DEVICES:-0}"
 export CUDA_VISIBLE_DEVICES="${CUDA_DEVICES}"
 
 # ---- Environment variables ----

@@ -8,6 +8,16 @@ from typing import List, Literal, Optional, Union
 import ftfy
 import regex as re
 import torch
+
+# ANSI colors
+_C = {
+    "dim": "\033[90m",
+    "green": "\033[92m",
+    "yellow": "\033[93m",
+    "blue": "\033[94m",
+    "cyan": "\033[96m",
+    "reset": "\033[0m",
+}
 from accelerate.logging import get_logger
 
 
@@ -287,19 +297,11 @@ def _set_module_param_by_name(module, name, tensor, requires_grad=True):
 
 
 def print_meta_parameters(module, title="Meta parameters"):
-    print("\n" + "=" * 60)
-    print(f"🔍 {title}")
-    meta_names = []
-
-    for name, p in module.named_parameters():
-        if p.is_meta:
-            meta_names.append(name)
-            print(name)
-
-    if len(meta_names) == 0:
-        print("✅ No meta parameters found.")
-
-    print("=" * 60 + "\n")
+    meta_names = [name for name, p in module.named_parameters() if p.is_meta]
+    if meta_names:
+        print(f"{_C['yellow']}[Meta] {title}:{_C['reset']}")
+        for name in meta_names:
+            print(f"  {name}")
     return meta_names
 
 
@@ -315,11 +317,9 @@ def load_extra_components(args, model, checkpoint_path):
     state_dict = torch.load(checkpoint_path, map_location="cpu")
     loaded_keys = set()
 
-    print("\n" + "=" * 60)
-    print("🚀 开始加载额外组件 (patch + LoRA + History + GAN) ...")
-    print("=" * 60 + "\n")
+    print(f"{_C['cyan']}[Checkpoint]{_C['reset']} Loading extra components from {os.path.basename(checkpoint_path)}")
 
-    print_meta_parameters(model, title="Before loading extra components: meta parameters")
+    print_meta_parameters(model, title="Before loading extra components")
 
     # ============================================================
     # 1. Load patch modules
@@ -354,16 +354,14 @@ def load_extra_components(args, model, checkpoint_path):
 
                 loaded_keys.update(patch_keys_in_sd)
 
-                print(f"✅ Loaded {len(patch_keys_in_sd)} parameters for {p_name}")
-
-                if load_info.missing_keys:
-                    print(f"⚠️ Missing keys in {p_name}: {load_info.missing_keys}")
-
-                if load_info.unexpected_keys:
-                    print(f"⚠️ Unexpected keys in {p_name}: {load_info.unexpected_keys}")
+                if load_info.missing_keys or load_info.unexpected_keys:
+                    if load_info.missing_keys:
+                        print(f"  {_C['yellow']}missing in {p_name}: {load_info.missing_keys}{_C['reset']}")
+                    if load_info.unexpected_keys:
+                        print(f"  {_C['yellow']}unexpected in {p_name}: {load_info.unexpected_keys}{_C['reset']}")
 
             elif patch_keys_in_sd and not hasattr(model, p_name):
-                print(f"⚠️ Checkpoint has {p_name}, but model has no attribute `{p_name}`")
+                print(f"  {_C['yellow']}Checkpoint has {p_name}, but model has no attribute `{p_name}`{_C['reset']}")
 
     # ============================================================
     # 2. Load LoRA layers
@@ -382,7 +380,7 @@ def load_extra_components(args, model, checkpoint_path):
 
             if q_lora_keys_in_sd:
                 if not hasattr(block.attn1, "q_loras"):
-                    print(f"⚠️ block {block_idx} has no q_loras, skip")
+                    print(f"  {_C['yellow']}block {block_idx} has no q_loras, skip{_C['reset']}")
                 else:
                     q_lora_state = {
                         k.replace(q_lora_prefix, ""): v
@@ -400,16 +398,9 @@ def load_extra_components(args, model, checkpoint_path):
                     lora_keys_count += len(q_lora_keys_in_sd)
 
                     if load_info.missing_keys:
-                        print(
-                            f"⚠️ Missing keys in blocks.{block_idx}.attn1.q_loras: "
-                            f"{load_info.missing_keys}"
-                        )
-
+                        print(f"  {_C['yellow']}missing in q_loras blk{block_idx}: {load_info.missing_keys}{_C['reset']}")
                     if load_info.unexpected_keys:
-                        print(
-                            f"⚠️ Unexpected keys in blocks.{block_idx}.attn1.q_loras: "
-                            f"{load_info.unexpected_keys}"
-                        )
+                        print(f"  {_C['yellow']}unexpected in q_loras blk{block_idx}: {load_info.unexpected_keys}{_C['reset']}")
 
             # ---------------- k_loras ----------------
             k_lora_prefix = f"blocks.{block_idx}.attn1.k_loras."
@@ -420,7 +411,7 @@ def load_extra_components(args, model, checkpoint_path):
 
             if k_lora_keys_in_sd:
                 if not hasattr(block.attn1, "k_loras"):
-                    print(f"⚠️ block {block_idx} has no k_loras, skip")
+                    print(f"  {_C['yellow']}block {block_idx} has no k_loras, skip{_C['reset']}")
                 else:
                     k_lora_state = {
                         k.replace(k_lora_prefix, ""): v
@@ -438,16 +429,9 @@ def load_extra_components(args, model, checkpoint_path):
                     lora_keys_count += len(k_lora_keys_in_sd)
 
                     if load_info.missing_keys:
-                        print(
-                            f"⚠️ Missing keys in blocks.{block_idx}.attn1.k_loras: "
-                            f"{load_info.missing_keys}"
-                        )
-
+                        print(f"  {_C['yellow']}missing in k_loras blk{block_idx}: {load_info.missing_keys}{_C['reset']}")
                     if load_info.unexpected_keys:
-                        print(
-                            f"⚠️ Unexpected keys in blocks.{block_idx}.attn1.k_loras: "
-                            f"{load_info.unexpected_keys}"
-                        )
+                        print(f"  {_C['yellow']}unexpected in k_loras blk{block_idx}: {load_info.unexpected_keys}{_C['reset']}")
 
             # ---------------- v_loras ----------------
             v_lora_prefix = f"blocks.{block_idx}.attn1.v_loras."
@@ -458,7 +442,7 @@ def load_extra_components(args, model, checkpoint_path):
 
             if v_lora_keys_in_sd:
                 if not hasattr(block.attn1, "v_loras"):
-                    print(f"⚠️ block {block_idx} has no v_loras, skip")
+                    print(f"  {_C['yellow']}block {block_idx} has no v_loras, skip{_C['reset']}")
                 else:
                     v_lora_state = {
                         k.replace(v_lora_prefix, ""): v
@@ -476,18 +460,12 @@ def load_extra_components(args, model, checkpoint_path):
                     lora_keys_count += len(v_lora_keys_in_sd)
 
                     if load_info.missing_keys:
-                        print(
-                            f"⚠️ Missing keys in blocks.{block_idx}.attn1.v_loras: "
-                            f"{load_info.missing_keys}"
-                        )
-
+                        print(f"  {_C['yellow']}missing in v_loras blk{block_idx}: {load_info.missing_keys}{_C['reset']}")
                     if load_info.unexpected_keys:
-                        print(
-                            f"⚠️ Unexpected keys in blocks.{block_idx}.attn1.v_loras: "
-                            f"{load_info.unexpected_keys}"
-                        )
+                        print(f"  {_C['yellow']}unexpected in v_loras blk{block_idx}: {load_info.unexpected_keys}{_C['reset']}")
 
-        print(f"✅ Loaded {lora_keys_count} parameters for Restrict Self Attn LoRA")
+        if lora_keys_count > 0:
+            print(f"  {_C['green']}Loaded {lora_keys_count} LoRA params{_C['reset']}")
 
     # ============================================================
     # 3. Load History Scale layers
@@ -534,7 +512,8 @@ def load_extra_components(args, model, checkpoint_path):
                     loaded_keys.add(history_key_scale_key)
                     history_keys_count += 1
 
-        print(f"✅ Loaded {history_keys_count} parameters for History Scale")
+        if history_keys_count > 0:
+            print(f"  {_C['green']}Loaded {history_keys_count} History Scale params{_C['reset']}")
 
     # ============================================================
     # 4. Load GAN
@@ -569,10 +548,9 @@ def load_extra_components(args, model, checkpoint_path):
                     gan_keys_count += len(gan_head_keys_in_sd)
 
                     if load_info.missing_keys:
-                        print(f"⚠️ Missing keys in gan_heads.{hook_name}: {load_info.missing_keys}")
-
+                        print(f"  {_C['yellow']}missing in gan_heads.{hook_name}: {load_info.missing_keys}{_C['reset']}")
                     if load_info.unexpected_keys:
-                        print(f"⚠️ Unexpected keys in gan_heads.{hook_name}: {load_info.unexpected_keys}")
+                        print(f"  {_C['yellow']}unexpected in gan_heads.{hook_name}: {load_info.unexpected_keys}{_C['reset']}")
 
         # ---------------- gan_final_head ----------------
         if hasattr(model, "gan_final_head"):
@@ -600,38 +578,30 @@ def load_extra_components(args, model, checkpoint_path):
                 gan_keys_count += len(gan_final_keys_in_sd)
 
                 if load_info.missing_keys:
-                    print(f"⚠️ Missing keys in gan_final_head: {load_info.missing_keys}")
-
+                    print(f"  {_C['yellow']}missing in gan_final_head: {load_info.missing_keys}{_C['reset']}")
                 if load_info.unexpected_keys:
-                    print(f"⚠️ Unexpected keys in gan_final_head: {load_info.unexpected_keys}")
+                    print(f"  {_C['yellow']}unexpected in gan_final_head: {load_info.unexpected_keys}{_C['reset']}")
 
         if gan_keys_count > 0:
-            print(f"✅ Loaded {gan_keys_count} parameters for GAN components")
+            print(f"  {_C['green']}Loaded {gan_keys_count} GAN params{_C['reset']}")
 
     # ============================================================
     # Summary
     # ============================================================
     if not loaded_keys:
-        print("❌ No extra components were loaded from the checkpoint.")
+        print(f"  {_C['yellow']}No extra components loaded from checkpoint{_C['reset']}")
         return
 
     all_sd_keys = set(state_dict.keys())
     unmatched_keys = all_sd_keys - loaded_keys
 
-    print("\n" + "=" * 60)
-    print("🎉 Checkpoint loading completed!")
-    print(f"📦 Total loaded keys: {len(loaded_keys)}")
-    print("=" * 60 + "\n")
-
+    print(f"  {_C['green']}Loaded {len(loaded_keys)} keys{_C['reset']}", end="")
     if unmatched_keys:
-        print(
-            f"⚠️ The following keys in the checkpoint were not loaded into the model: "
-            f"{sorted(unmatched_keys)}\n"
-        )
+        print(f"  {_C['yellow']}unmatched: {sorted(unmatched_keys)}{_C['reset']}")
     else:
-        print("🥳 Load extra module successfully! All keys in the checkpoint were successfully processed or matched.\n")
+        print()
 
-    print_meta_parameters(model, title="After loading extra components: remaining meta parameters")
+    print_meta_parameters(model, title="After loading extra components")
 
 def save_model_checkpoint(
     transformer,
@@ -710,11 +680,8 @@ def load_model_checkpoint(
         if incompatible_keys is not None:
             unexpected_keys = getattr(incompatible_keys, "unexpected_keys", None)
             if unexpected_keys:
-                print(
-                    f"Loading adapter weights from state_dict led to unexpected keys not found in the model: "
-                    f" {unexpected_keys}. "
-                )
-        print(f"load lora from {checkpoint_path} successfully!")
+                print(f"  {_C['yellow']}LoRA unexpected keys: {unexpected_keys}{_C['reset']}")
+        print(f"  {_C['green']}Loaded LoRA from {os.path.basename(checkpoint_path)}{_C['reset']}")
 
     if args.model_config.train_norm_layers and lora_state_dict and norm_layer_prefixes:
         transformer_norm_state_dict = {
