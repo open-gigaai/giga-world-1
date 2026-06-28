@@ -61,7 +61,7 @@ model_config:
 
 
 validation_config:
-  validation_steps: 1000
+  validation_steps: 500
   validation_height: 480
   validation_width: 1920
   validation_max_num_frames: 33
@@ -94,7 +94,7 @@ training_config:
   max_train_steps: 1000000
   train_batch_size: 1 #4
   gradient_accumulation_steps: 1
-  checkpointing_steps: 5
+  checkpointing_steps: 500
   resume_from_checkpoint: "latest"
   save_checkpoints_custom: false
   # ---- Optimizer ----

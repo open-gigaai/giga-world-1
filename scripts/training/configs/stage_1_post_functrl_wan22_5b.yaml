@@ -1,10 +1,10 @@
-output_dir: /shared_disk/users/xuancheng.xu/output/experiment/helios/ablation_stage_1_post_giga_functrl_lora_wan22_5b_16gpus
-logging_dir: logs
+output_dir: ./output/exp/Giga-world-Pro-Train-Stage-1
+logging_dir: ./output/logs
 seed: 44
 
 report_to:
-  tracker_name: Helios-Train
-  wandb_name: ablation_stage_1_ctrl
+  tracker_name: Giga-world-Pro-Train-Stage-1
+  wandb_name: Giga-world-Pro-Train-Stage-1
   report_to: wandb
 
 data_config:
@@ -91,7 +91,7 @@ training_config:
   max_train_steps: 1000000
   train_batch_size: 4 #4
   gradient_accumulation_steps: 1
-  checkpointing_steps: 1000
+  checkpointing_steps: 5
   resume_from_checkpoint: "latest"
   save_checkpoints_custom: false
   # ---- Optimizer ----
