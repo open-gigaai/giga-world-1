@@ -27,9 +27,13 @@ data_config:
 
 model_config:
   # ---- Path ----
-  pretrained_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/Wan2.1-Fun-V1.1-1.3B-giga-ctrl-2200" #load VAE, t5, ...
-  #transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-1/ablation_1.3B_gigactrl_3v_rank128_bs128_0526" #load transformer
-  transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/Wan2.1-Fun-V1.1-1.3B-giga-ctrl-2200" #load transformer
+  # use ori wan ckpt
+  pretrained_model_name_or_path: "model/before_stage1/Wan2p1_1p3B-FunControl-diffusers" #load VAE, t5, ...
+  transformer_model_name_or_path: "model/before_stage1/Wan2p1_1p3B-FunControl-diffusers" #load transformer
+  # use giga robo ckpt
+  # pretrained_model_name_or_path: "model/before_stage1/Wan2p1_1p3B-FunContro-GigaRobo-alpha-diffusers" #load VAE, t5, ...
+  # transformer_model_name_or_path: "model/before_stage1/Wan2p1_1p3B-FunContro-GigaRobo-alpha-diffusers" #load transformer
+
   # subfolder: "transformer"
   load_checkpoints_custom: false
   # load_model_path:

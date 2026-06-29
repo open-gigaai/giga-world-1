@@ -28,8 +28,8 @@ data_config:
 model_config:
   # ---- Path ----
   model_type: "wan2.2_5b"
-  pretrained_model_name_or_path: "/shared_disk/users/zhanqian.wu/model/Wan2.2-Fun-5B-Control-diffusers"
-  transformer_model_name_or_path: "/shared_disk/users/zhanqian.wu/model/Wan2.2-Fun-5B-Control-diffusers"
+  pretrained_model_name_or_path: "model/before_stage1/Wan2p2_5B-FunControl-diffusers"
+  transformer_model_name_or_path: "model/before_stage1/Wan2p2_5B-FunControl-diffusers"
   # subfolder: "transformer"
   load_checkpoints_custom: false
   # load_model_path:
