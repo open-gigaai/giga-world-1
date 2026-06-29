@@ -1,0 +1,43 @@
+*.ncu-rep
+*.sass
+*.ptx
+*.cubin
+*.plk
+.DS_store
+.vscode
+worktrees/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+.eggs/
+
+# IDE-related
+.idea/
+.vscode/
+
+# Dev
+venv
+agent_space/
+benchmarks/results/
+
+# compile-time generated file
+flash_attn_config.py
