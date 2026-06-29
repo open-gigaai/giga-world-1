@@ -61,7 +61,7 @@
 | 🟡 | **🤗 Model weights on Hugging Face** | Nano (1.3B) base + LoRA; Pro (5B) staged rollout — see [huggingface.co/open-gigaai](https://huggingface.co/open-gigaai) |
 | 🟡 | **🤗 Dataset on Hugging Face** | Beta access; full 12,980 h corpus staged for release — see [huggingface.co/open-gigaai](https://huggingface.co/open-gigaai) |
 | 🟡 | **Offline latent pre-computation** | `tools/offload_data/get_short-latents-giga-ctrl*.py` — see [§2.5](#25-offline-latent-pre-computation--conversion) |
-| 🔴 | **📊 WMBench benchmark** | Coming soon — 15 fine-grained metrics, leaderboard + VLM judging — see [§🏆](#-wmbench-benchmark) |
+| 🔴 | **📊 WMBench benchmark** | Coming soon — 15 fine-grained metrics, leaderboard + VLM judging |
 | 🔴 | **Full 12,980 h pre-training corpus** | The full heterogeneous pre-training dataset (Physical / Robot / Human / Giga) — coming soon |
 | 🔴 | **Stage-3 RL post-training** | 3D RL post-training scripts for stronger 3D scene modeling — coming soon |
 | 🔴 | **Cross-domain checkpoints (NUScenes)** | Autonomous-driving world model checkpoint — coming soon |
@@ -98,6 +98,7 @@
 - [8. 📁 Repository Layout](#8--repository-layout)
 - [9. ❓ FAQ & Tips](#9--faq--tips)
 - [🙏 Acknowledgements](#-acknowledgements)
+- [🤝 Contact](#-contact)
 - [📖 Citation](#-citation)
 
 ---
@@ -193,35 +194,6 @@ GigaWorld-1 is an **autoregressive diffusion-transformer world generator** with 
 
 ---
 
-## 🏆 WMBench Benchmark
-
-WMBench evaluates rollouts along **15 fine-grained metrics** across two axes: **rollout source (rows)** × **evaluation dimensions (columns)**. All metrics are higher-is-better (↑).
-
-### Evaluator Leaderboard
-
-| Rank | Model | Size | Type | Aesthetic↑ | Image↑ | JEPA↑ | Semantic↑ | Subject↑ | Trajectory↑ | **AVG↑** |
-| :---: | --- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 🥇 1 | **GigaWorld-1-Plus** | 5B | Robot/Auto | 0.3534 | 0.6765 | 0.9337 | 0.8926 | 0.8883 | 0.3561 | **0.6834** |
-| 🥈 2 | **GigaWorld-1-Nano** | 1.3B | Robot/Auto | 0.3538 | 0.6802 | 0.8911 | 0.8920 | 0.8600 | 0.3528 | **0.6716** |
-| 3 | Cosmos-Predict2.5 | 2B | Robot/Auto | 0.3491 | 0.7184 | 0.6781 | 0.8764 | 0.8747 | 0.1770 | 0.6123 |
-| 4 | Wan 2.2 | 5B | TI2V 5B General | 0.3538 | 0.6980 | 0.5853 | 0.8789 | 0.8883 | 0.1643 | 0.5948 |
-| 5 | LTX 2.3 | 22B | General | 0.3900 | 0.6967 | 0.5380 | 0.8678 | 0.8248 | 0.1479 | 0.5775 |
-| 6 | CogVideoX | 5B | General | 0.3303 | 0.6775 | 0.6437 | 0.8633 | 0.6963 | 0.1609 | 0.5620 |
-| 7 | SVD | 1.5B | General | 0.2861 | 0.6497 | 0.6454 | 0.8411 | 0.8267 | 0.0926 | 0.5569 |
-| 8 | Wan 2.1 | 1.3B | I2V 1.3B General | 0.3422 | 0.6856 | 0.6002 | 0.8705 | 0.5568 | 0.1576 | 0.5355 |
-
-> 📊 **15 evaluation metrics** organized into six groups: Perceptual · Temporal/Motion · Geometry · Semantic/Instruction · Representation · Trajectory. See the [WMBench project page](https://github.com/Yvonne-OH/Giga-World-1-projectpage) for the full list (Aesthetic Quality, Background Consistency, Depth Accuracy, Dynamic Degree, Flow Score, Image Quality, Instruction Following, Interaction Quality, JEPA Similarity, Motion Smoothness, Perspectivity, Photometric Consistency, Semantic Alignment, Subject Consistency, Trajectory Accuracy).
-> 
-> 🤖 **Robot-oriented models** generally outperform generic video backbones on embodied rollout evaluation. GigaWorld-1-Nano (1.3B) even beats most 5B–22B general-purpose baselines on average.
-
-### Key Findings
-
-1. **Evaluator quality** depends much more on long-horizon, action-faithful rollout consistency than on short-horizon visual realism alone.
-2. **Pre-training & data composition** matter not only through scale, but through balancing broad world knowledge with robot-specific controllability.
-3. **Architectural choices** (action representation, memory, evaluator-oriented post-training) substantially affect agreement with real-world outcomes.
-
----
-
 ## 1. 📦 Environment Setup
 
 ### 1.1 Hardware & OS
@@ -236,23 +208,23 @@ WMBench evaluates rollouts along **15 fine-grained metrics** across two axes: **
 
 ### 1.2 Install Dependencies
 
-The repository expects to reuse an existing Conda environment (by default `<PATH_TO_ENV>`, e.g. `/mnt/pfs/users/zhanqian.wu/env/Helios`). `install.sh` auto-detects and activates that environment, then installs all dependencies.
+The repository expects to reuse an existing Conda environment (by default `<PATH_TO_ENV>`, e.g. `~/envs/Helios`). You can point `install.sh` at any other env via the `DEFAULT_ENV_PATH` variable at the top of the script. `install.sh` auto-detects and activates that environment, then installs all dependencies.
 
 ```bash
-cd /mnt/pfs/users/zhanqian.wu/code/giga-world-release
+cd <PROJECT_ROOT>
 bash install.sh
 ```
 
 [CODE0](./install.sh) workflow:
 
 1. Source `miniconda3/etc/profile.d/conda.sh` if it exists
-2. `conda activate <PATH_TO_ENV>`  (e.g. `conda activate /mnt/pfs/users/zhanqian.wu/env/Helios`)
+2. `conda activate <PATH_TO_ENV>`  (e.g. `conda activate /path/to/your/env`)
 3. `pip install --upgrade pip setuptools wheel`
 4. `pip install -r requirements.txt`
 5. If `thirdparty/diffusers` exists, `pip install -e ./thirdparty/diffusers` (editable install — required for custom diffusers modifications)
 6. If `thirdparty/flash-attention-3` exists, **print a notice only — do not auto-compile** (depends on your CUDA / PyTorch version)
 
-Main dependencies (see [CODE0](./requirements.txt)):
+Main dependencies (see [`requirements.txt`](./requirements.txt)):
 
 ```text
 accelerate>=1.1.0        # accelerate launch / DDP / DeepSpeed
@@ -294,7 +266,7 @@ xformers>=0.0.28.post3   # memory-efficient attention
 | Stage-2 input | Real score model | `<PATH_TO_REAL_SCORE_NANO>`  e.g. `ckpt/stage-3-init/stage1_final_3v_uni_s16k` | same as Stage-1 merged Pro |
 | Stage-2 reward (optional) | VideoReward | `<PATH_TO_VIDEO_REWARD>`  e.g. `Ckpts/Videoreward` | Same |
 
-> ⚠️ The above table shows the **original developer's paths** as a reference. For your own machine, set these as shell variables (e.g. `export BASE_NANO=/path/to/your/Wan2.1-Fun-...-2200`) or edit the matching fields in the YAML configs at [CODE1](./scripts/training/configs/) before training.
+> ⚠️ The above table shows the **original developer's paths** as a reference. For your own machine, set these as shell variables (e.g. `export BASE_NANO=/path/to/your/Wan2.1-Fun-...-2200`) or edit the matching fields in the YAML configs at [`scripts/training/configs/`](./scripts/training/configs/) before training.
 
 ### 1.4 Key Environment Variables
 
@@ -361,7 +333,7 @@ example/toy_datapipeline_dataset/
     └── config.json
 ```
 
-A typical record in `labels/data.pkl` (from [CODE1](./tools/datapipeline/README_datapipeline.md)):
+A typical record in `labels/data.pkl` (from [`README_datapipeline.md`](./tools/datapipeline/README_datapipeline.md)):
 
 ```python
 {
@@ -418,15 +390,15 @@ GigaWorld-1's pre-training corpus is composed of four complementary sources (fig
 
 `example/toy_train_dataset/` is already organized in the training format, referenced by:
 
-- [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/scripts/training/configs/stage_1_post_functrl_wan21.yaml#L21-L22) → `example/toy_train_dataset/nano`
-- [CODE0](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml#L21-L22) → `example/toy_train_dataset/pro`
-- [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/scripts/training/configs/stage_2_dmd_functrl_wan21.yaml#L23) → `example/toy_train_dataset/nano`
+- [`stage_1_post_functrl_wan21.yaml`](./scripts/training/configs/stage_1_post_functrl_wan21.yaml#L21-L22) → `example/toy_train_dataset/nano`
+- [`stage_1_post_functrl_wan22_5b.yaml`](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml#L21-L22) → `example/toy_train_dataset/pro`
+- [`stage_2_dmd_functrl_wan21.yaml`](./scripts/training/configs/stage_2_dmd_functrl_wan21.yaml#L23) → `example/toy_train_dataset/nano`
 
 Use them directly — no extra preprocessing required.
 
 ### 2.4 LeRobot Raw-Data Preprocessing Pipeline
 
-Main script: [CODE0](./tools/datapipeline/datapipeline_lerobot.py)
+Main script: [`datapipeline_lerobot.py`](./tools/datapipeline/datapipeline_lerobot.py)
 
 Expected input layout (LeRobot-style):
 
@@ -476,15 +448,15 @@ Key constants at the top of the script that you may need to tune:
 | `CAPTION_MAX_NEW_TOKENS` | 256 | Max caption generation length |
 | `LONG_PROMPT_SEGMENT_FRAMES` | 300 | Frames per long-caption segment |
 
-> 📖 Full field reference: [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/tools/datapipeline/README_datapipeline.md).
+> 📖 Full field reference: [`README_datapipeline.md`](./tools/datapipeline/README_datapipeline.md).
 
 ### 2.5 Offline Latent Pre-computation & Conversion
 
 To reduce I/O overhead during training, you can pre-encode latents before training:
 
-- [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/tools/offload_data/get_short-latents-giga-ctrl.py)
-- [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/tools/offload_data/get_short-latents-giga-ctrl-wan22-5b.py)
-- [CODE0](./tools/offload_data/gigactrl2helios.py)
+- [`get_short-latents-giga-ctrl.py`](./tools/offload_data/get_short-latents-giga-ctrl.py)
+- [`get_short-latents-giga-ctrl-wan22-5b.py`](./tools/offload_data/get_short-latents-giga-ctrl-wan22-5b.py)
+- [`gigactrl2helios.py`](./tools/offload_data/gigactrl2helios.py)
 
 Checkpoint key normalization: [CODE0](./tools/others/convert_ckpt.py)
 
@@ -498,9 +470,9 @@ Training entrypoints and launcher scripts are paired (each pair = one `accelerat
 
 | Entrypoint / Config | Launcher | Note |
 | --- | --- | --- |
-| Trainer: [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/train_gigaworld_functrl_uni_stage1.py) |   | Unified trainer handling both Nano and Pro |
-| Config: [CODE0](./scripts/training/configs/stage_1_post_functrl_wan21.yaml) | [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/scripts/training/stage1/train_deepspeed_stage1_functrl_wan21.sh) | Nano (1.3B) |
-| Config: [CODE0](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml) | [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/scripts/training/stage1/train_deepspeed_stage1_functrl_wan22_5b.sh) | Pro (5B) |
+| Trainer: [`train_gigaworld_functrl_uni_stage1.py`](./train_gigaworld_functrl_uni_stage1.py) |   | Unified trainer handling both Nano and Pro |
+| Config: [CODE0](./scripts/training/configs/stage_1_post_functrl_wan21.yaml) | [`train_deepspeed_stage1_functrl_wan21.sh`](./scripts/training/stage1/train_deepspeed_stage1_functrl_wan21.sh) | Nano (1.3B) |
+| Config: [`stage_1_post_functrl_wan22_5b.yaml`](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml) | [`train_deepspeed_stage1_functrl_wan22_5b.sh`](./scripts/training/stage1/train_deepspeed_stage1_functrl_wan22_5b.sh) | Pro (5B) |
 
 **Launch Nano**:
 
@@ -576,9 +548,9 @@ output/
 
 | Entrypoint / Config | Launcher |
 | --- | --- |
-| Trainer: [CODE0](./train_gigaworld_functrl_uni_stage2_dmd.py) |   |
-| Config: [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/scripts/training/configs/stage_2_dmd_functrl_wan21.yaml) | [CODE0](./scripts/training/stage2/train_deepspeed_stage2_functrl_wan21.sh) |
-| Config: [CODE0](./scripts/training/configs/stage_2_dmd_functrl_wan22_5b.yaml) | [CODE0](./scripts/training/stage2/train_deepspeed_stage2_functrl_wan22_5b.sh) |
+| Trainer: [`train_gigaworld_functrl_uni_stage2_dmd.py`](./train_gigaworld_functrl_uni_stage2_dmd.py) |   |
+| Config: [`stage_2_dmd_functrl_wan21.yaml`](./scripts/training/configs/stage_2_dmd_functrl_wan21.yaml) | [`train_deepspeed_stage2_functrl_wan21.sh`](./scripts/training/stage2/train_deepspeed_stage2_functrl_wan21.sh) |
+| Config: [`stage_2_dmd_functrl_wan22_5b.yaml`](./scripts/training/configs/stage_2_dmd_functrl_wan22_5b.yaml) | [`train_deepspeed_stage2_functrl_wan22_5b.sh`](./scripts/training/stage2/train_deepspeed_stage2_functrl_wan22_5b.sh) |
 
 DMD2 compresses the denoising loop from 20 steps to **4–6 steps** (the Stage-2 config sets `num_inference_steps: 6`) and aligns with a frozen real score model via a `critic_lora`.
 
@@ -598,10 +570,10 @@ output/exp/Giga-world-Nano-Train-DMD/
 
 The launcher scripts auto-detect the number of visible GPUs via `nvidia-smi -L` and launch with DeepSpeed ZeRO-2:
 
-- [CODE0](./scripts/accelerate_configs/example_zero2.yaml)
-- [CODE0](./scripts/accelerate_configs/example_zero3.yaml)
-- [CODE0](./scripts/accelerate_configs/zero2.json)
-- [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/scripts/accelerate_configs/zero3.json)
+- [`example_zero2.yaml`](./scripts/accelerate_configs/example_zero2.yaml)
+- [`example_zero3.yaml`](./scripts/accelerate_configs/example_zero3.yaml)
+- [`zero2.json`](./scripts/accelerate_configs/zero2.json)
+- [`zero3.json`](./scripts/accelerate_configs/zero3.json)
 
 > The launchers set `NCCL_TIMEOUT` / `TORCH_NCCL_BLOCKING_WAIT` and friends to keep long runs from being kicked out. The EMA ZeRO-3 port is adjustable via `ema_zero3_port` in the config.
 
@@ -609,7 +581,7 @@ The launcher scripts auto-detect the number of visible GPUs via `nvidia-smi -L` 
 
 ## 4. 🖼️ Data & Trajectory Visualization
 
-[CODE0](./tools/data_vis_tools/README.md) ships a dual-page web tool:
+[`README.md`](./tools/data_vis_tools/README.md) ships a dual-page web tool:
 
 | Page | URL | Description |
 | --- | --- | --- |
@@ -632,14 +604,14 @@ python app.py --host 0.0.0.0 --port 8090
 
 ## 5. 🔄 Model Merge & Checkpoint Conversion
 
-Unified merge tool: [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py)
+Unified merge tool: [`uni_merge_lora_for_giga_world_1.py`](./tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py)
 
 Supports both `wan2.1` and `wan2.2_5b`; auto-resolves LoRA and partial state dicts from a checkpoint directory; the output is a stand-alone, deployment-ready transformer.
 
 ```bash
 python tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py \
-  --base_model /mnt/pfs/users/zhanqian.wu/ckpt/Wan2.1-Fun-V1.1-1.3B-giga-ctrl-2200 \
-  --save_dir   /mnt/pfs/users/zhanqian.wu/ckpt/stage-1/stage1_final \
+  --base_model <PATH_TO_BASE_NANO> \
+  --save_dir   <PATH_TO_STAGE1_MERGED_NANO> \
   --ckpt_dir   /path/to/checkpoint-XXXX \
   --model_type wan2.1
 ```
@@ -648,8 +620,8 @@ For Pro 5B:
 
 ```bash
 python tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py \
-  --base_model /shared_disk/users/zhanqian.wu/model/Wan2.2-Fun-5B-Control-diffusers \
-  --save_dir   /mnt/pfs/users/zhanqian.wu/ckpt/wan22-5b_stage-1-16gpus-21k \
+  --base_model <PATH_TO_BASE_PRO> \
+  --save_dir   <PATH_TO_STAGE1_MERGED_PRO> \
   --ckpt_dir   /path/to/checkpoint-XXXX \
   --model_type wan2.2_5b
 ```
@@ -658,8 +630,8 @@ The merge process also writes a **visual HTML report** at `<save_dir>/merge_repo
 
 **Auxiliary conversion tools:**
 
-- Key rename / normalization: [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/tools/others/convert_ckpt.py)
-- Data-layout migration / pre-computation: [CODE0](./tools/offload_data/gigactrl2helios.py)
+- Key rename / normalization: [`convert_ckpt.py`](./tools/others/convert_ckpt.py)
+- Data-layout migration / pre-computation: [`gigactrl2helios.py`](./tools/offload_data/gigactrl2helios.py)
 
 ---
 
@@ -670,9 +642,9 @@ The merge process also writes a **visual HTML report** at `<save_dir>/merge_repo
 | Script | Mode | Model | Link |
 | --- | --- | --- | --- |
 | `run_infer_nano_i2v.sh` | i2v | Nano 1.3B | [script](./scripts/infer/run_infer_nano_i2v.sh) |
-| `run_infer_nano_t2v.sh` | t2v | Nano 1.3B | [script](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/scripts/infer/run_infer_nano_t2v.sh) |
+| `run_infer_nano_t2v.sh` | t2v | Nano 1.3B | [`run_infer_nano_t2v.sh`](./scripts/infer/run_infer_nano_t2v.sh) |
 | `run_infer_pro_i2v.sh` | i2v | Pro 5B | [script](./scripts/infer/run_infer_pro_i2v.sh) |
-| `run_infer_pro_t2v.sh` | t2v | Pro 5B | [script](./scripts/infer/run_infer_pro_t2v.sh) |
+| `run_infer_pro_t2v.sh` | t2v | Pro 5B | [`run_infer_pro_t2v.sh`](./scripts/infer/run_infer_pro_t2v.sh) |
 
 Usage:
 
@@ -698,7 +670,7 @@ Output videos are saved at **10 FPS** by default.
 
 ### 6.2 Command-Line Arguments
 
-The underlying entrypoint [CODE0](./infer/infer_giga_world.py) exposes the following arguments:
+The underlying entrypoint [`infer_giga_world.py`](./infer/infer_giga_world.py) exposes the following arguments:
 
 | Argument | Required | Default | Description |
 | --- | :---: | --- | --- |
@@ -726,11 +698,11 @@ The underlying entrypoint [CODE0](./infer/infer_giga_world.py) exposes the follo
 
 | First Frame | Control Video | Generated Rollout |
 | :---: | :---: | :---: |
-| ![input](example/infer_assest/input_image.png) | ▶ [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/example/infer_assest/control_video.mp4) | *(produced under `output/infer_results/`)* |
+| ![input](example/infer_assest/input_image.png) | ▶ [`control_video.mp4`](./example/infer_assest/control_video.mp4) | *(produced under `output/infer_results/`)* |
 
 </div>
 
-> In i2v mode, the model uses [CODE0](./example/infer_assest/input_image.png) as the first frame and consumes the Plücker / Ray Map control signal from `control_video.mp4` in the same directory.
+> In i2v mode, the model uses [`input_image.png`](./example/infer_assest/input_image.png) as the first frame and consumes the Plücker / Ray Map control signal from `control_video.mp4` in the same directory.
 
 For richer visual results, see the project page:
 
@@ -830,10 +802,10 @@ A: Yes. `pretrained_model_name_or_path`, `transformer_model_name_or_path`, `real
 A: Before launching, set `export WANDB_MODE=online` and `export WANDB_API_KEY=...`. The default `offline` mode writes logs locally without uploading.
 
 - **Q: I2V motion is very slow at the beginning — what should I do?**
-A: See the comments in [CODE0](file:///mnt/pfs/users/zhanqian.wu/code/giga-world-release/scripts/training/configs/correct.yaml). Adding the "first-frame + last-frame anchor" data format during training significantly mitigates this. The same YAML also enables the anti-drift switches `corrupt_mode_history: "random"` and `is_add_saturation: true`.
+A: See the comments in [`correct.yaml`](./scripts/training/configs/correct.yaml). Adding the "first-frame + last-frame anchor" data format during training significantly mitigates this. The same YAML also enables the anti-drift switches `corrupt_mode_history: "random"` and `is_add_saturation: true`.
 
 - **Q: Why must diffusers be installed in editable mode?**
-A: This repository makes small custom modifications to diffusers' attention processor / scheduler etc. (see [CODE0](./thirdparty/diffusers)). `pip install -e` is required for those changes to be loaded.
+A: This repository makes small custom modifications to diffusers' attention processor / scheduler etc. (see [`thirdparty/diffusers/`](./thirdparty/diffusers)). `pip install -e` is required for those changes to be loaded.
 
 - **Q: Stage-2 warns "real score model path should be checked"**
 A: Stage-2 DMD needs a frozen real score model. The public config intentionally marks this field as `FIXME`; point `real_score_model_name_or_path` to your Stage-1 merged transformer.
