@@ -88,7 +88,7 @@ training_config:
   mixed_precision: "bf16"
   # ---- Training Resource ----
   max_train_steps: 1000000
-  train_batch_size: 4 #4
+  train_batch_size: 1 #NOTE: 1 FOR TOY DATA, 4 FOR REAL DATA
   gradient_accumulation_steps: 1
   checkpointing_steps: 500
   resume_from_checkpoint: "latest"

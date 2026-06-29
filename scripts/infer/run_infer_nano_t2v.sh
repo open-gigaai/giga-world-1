@@ -6,11 +6,11 @@ SCRIPT_PATH="${PROJECT_ROOT}/infer/infer_giga_world.py"
 
 # ---- Model paths ----
 CONFIG_PATH="${PROJECT_ROOT}/scripts/training/configs/stage_1_post_functrl_wan21.yaml"
-BASE_MODEL_PATH="/mnt/pfs/users/zhanqian.wu/ckpt/stage-1/stage1_final"
-TRANSFORMER_MODEL_PATH="/mnt/pfs/users/zhanqian.wu/ckpt/stage-1/stage1_final"
+BASE_MODEL_PATH="model/stage1/nano/Giga-World-1-nano-stage1_final-diffusers"
+TRANSFORMER_MODEL_PATH="model/stage1/nano/Giga-World-1-nano-stage1_final-diffusers"
 
 # ---- LoRA checkpoint ----
-CHECKPOINT_PATH="/shared_disk/users/zhanqian.wu/output/experiment/helios/ablation_stage_1_post_giga_functrl_lora_0526_task3_overfit/checkpoint-4000"
+CHECKPOINT_PATH="model/stage1/nano/Giga-World-1-nano-stage1_scene_lora"
 
 # ---- Inputs (t2v: no image_path needed) ----
 PROMPT="stack the box ears . The scene features a flat, gray surface with a subtle wood-grain texture, serving as the entire visible background. The only object present is a plain brown cardboard box lying open and centered on this surface. "

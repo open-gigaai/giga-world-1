@@ -30,10 +30,10 @@ data_config:
 
 model_config:
   # ---- Path ----
-  pretrained_model_name_or_path: "/shared_disk/users/zhanqian.wu/model/Wan2.2-Fun-5B-Control-diffusers"
-  transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/wan22-5b_stage-1-16gpus-21k"
+  pretrained_model_name_or_path: model/stage1/pro/Giga-World-1-pro-stage1_final-diffusers #"/shared_disk/users/zhanqian.wu/model/Wan2.2-Fun-5B-Control-diffusers"
+  transformer_model_name_or_path: model/stage1/pro/Giga-World-1-pro-stage1_final-diffusers #"/mnt/pfs/users/zhanqian.wu/ckpt/wan22-5b_stage-1-16gpus-21k"
   subfolder: "transformer" # TODO: subfolder: "transformer_ode"
-  real_score_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/wan22-5b_stage-1-16gpus-21k"  #FIXME: real score model path should be checked
+  real_score_model_name_or_path: model/stage1/pro/Giga-World-1-pro-stage1_final-diffusers #"/mnt/pfs/users/zhanqian.wu/ckpt/wan22-5b_stage-1-16gpus-21k"  
   load_checkpoints_custom: false
   # load_model_path:
   load_dcp: false

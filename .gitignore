@@ -1,5 +1,5 @@
 # ==============================
-# 编译文件 / 缓存
+# Compiled / cache
 # ==============================
 __pycache__/
 *.py[cod]
@@ -13,7 +13,7 @@ ENV/
 .venv/
 
 # ==============================
-# 模型权重 /  checkpoint（超大文件）
+# Model weights / checkpoints (large files)
 # ==============================
 *.pt
 *.pth
@@ -33,13 +33,15 @@ checkpoint*/
 ckpt*/
 
 # ==============================
-# 模型目录（不纳入版本控制）
+# Model directories (excluded from version control)
 # ==============================
 model/
 model/**
+output/
+output/**
 
 # ==============================
-# 日志 / 实验追踪
+# Logs / experiment tracking
 # ==============================
 *.log
 wandb/
@@ -52,7 +54,7 @@ profile
 *.prof
 
 # ==============================
-# 缓存目录
+# Cache directories
 # ==============================
 .cache/
 *.cache*
@@ -64,7 +66,7 @@ cache/
 temp/
 
 # # ==============================
-# # 视频 / 图像 / 媒体（大文件）
+# # Video / images / media (large files)
 # # ==============================
 # *.gif
 # *.bmp
@@ -81,7 +83,7 @@ temp/
 # *.ico
 
 # ==============================
-# 压缩包 / 数据集
+# Archives / datasets
 # ==============================
 *.zip
 *.tar
@@ -95,7 +97,7 @@ demo_data/
 Videoreward/
 
 # ==============================
-# 文档 / 构建包
+# Docs / build packages
 # ==============================
 *.html
 *.pdf
@@ -106,7 +108,7 @@ poetry.lock
 *.egg
 
 # ==============================
-# 系统文件 / 密钥
+# System files / secrets
 # ==============================
 .DS_Store
 *DS_Store
@@ -119,7 +121,7 @@ poetry.lock
 *.swo
 
 # ==============================
-# 配置白名单（必须保留）
+# Config allowlist (must keep)
 # ==============================
 !.gitignore
 !requirements.txt
@@ -129,6 +131,5 @@ poetry.lock
 !*.md
 !*.sh
 
-# 你项目里的特殊大文件目录
+# Project-specific large file directories
 AMT-S.yaml
-bpe_simple_vocab_16e6.txt

@@ -30,11 +30,10 @@ data_config:
 model_config:
   # ---- Path ----
   model_type: "wan2.1"
-  pretrained_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-1/stage1_final"
-  # transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage3_ODE_3v_uni_s0P6k/"
-  transformer_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage1_final_3v_uni_s16k/"
-  subfolder: "transformer" # TODO: subfolder: "transformer_ode"
-  real_score_model_name_or_path: "/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage1_final_3v_uni_s16k"  #FIXME: real score model path should be checked
+  pretrained_model_name_or_path: model/stage1/nano/Giga-World-1-nano-stage1_final-diffusers #"/mnt/pfs/users/zhanqian.wu/ckpt/stage-1/stage1_final"
+  transformer_model_name_or_path: model/stage1/nano/Giga-World-1-nano-stage1_final-diffusers #"/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage1_final_3v_uni_s16k/"
+  subfolder: "transformer"
+  real_score_model_name_or_path: model/stage1/nano/Giga-World-1-nano-stage1_final-diffusers #"/mnt/pfs/users/zhanqian.wu/ckpt/stage-3-init/stage1_final_3v_uni_s16k"
   load_checkpoints_custom: false
   # load_model_path:
   load_dcp: false
