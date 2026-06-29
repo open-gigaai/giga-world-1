@@ -104,6 +104,9 @@ body {
     background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--highlight) 100%);
     color: #fff;
     padding: 5rem 2rem 4rem;
+    min-height: 100vh;
+    min-height: 100svh;
+    box-sizing: border-box;
     text-align: center;
 }
 
