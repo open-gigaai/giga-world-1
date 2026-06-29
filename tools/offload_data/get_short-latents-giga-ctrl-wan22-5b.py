@@ -89,7 +89,7 @@ def save_control_debug_videos(
             f"batch{batch_idx:04d}_sample{sample_idx}_rgb_control.mp4",
         )
 
-        print(f"🎬 [Debug] Saving RGB-Control compare video: {save_path}")
+        print(f"🎬 [Debug] Saving RGB-control comparison video: {save_path}")
         save_debug_video(concat_video, save_path, fps=fps)
 
 
@@ -346,7 +346,7 @@ def main(
     )
 
     if len(dataset) == 0:
-        print("🎉 all samples already processed.")
+        print("🎉 All samples have already been processed.")
         return
 
     sampler = BucketedSampler(
@@ -431,7 +431,7 @@ def main(
             )
 
             if append_mode and is_valid_pt(output_path):
-                print(f"⏭️ skip existing: {uttid}")
+                print(f"⏭️ Skip existing file: {uttid}")
                 continue
 
             valid_uttids.append(uttid)
@@ -444,7 +444,7 @@ def main(
             valid_first_frames_images.append(batch["first_frames_images"][i])
 
         if len(valid_uttids) == 0:
-            print("⏭️ skipping entire batch")
+            print("⏭️ Skipping the entire batch")
             if rank == 0:
                 pbar.update(1)
                 pbar.set_postfix({"batch": idx})
@@ -567,7 +567,7 @@ def main(
             )
 
             if append_mode and is_valid_pt(output_path):
-                print(f"⏭️ skip existing before save: {uttid}")
+                print(f"⏭️ Skip existing file before save: {uttid}")
                 continue
 
             temp_to_save = {
@@ -619,7 +619,28 @@ if __name__ == "__main__":
     parser.add_argument(
         "--pretrained_model_name_or_path",
         type=str,
-        default="/shared_disk/users/zhanqian.wu/model/Wan2.2-Fun-5B-Control-diffusers",
+        default="./pretrained_models/Wan2.2-Fun-5B-Control",
+    )
+
+    parser.add_argument(
+        "--data_root",
+        type=str,
+        default="./data/giga_ctrl",
+        help="Root directory containing metadata jsonl, videos/, and control_videos/.",
+    )
+
+    parser.add_argument(
+        "--metadata_file",
+        type=str,
+        default="helios_giga_ctrl.jsonl",
+        help="Metadata filename under --data_root.",
+    )
+
+    parser.add_argument(
+        "--output_root",
+        type=str,
+        default="./output/latents_short_giga_control",
+        help="Directory to save the output .pt latents.",
     )
 
     parser.add_argument("--debug_dir", type=str, default="./debug_control")
@@ -652,23 +673,19 @@ if __name__ == "__main__":
     device = torch.cuda.current_device()
     world_size = dist.get_world_size()
 
-    base_video_path = "/shared_disk/users/zhanqian.wu/data/train_data/helios_data/giga_ctrl_3view"
+    base_video_path = args.data_root
 
     video_paths = ["videos"]
     control_video_paths = ["control_videos"]
 
-    base_csv_paths = [
-        "/shared_disk/users/zhanqian.wu/data/train_data/helios_data/giga_ctrl_3view",
-    ]
+    base_csv_paths = [args.data_root]
 
-    csv_paths = [
-        "helios_giga_ctrl.jsonl",
-    ]
+    csv_paths = [args.metadata_file]
 
-    base_output_latent_path = "/shared_disk/users/zhanqian.wu/data/train_data/helios_data/giga_ctrl_3view_wan22_5b"
+    base_output_latent_path = args.output_root
 
     output_latent_paths = [
-        "latents_short_giga_control",
+        "",
     ]
 
     resolutions = ["giga_ctrl"]
