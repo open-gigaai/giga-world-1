@@ -393,7 +393,7 @@ The underlying entrypoint [infer_giga_world.py](./infer/infer_giga_world.py) exp
 
 | First Frame | Control Video | Generated Rollout |
 | :---: | :---: | :---: |
-| ![input](example/infer_assest/input_image.png) | ▶ [control_video.mp4](./example/infer_assest/control_video.mp4) | *(produced under `output/infer_results/`)* |
+| ![input](assets/input_image.png) | ▶ [control_video.mp4](./assets/control_video.mp4) | ▶ [i2v_sample.mp4](./assets/i2v_sample.mp4) |
 
 </div>
 
