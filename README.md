@@ -29,70 +29,10 @@
 
 ---
 
-## 📰 Latest Updates
-
-<div align="center">
-
-| Date | Update |
-| :---: | --- |
-| 🆕 **2026-06-29** | 🎉 Initial open-source release of **Giga-World Release**: training (Stage-1 + Stage-2 DMD), inference (i2v / t2v), LoRA merge tool, and Web visualization tool. |
-| 📦 **2026-06-28** | Project page live: [yvonne-oh.github.io/Giga-World-1-projectpage](https://yvonne-oh.github.io/Giga-World-1-projectpage). |
-| 🏆 **2026-06** | 🎓 GigaWorld-1 paper accepted to **CVPR 2026**. See [Citation](#-citation) below. |
-| 📄 **2025-11-25** | GigaWorld-0 (predecessor) released on arXiv: [arxiv.org/abs/2511.19861](https://arxiv.org/abs/2511.19861). |
-
-</div>
-
-> 💡 **Subscribe to releases** — click **Watch ▾ → Custom → Releases** on the GitHub repo to be notified when new weights, datasets, or the WMBench benchmark drop.
-
----
-
-## 📊 Open-Source Progress
-
-> 🟢 **Released** · 🟡 **Beta** · 🔴 **Coming Soon** — last updated 2026-06-29
-
-| Status | Component | Description |
-| :---: | --- | --- |
-| 🟢 | **Training code — Stage-1** | `train_gigaworld_functrl_uni_stage1.py` for Nano (1.3B) and Pro (5B), DeepSpeed ZeRO-2/3 ready — see [§3.1](#31-stage-1-training-controllable-pre-training) |
-| 🟢 | **Training code — Stage-2 DMD** | `train_gigaworld_functrl_uni_stage2_dmd.py` for DMD2 distillation (4–6 steps) — see [§3.2](#32-stage-2-dmd-training-acceleration-distillation) |
-| 🟢 | **Inference (i2v / t2v)** | Nano + Pro one-click scripts, 10 FPS, 33 s rollouts — see [§6](#6--inference) |
-| 🟢 | **Data preprocessing pipeline** | LeRobot-style → GigaWorld format with Qwen3-VL captions + Depth Anything V2 — see [§2.4](#24-lerobot-raw-data-preprocessing-pipeline) |
-| 🟢 | **Toy training datasets** | `example/toy_train_dataset/nano` and `…/pro` for out-of-the-box training — see [§2.3](#23-use-the-bundled-toy-datasets) |
-| 🟢 | **LoRA merge tool** | Unified `uni_merge_lora_for_giga_world_1.py` with HTML merge report — see [§5](#5--model-merge--checkpoint-conversion) |
-| 🟢 | **URDF + Camera-Calibration Web tool** | Three.js dual-page viewer (`:8090/` and `:8090/calib`) — see [§4](#4-%EF%B8%8F-data--trajectory-visualization) |
-| 🟢 | **Custom Triton / Flash kernels** | fp32_rmsnorm, triton_norm, triton_rope, tiled_linear |
-| 🟢 | **🤗 Model weights on Hugging Face** | Nano (1.3B) and Pro (5B) Stage-1 checkpoints — see [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) |
-| 🟢 | **🤗 Toy data on Hugging Face** | Inference assets, raw LeRobot-format toy data, and toy training data — see [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
-| 🟢 | **ModelScope mirrors** | Model and toy data mirrors are available on [ModelScope Model](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) and [ModelScope Dataset](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata) |
-| 🟡 | **Offline latent pre-computation** | `tools/offload_data/get_short-latents-giga-ctrl*.py` — see [§2.5](#25-offline-latent-pre-computation--conversion) |
-| 🔴 | **📊 WMBench benchmark** | Coming soon — 15 fine-grained metrics, leaderboard + VLM judging |
-| 🔴 | **Full 12,980 h pre-training corpus** | The full heterogeneous pre-training dataset (Physical / Robot / Human / Giga) — coming soon |
-| 🔴 | **Stage-3 RL post-training** | 3D RL post-training scripts for stronger 3D scene modeling — coming soon |
-| 🔴 | **Cross-domain checkpoints (NUScenes)** | Autonomous-driving world model checkpoint — coming soon |
-| 🔴 | **Long-horizon video gallery** | ♾️ 10,000+ frame continuous rollout demos — coming soon |
-
-### Release Channels
-
-| Channel | Purpose | Where |
-| --- | --- | --- |
-| 🐙 **GitHub Releases** | Tagged source snapshots with changelogs | [Releases](../../releases) |
-| 🤗 **Hugging Face Model** | Giga-World-1 model weights | [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) |
-| 🤗 **Hugging Face Dataset** | Giga-World-1 toy data | [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
-| 🔷 **ModelScope Model** | ModelScope mirror for model weights | [GigaAI/Giga-World-1](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
-| 🔷 **ModelScope Dataset** | ModelScope mirror for toy data | [GigaAI/Giga-World-1-Toydata](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata) |
-| 📄 **arXiv** | Paper PDF, BibTeX | [arxiv.org/abs/2511.19861](https://arxiv.org/abs/2511.19861) |
-| 🌐 **Project Page** | Videos, leaderboard, demos | [yvonne-oh.github.io/Giga-World-1-projectpage](https://yvonne-oh.github.io/Giga-World-1-projectpage) |
-| 📊 **WMBench** | Public benchmark (coming soon) | *TBA* |
-
-> 🛠️ Want a component to ship sooner? File an issue or open a PR — see [§10 FAQ & Tips](#10--faq--tips).
-
----
-
 ## 📑 Table of Contents
 
 - [📰 Latest Updates](#-latest-updates)
 - [📊 Open-Source Progress](#-open-source-progress)
-- [🌟 Overview](#-overview)
-- [✨ Key Highlights](#-key-highlights)
 - [🏗️ GigaWorld-1 Architecture](#%EF%B8%8F-gigaworld-1-architecture)
 - [1. 📦 Environment Setup](#1--environment-setup)
 - [2. 🗃️ Data Preparation](#2-%EF%B8%8F-data-preparation)
@@ -110,53 +50,55 @@
 
 ---
 
-## 🌟 Overview
-
-> **A systematic study of world models as policy evaluators**, introducing WMBench and a practical design roadmap for building evaluator-oriented world models.
-> 
-> *— GigaAI, CVPR 2026*
-
-Policy evaluation remains a fundamental bottleneck for robot foundation model development. Unlike large language models — which can be screened rapidly through online benchmarks — embodied policies typically require repeated real-world rollouts that are **slow, expensive, and limited by hardware and human supervision**.
-
-This motivates using **world models as policy evaluators**: if a learned world model can faithfully preserve the relative success and failure of policy rollouts, it can substantially reduce the cost of policy iteration.
-
-In this work, we present a systematic study of world models for robot policy evaluation and introduce **WMBench**, a benchmark built from real-robot teleoperation data and paired policy rollouts across eight manipulation task families. Using this benchmark, we study **ten video world models**, **three action representation schemes**, and more than **20,000 world-model policy rollouts** paired with real-world executions.
-
-**GigaWorld-1** is the practical instantiation of this roadmap — a 1.3B/5B autoregressive diffusion-transformer world generator with parameter-efficient LoRA adaptation, designed for evaluator-oriented post-training rather than generic video generation.
-
-```text
-Raw robot data
-    └── Data pipeline (LeRobot → GigaWorld format)
-            └── Toy / public training format
-                    ├── Stage-1 training (LoRA)
-                    ├── Stage-2 DMD training
-                    ├── LoRA / partial checkpoint merge
-                    └── i2v / t2v inference
-```
-
----
-
-## ✨ Key Highlights
+## 📰 Latest Updates
 
 <div align="center">
 
-| 🧊 **1.3B / 5B** Model Variants | ⚡ **>20 FPS** Flash Inference | 💾 **<24 GB** VRAM (single RTX 4090) | ♾️ **>10 min** Infinite Horizon |
-| :---: | :---: | :---: | :---: |
-| Nano & Pro configurations | Stage-2 DMD distillation | Consumer-grade hardware | 10,000+ frames autoregressive rollout |
+| Date | Update |
+| :---: | --- |
+| 🧑‍💻 **2026-07** | Partial training, inference, data processing, and model utility code was open-sourced. |
+| 📦 **2026-07** | Partial model weights, toy data, and download tools were released. |
+| 📖 **2026-07** | The GigaWorld-1 technical report was released. |
+| 🏆 **2026-03** | We hosted the CVPR 2026 World Model Challenge. See [CVPR-2026-Workshop-WM-Track](https://github.com/open-gigaai/CVPR-2026-Workshop-WM-Track/tree/main/). |
 
 </div>
 
-- **Unified training workflow** — the same `train_*.py` + YAML setup handles both `wan2.1` (Nano) and `wan2.2_5b` (Pro)
-- **Efficient LoRA fine-tuning** — default `lora_rank=128` (Stage-1) with flexible target / exclude module lists
-- **Multi-term temporal memory** — `history_sizes=[16, 2, 1]` + `latent_window_size=[9]` for long-horizon consistency with short-horizon responsiveness
-- **DMD2 step-distillation** — Stage-2 compresses ~20 denoising steps to 4–6, hitting **> 20 FPS on a single H20**
-- **Evaluator-oriented post-training** — preserves real-robot rollout success/failure patterns rather than chasing short-horizon visual realism
-- **Cross-domain transfer** — rapidly adapts to autonomous driving (NUScenes) and other domains
-- **Pixel-aligned multi-view control** — head and wrist views consume view-specific Plücker / Ray Map control signals
-- **Open-source toy datasets** — drop-in Stage-1 / Stage-2 training data
-- **Offline-by-default W&B** — `WANDB_MODE=offline` for safer public releases
-- **Merged transformer export** — one-shot LoRA + patch merge into a clean, deployment-ready transformer
-- **Web visualization tool** — dual pages (URDF Viewer + Camera Calibration) with a Three.js frontend
+> 💡 **Subscribe to releases** — click **Watch ▾ → Custom → Releases** on the GitHub repo to be notified when new weights, datasets, or the WMBench benchmark drop.
+
+---
+
+## 📊 Open-Source Progress
+
+> 🟢 **Released** · 🟡 **Beta** · 🔴 **Coming Soon** — last updated 2026-07
+
+| Status | Component | Description |
+| :---: | --- | --- |
+| 🟢 | **Stage-1 weights (Nano / Pro)** | Released on [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) and [ModelScope](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
+| 🟢 | **Training code** | Stage-1: `train_gigaworld_functrl_uni_stage1.py` for Nano (1.3B) and Pro (5B), DeepSpeed ZeRO-2/3 ready — see [§3.1](#31-stage-1-training-controllable-pre-training); Stage-2: `train_gigaworld_functrl_uni_stage2_dmd.py` for DMD2 distillation (4–6 steps) — see [§3.2](#32-stage-2-dmd-training-acceleration-distillation) |
+| 🟢 | **Inference code (i2v / t2v)** | Nano + Pro one-click scripts, 10 FPS, 33 s rollouts — see [§6](#6--inference) |
+| 🟡 | **Data preprocessing pipeline & toy data** | LeRobot-style → GigaWorld format with Qwen3-VL captions + Depth Anything V2 — see [§2.4](#24-lerobot-raw-data-preprocessing-pipeline); toy data: [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
+| 🟢 | **Tools** | LoRA merge / checkpoint conversion, visualization, and offline latent utilities — see [§4](#4-%EF%B8%8F-data--trajectory-visualization), [§5](#5--model-merge--checkpoint-conversion), [§2.5](#25-offline-latent-pre-computation--conversion) |
+| 🔴 | **📊 WMBench benchmark** | Coming soon — 15 fine-grained metrics, leaderboard + VLM judging |
+| 🔴 | **Stage-2 distilled weights** | Distilled Nano / Pro checkpoints — coming soon |
+| 🔴 | **RL post-training** | 3D RL post-training scripts for stronger 3D scene modeling — coming soon |
+| 🔴 | **Other-domain weights and training code** | Additional domain checkpoints and corresponding training recipes — coming soon |
+| 🔴 | **Acceleration framework** | Optimized distributed inference / training acceleration stack — coming soon |
+
+### 🌐 Release Channels
+
+| Channel | Purpose | Where |
+| --- | --- | --- |
+| 🐙 **GitHub Releases** | Tagged source snapshots with changelogs | <a href="../../releases"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub Repository"></a> |
+| 🤗 **Hugging Face Model** | Giga-World-1 model weights | <a href="https://huggingface.co/GigaAI-Research/Giga-World-1"><img src="https://img.shields.io/badge/Hugging%20Face-Model-FFD21E?style=flat-square&logo=huggingface&logoColor=black" alt="Hugging Face Model"></a> |
+| 🤗 **Hugging Face Dataset** | Giga-World-1 toy data | <a href="https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata"><img src="https://img.shields.io/badge/Hugging%20Face-Dataset-FFD21E?style=flat-square&logo=huggingface&logoColor=black" alt="Hugging Face Dataset"></a> |
+| 🔷 **ModelScope Model** | ModelScope mirror for model weights | <a href="https://modelscope.cn/models/GigaAI/Giga-World-1/summary"><img src="https://img.shields.io/badge/ModelScope-Model-624AFF?style=flat-square&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PHJlY3Qgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiByeD0iMiIgZmlsbD0iIzYyNEFGRiIvPjwvc3ZnPg%3D%3D&logoColor=white" alt="ModelScope Model"></a> |
+| 🔷 **ModelScope Dataset** | ModelScope mirror for toy data | <a href="https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata"><img src="https://img.shields.io/badge/ModelScope-Dataset-624AFF?style=flat-square&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PHJlY3Qgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiByeD0iMiIgZmlsbD0iIzYyNEFGRiIvPjwvc3ZnPg%3D%3D&logoColor=white" alt="ModelScope Dataset"></a> |
+| 📄 **arXiv** | Paper PDF, BibTeX | <a href="https://arxiv.org/abs/2511.19861"><img src="https://img.shields.io/badge/arXiv-2511.19861-b31b1b?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv Paper"></a> |
+| 🌐 **Project Page** | Videos, leaderboard, demos | <a href="https://yvonne-oh.github.io/Giga-World-1-projectpage">🌐 Project Page</a> |
+| 📊 **WMBench** | Public benchmark (coming soon) | *TBA* |
+| 🆘 **Support** | Issues and discussions | <a href="../../issues"><img src="https://img.shields.io/badge/GitHub-Issues-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub Issues"></a> |
+
+> 🛠️ Want a component to ship sooner? File an issue or open a PR — see [§10 FAQ & Tips](#10--faq--tips).
 
 ---
 
