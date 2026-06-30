@@ -37,35 +37,20 @@
             <div class="scroll-dot" data-section="findings" aria-selected="false">
                 <span class="scroll-dot-label">Findings</span>
             </div>
-            <div class="scroll-dot" data-section="wmbench" aria-selected="false">
-                <span class="scroll-dot-label">WMBench</span>
-            </div>
             <div class="scroll-dot" data-section="data" aria-selected="false">
                 <span class="scroll-dot-label">Data</span>
             </div>
             <div class="scroll-dot" data-section="model" aria-selected="false">
-                <span class="scroll-dot-label">Model</span>
-            </div>
-            <div class="scroll-dot" data-section="cc" aria-selected="false">
-                <span class="scroll-dot-label">CC</span>
-            </div>
-            <div class="scroll-dot" data-section="rl" aria-selected="false">
-                <span class="scroll-dot-label">RL</span>
-            </div>
-            <div class="scroll-dot" data-section="ood" aria-selected="false">
-                <span class="scroll-dot-label">OOD</span>
+                <span class="scroll-dot-label">Model &amp; Experiments</span>
             </div>
             <div class="scroll-dot" data-section="vlm-evaluator" aria-selected="false">
                 <span class="scroll-dot-label">Evaluator</span>
             </div>
-            <div class="scroll-dot" data-section="transfer" aria-selected="false">
-                <span class="scroll-dot-label">Transfer</span>
+            <div class="scroll-dot" data-section="wmbench" aria-selected="false">
+                <span class="scroll-dot-label">WMBench</span>
             </div>
-            <div class="scroll-dot" data-section="flash" aria-selected="false">
-                <span class="scroll-dot-label">Flash</span>
-            </div>
-            <div class="scroll-dot" data-section="team" aria-selected="false">
-                <span class="scroll-dot-label">Team</span>
+            <div class="scroll-dot" data-section="citation" aria-selected="false">
+                <span class="scroll-dot-label">Citation</span>
             </div>
         </nav>
 
@@ -76,16 +61,11 @@
                 <ul class="nav-links">
                     <li><a href="#abstract">Abstract</a></li>
                     <li><a href="#findings">Findings</a></li>
-                    <li><a href="#wmbench">WMBench</a></li>
                     <li><a href="#data">Data</a></li>
-                    <li><a href="#model">Model</a></li>
-                    <li><a href="#cc">CC</a></li>
-                    <li><a href="#rl">RL</a></li>
-                    <li><a href="#ood">OOD</a></li>
+                    <li><a href="#model">Model &amp; Experiments</a></li>
                     <li><a href="#vlm-evaluator">Evaluator</a></li>
-                    <li><a href="#transfer">Transfer</a></li>
-                    <li><a href="#flash">Flash</a></li>
-                    <li><a href="#team">Team</a></li>
+                    <li><a href="#wmbench">WMBench</a></li>
+                    <li><a href="#citation">Citation</a></li>
                 </ul>
             </div>
         </nav>
@@ -106,7 +86,7 @@
                 <span>A systematic study of world models as policy evaluators, introducing WMBench and a practical
                     design roadmap for building evaluator-oriented world models.</span>
             </p>
-            <p class="venue">GigaAI &nbsp;|&nbsp; CVPR 2026</p>
+            <p class="venue"><strong>GigaAI</strong></p>
             <div class="btn-group">
                 <a class="btn btn-primary btn-arxiv btn-with-logo" href="#"><span class="btn-logo btn-logo-arxiv">arXiv</span>Paper (PDF)</a>
                 <a class="btn btn-secondary btn-with-logo" href="#"><svg class="btn-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.29 9.4 7.86 10.93.58.1.79-.25.79-.56v-2.14c-3.2.7-3.87-1.36-3.87-1.36-.52-1.34-1.28-1.7-1.28-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.76 2.7 1.25 3.36.95.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.17 1.18A10.9 10.9 0 0 1 12 6.07c.98 0 1.96.13 2.88.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.8 1.19 1.83 1.19 3.08 0 4.42-2.69 5.39-5.25 5.67.42.36.79 1.07.79 2.16v3.14c0 .31.21.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>Code</a>
@@ -122,7 +102,7 @@
         <!-- Teaser Figure -->
         <section id="teaser" class="section" style="padding-top: 2rem; padding-bottom: 0;">
             <div class="fig-container" style="margin: 0 auto;">
-                <img src="images/teaser/teaser_page-0001.jpg" alt="GigaWorld-1 teaser" style="width: 100%; max-width: 1100px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.12);" />
+                <img src="images/teaser/teaser_page-0001.png" alt="GigaWorld-1 teaser" style="width: 100%; max-width: 1100px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.12);" />
             </div>
         </section>
 
@@ -132,46 +112,15 @@
             <div class="section-divider"></div>
             <div class="abstract-text">
                 <p>
-                    Evaluation remains a fundamental bottleneck for robot foundation model development. Unlike large
-                    language models,
-                    where models can be screened quickly through efficient online benchmarks, embodied policies
-                    often
-                    require repeated
-                    real-world rollouts that are slow, expensive, and limited by hardware availability and human
-                    supervision. This
-                    motivates the use of world models as policy evaluators: if a learned world model can faithfully
-                    preserve the
-                    relative success and failure of policy rollouts, it could substantially reduce the cost of
-                    policy
-                    iteration.
+                    Evaluating embodied robot foundation models remains a <strong>critical bottleneck</strong>: unlike digital AI systems, robot policies must be tested through slow, costly, and hardware-limited real-world rollouts. This motivates the use of <strong>world models</strong> as scalable surrogate evaluators, but what makes a world model reliable for policy assessment is still not well understood.
                 </p>
                 <br />
                 <p>
-                    In this work, we present a systematic study of world models for robot policy evaluation and
-                    introduce
-                    <strong>WMBench</strong>, a benchmark built from real-robot teleoperation data and paired policy
-                    rollouts across
-                    eight manipulation task families. Using this benchmark, we study <strong>ten video world
-                        models</strong>,
-                    <strong>three action representation schemes</strong>, and more than <strong>20,000 world-model
-                        policy rollouts</strong>
-                    together with paired real-world executions.
+                    We introduce <strong>WMBench</strong>, a real-robot benchmark built from teleoperation data and matched policy rollouts, enabling controlled comparisons across model families, action encodings, rollout horizons, and evaluation metrics. Using WMBench, we analyze <strong>7 video world models</strong>, <strong>4 action representations</strong>, and <strong>324,000+ simulated rollouts</strong> paired with real robot executions, further supported by <strong>12,000+ hours</strong> of training videos and CVPR 2026 GigaBrain Challenge submissions.
                 </p>
                 <br />
                 <p>
-                    Our experiments reveal three main findings. First, evaluator quality depends much more on
-                    long-horizon,
-                    action-faithful rollout consistency than on short-horizon visual realism alone. Second,
-                    pretraining
-                    and data
-                    composition matter not only through scale, but through balancing broad world knowledge with
-                    robot-specific
-                    controllability. Third, architectural choices such as action representation, memory, and
-                    evaluator-oriented
-                    post-training substantially affect agreement with real-world outcomes. Based on these findings,
-                    we
-                    derive a
-                    practical design roadmap and instantiate it in <strong>GigaWorld-1</strong>.
+                    Our study shows that evaluator quality is driven less by short-term visual realism and more by <strong>long-horizon, action-faithful rollout consistency</strong>. It also highlights the importance of balancing <strong>general world knowledge and robot controllability</strong>, as well as architecture choices such as action encoding, memory, and evaluator-focused post-training. These insights lead to <strong>GigaWorld-1</strong>, a world model optimized for scalable robot policy evaluation.
                 </p>
             </div>
 
@@ -182,7 +131,7 @@
 <!-- Key Findings -->
         <div class="section-alt">
             <section id="findings" class="section" style="padding-top: 0; padding-bottom: 0;">
-                <h2>Key Findings</h2>
+                <h2>Key Features</h2>
                 <div class="section-divider"></div>
 
                 <!-- Key Metrics -->
@@ -192,7 +141,7 @@
                         <span class="counter-label">Data</span>
                     </div>
                     <div class="counter-item">
-                        <span class="counter-value" data-target="20" data-suffix="+">0</span>
+                        <span class="counter-value" data-target="7" data-suffix="+">0</span>
                         <span class="counter-label">Model Evaluations</span>
                     </div>
                     <div class="counter-item">
@@ -222,13 +171,13 @@
                 <h2>Data Sources &amp; Curation</h2>
                 <div class="section-divider"></div>
                 <p style="text-align: center; color: var(--text-light); max-width: 800px; margin: 0 auto 2rem;">
-                    We construct a heterogeneous corpus of approximately <strong>12,980 hours</strong> from four
-                    complementary sources,
-                    covering broad visual-physical priors and embodiment-specific manipulation behaviors.
+                    We build a <strong>12,980-hour</strong> heterogeneous training corpus from internet and physics videos,
+                    open-source robot datasets, egocentric human-hand data, and Giga-collected demonstrations,
+                    combining broad visual-physical priors with embodiment-specific manipulation behaviors.
                 </p>
 
                 <div class="data-video-wall-block">
-                    <div class="data-video-wall-label">Data Snapshot — Sample Trajectories</div>
+                    <div class="data-video-wall-label">Data Snapshot</div>
                     <div class="data-video-wall-panel">
                         <img src="video/video_Wall/video_wall.gif?v=2" alt="Robot manipulation video wall" />
                         <div class="data-video-wall-overlay">
@@ -297,27 +246,28 @@
 
 <!-- Model Architecture -->
         <section id="model" class="section">
-            <h2>GigaWorld-1: Model Architecture</h2>
+            <h2>GigaWorld-1: Model and Experiments</h2>
             <div class="section-divider"></div>
-            <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 2rem;">
-                GigaWorld-1 is built as an autoregressive diffusion-transformer world generator with
-                parameter-efficient
-                LoRA adaptation,
-                designed for evaluator-oriented policy evaluation rather than generic video generation.
-            </p>
-
             <div class="fig-container">
-                <img src="images/model/model_arch_compare.png" alt="Architecture Comparison" />
+                <img src="images/model/model_arch.png" alt="GigaWorld-1 Model Architecture" />
                 <p class="fig-caption">
-                    <strong>Figure:</strong> Architecture comparison of GigaWorld-1 against representative video
-                    world model
-                    designs, highlighting the differences in action conditioning, memory mechanism, and
-                    evaluator-oriented
-                    post-training.
+                    <strong>Figure:</strong> Overall architecture of GigaWorld-1, an autoregressive diffusion-transformer
+                    world generator adapted with LoRA. Historical frames, future noisy latents, and temporally aligned
+                    controls such as actions, depth, semantic maps, and captions are fused for embodied rollout generation;
+                    each generated window is decoded and appended back into the rollout history.
                 </p>
             </div>
 
             <h3 class="control-row-label">Evaluator Benchmark — WMBench Leaderboard</h3>
+            <div class="fig-container">
+                <img src="images/model/model_arch_compare.png" alt="Architecture Comparison" />
+                <p class="fig-caption">
+                    <strong>Figure:</strong> Left: average score across seven evaluation metrics. Right: per-metric
+                    radar comparison. GigaWorld-1-Nano achieves the best overall score and is especially strong in
+                    JEPA Similarity, Semantic Alignment, Subject Consistency, and Trajectory Accuracy.
+                </p>
+            </div>
+
             <div class="leaderboard-wrap">
                 <div class="lb-legend">
                     <span class="lb-legend-item"><span class="lb-legend-swatch lb-legend-green"></span>1st</span>
@@ -456,7 +406,7 @@
             </p>
 
             <!-- Precise Multi-View Control + Trajectory Accuracy: two-column layout -->
-            <h3 class="control-row-label">Control Quality — Trajectory &amp; Multi-View</h3>
+            <h3 class="control-row-label">Multi-View Trajectory Accuracy</h3>
             <div class="control-row">
                 <div class="control-acc-col">
                     <div class="fig-container" style="margin: 0;">
@@ -475,26 +425,13 @@
                     </div>
                     <p class="fig-caption">
                         <strong>Precise Multi-View Control.</strong> Pixel-aligned, view-specific control
-                        signals keep every camera anchored to the same underlying action — head view follows the
-                        EE pose while the wrist view tracks its own ray map, so multi-view rollouts stay
-                        temporally and geometrically consistent over long horizons.
+                        signals keep every camera anchored to the same underlying action.
                     </p>
                 </div>
             </div>
-        </section>
 
-        
-
-<!-- Closed-Loop Control -->
-        <section id="cc" class="section">
-            <h2>Closed-Loop Control <span class="title-suffix">(CC)</span></h2>
-            <div class="section-divider"></div>
-            <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 2rem;">
-                We further evaluate the world model under closed-loop control, where the generated
-                observation is fed back into the policy to produce the next action. The following
-                rollouts show how the model behaves across different manipulation tasks.
-            </p>
-
+            <div id="cc" class="model-subsection">
+            <h3 class="model-experiment-title">Closed-Loop Policy Consistency</h3>
             <div class="cc-tabs cc-section-tabs" role="tablist">
                 <button class="cc-tab active" role="tab" data-tab="task3" aria-selected="true">Fold the box</button>
                 <button class="cc-tab" role="tab" data-tab="task1" aria-selected="false">Put banana in basket</button>
@@ -507,15 +444,13 @@
                     <div class="fig-container cc-correlation-figure">
                         <img src="images/exp/cc.png" alt="Closed-loop success-rate correlation" />
                         <p class="fig-caption">
-                            <strong>Closed-loop Success Correlation.</strong> Linear correlation between
-                            world-model rollout scores and real-world closed-loop policy success rate.
+                            <strong>Closed-loop Success Correlation</strong>
                         </p>
                     </div>
                     <div class="fig-container cc-correlation-figure">
                         <img src="images/exp/cc_rate.png" alt="Closed-loop success-rate per model" />
                         <p class="fig-caption">
-                            <strong>Closed-loop Success Rate.</strong> Closed-loop success rate per
-                            model across the four manipulation task families.
+                            <strong>Closed-loop Success Rate</strong>
                         </p>
                     </div>
                 </div>
@@ -626,141 +561,70 @@
             </div>
                 </div>
             </div>
-        </section>
+        </div>
 
-
-        
-
-<!-- RL Results -->
-        <section id="rl" class="section">
-            <h2>3D Reinforcement Learning</h2>
-            <div class="section-divider"></div>
-            <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 2rem;">
-                Our reinforcement learning strategy strengthens the model's 3D scene modeling capability,
-                leading to more faithful physical dynamics in generated rollouts.
-                Across five representative cases, ours consistently outperforms the backbone baseline.
-            </p>
-
-            <div class="rl-carousel" data-interval="7000">
-                <div class="rl-dots" aria-label="RL case indicators">
-                    <button class="rl-dot active" aria-label="Go to case 1">Case 1</button>
-                    <button class="rl-dot" aria-label="Go to case 2">Case 2</button>
-                    <button class="rl-dot" aria-label="Go to case 3">Case 3</button>
-                    <button class="rl-dot" aria-label="Go to case 4">Case 4</button>
-                    <button class="rl-dot" aria-label="Go to case 5">Case 5</button>
-                </div>
-
-                <div class="rl-case-layout">
-                    <div class="rl-pipeline-col">
-                        <figure class="rl-pipeline-figure">
-                            <img src="images/rl/rl.png" alt="RL pipeline" />
-                        </figure>
-                    </div>
-                    <div class="rl-videos-col">
-                        <div class="rl-videos-carousel">
-                            <div class="rl-track">
-                                <div class="rl-slide active">
-                                    <div class="rl-video-stack">
-                                        <div class="video-cell">
-                                            <div class="video-cell-title">backbone</div>
-                                            <div class="video-card">
-                                                <video src="video/rl_video/ep00002_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video>
-                                            </div>
-                                        </div>
-                                        <div class="video-cell">
-                                            <div class="video-cell-title">ours</div>
-                                            <div class="video-card">
-                                                <video src="video/rl_video/ep00002.mp4" autoplay muted loop playsinline preload="metadata"></video>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="rl-slide">
-                                    <div class="rl-video-stack">
-                                        <div class="video-cell">
-                                            <div class="video-cell-title">backbone</div>
-                                            <div class="video-card">
-                                                <video src="video/rl_video/ep00018_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video>
-                                            </div>
-                                        </div>
-                                        <div class="video-cell">
-                                            <div class="video-cell-title">ours</div>
-                                            <div class="video-card">
-                                                <video src="video/rl_video/ep00018.mp4" autoplay muted loop playsinline preload="metadata"></video>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="rl-slide">
-                                    <div class="rl-video-stack">
-                                        <div class="video-cell">
-                                            <div class="video-cell-title">backbone</div>
-                                            <div class="video-card">
-                                                <video src="video/rl_video/ep00029_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video>
-                                            </div>
-                                        </div>
-                                        <div class="video-cell">
-                                            <div class="video-cell-title">ours</div>
-                                            <div class="video-card">
-                                                <video src="video/rl_video/ep00029.mp4" autoplay muted loop playsinline preload="metadata"></video>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="rl-slide">
-                                    <div class="rl-video-stack">
-                                        <div class="video-cell">
-                                            <div class="video-cell-title">backbone</div>
-                                            <div class="video-card">
-                                                <video src="video/rl_video/ep00044_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video>
-                                            </div>
-                                        </div>
-                                        <div class="video-cell">
-                                            <div class="video-cell-title">ours</div>
-                                            <div class="video-card">
-                                                <video src="video/rl_video/ep00044.mp4" autoplay muted loop playsinline preload="metadata"></video>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="rl-slide">
-                                    <div class="rl-video-stack">
-                                        <div class="video-cell">
-                                            <div class="video-cell-title">backbone</div>
-                                            <div class="video-card">
-                                                <video src="video/rl_video/ep00051_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video>
-                                            </div>
-                                        </div>
-                                        <div class="video-cell">
-                                            <div class="video-cell-title">ours</div>
-                                            <div class="video-card">
-                                                <video src="video/rl_video/ep00051.mp4" autoplay muted loop playsinline preload="metadata"></video>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <div id="rl" class="model-subsection">
+            <h3 class="model-experiment-title">Physically Consistent World Model</h3>
+            <div class="rl-case-grid">
+                <div class="rl-case-card">
+                    <div class="rl-video-stack">
+                        <div class="video-cell">
+                            <div class="video-card"><div class="video-label">backbone</div><video src="video/rl_video/ep00002_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+                        </div>
+                        <div class="video-cell">
+                            <div class="video-card"><div class="video-label success">ours</div><video src="video/rl_video/ep00002.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
                         </div>
                     </div>
                 </div>
-
+                <div class="rl-case-card">
+                    <div class="rl-video-stack">
+                        <div class="video-cell">
+                            <div class="video-card"><div class="video-label">backbone</div><video src="video/rl_video/ep00018_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+                        </div>
+                        <div class="video-cell">
+                            <div class="video-card"><div class="video-label success">ours</div><video src="video/rl_video/ep00018.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rl-case-card">
+                    <div class="rl-video-stack">
+                        <div class="video-cell">
+                            <div class="video-card"><div class="video-label">backbone</div><video src="video/rl_video/ep00029_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+                        </div>
+                        <div class="video-cell">
+                            <div class="video-card"><div class="video-label success">ours</div><video src="video/rl_video/ep00029.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rl-case-card">
+                    <div class="rl-video-stack">
+                        <div class="video-cell">
+                            <div class="video-card"><div class="video-label">backbone</div><video src="video/rl_video/ep00044_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+                        </div>
+                        <div class="video-cell">
+                            <div class="video-card"><div class="video-label success">ours</div><video src="video/rl_video/ep00044.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rl-case-card">
+                    <div class="rl-video-stack">
+                        <div class="video-cell">
+                            <div class="video-card"><div class="video-label">backbone</div><video src="video/rl_video/ep00051_backbone.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+                        </div>
+                        <div class="video-cell">
+                            <div class="video-card"><div class="video-label success">ours</div><video src="video/rl_video/ep00051.mp4" autoplay muted loop playsinline preload="metadata"></video></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
 
-<!-- OOD Generalization -->
-        <div class="section-alt">
-            <section id="ood" class="section" style="padding-top: 0; padding-bottom: 0;">
-                <h2>OOD Generalization</h2>
-                <div class="section-divider"></div>
+            <div id="ood" class="model-subsection">
+                <h3 class="model-experiment-title">OOD Generalization</h3>
                 <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 2rem;">
-                    Beyond the in-distribution WMBench, we probe the world model under out-of-distribution
-                    conditions along four axes: novel action trajectories, unseen background materials,
-                    unseen foreground containers, and unseen food categories. The model is expected to
-                    preserve rollout consistency across all of these shifts.
+                    Beyond in-distribution WMBench, we test <strong>OOD rollout consistency</strong> across
+                    <strong>novel actions</strong>, <strong>unseen backgrounds</strong>, <strong>new containers</strong>,
+                    and <strong>unseen food categories</strong>.
                 </p>
 
                 <div class="ood-tabs" role="tablist">
@@ -873,206 +737,10 @@
                         </div>
                     </div>
                 </div>
-            </section>
-        </div>
-
-        
-
-<!-- VLM-assisted Rollout Evaluator -->
-        <section id="vlm-evaluator" class="section">
-            <h2>VLM-assisted Rollout Evaluator</h2>
-            <div class="section-divider"></div>
-            <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 2rem;">
-                ..............
-            </p>
-
-            <div class="vlm-tabs" role="tablist">
-                <button class="vlm-tab active" role="tab" data-tab="score1" aria-selected="true">Score 1</button>
-                <button class="vlm-tab" role="tab" data-tab="score2" aria-selected="false">Score 2</button>
-                <button class="vlm-tab" role="tab" data-tab="score3" aria-selected="false">Score 3</button>
             </div>
 
-            <div class="vlm-panel active" role="tabpanel" data-panel="score1">
-                <div class="video-grid video-grid--2col vlm-eval-grid">
-                    <div class="video-card vlm-video-card">
-                        <video src="video/vlm_evaluator/score1/score1_01.mp4" controls autoplay muted loop playsinline preload="metadata"></video>
-                        <div class="vlm-caption">Put panda into pink plate.</div>
-                        <div class="vlm-score-strip">
-                            <span><strong>GT</strong>1</span><span><strong>Pred</strong>1</span><span><strong>Match</strong>0.763</span><span><strong>Levels</strong>All levels match</span><span><strong>Reason</strong>0.472</span>
-                        </div>
-                        <table class="vlm-eval-table">
-                            <tbody>
-                                <tr><th>Overall Video Quality</th><td><span class="vlm-badge medium">Medium</span><p>Video is split into three views, but all are shaky and blurry with frequent motion blur and fast panning.</p></td><td><span class="vlm-badge medium">Medium</span><p>Video is blurry and shaky, but objects (panda, plates, banana) are identifiable across all three views.</p></td><td>0.355</td></tr>
-                                <tr><th>Instruction Following</th><td><span class="vlm-badge poor">Poor</span><p>The robot arm attempts to pick up a panda but fails to place it into the pink plate; the panda remains on the table.</p></td><td><span class="vlm-badge poor">Poor</span><p>The robot arm attempts to grasp the panda but fails to place it into the pink plate; the panda remains on the table.</p></td><td>0.863</td></tr>
-                                <tr><th>Physical Adherence</th><td><span class="vlm-badge medium">Medium</span><p>Contact is attempted but unstable; the panda is not securely grasped or placed, and final state shows panda outside the plate.</p></td><td><span class="vlm-badge medium">Medium</span><p>The robot arm makes contact with the panda, but the grasp is unstable and the panda is not lifted or moved toward the plate.</p></td><td>0.467</td></tr>
-                            </tbody>
-                        </table>
-                        <div class="vlm-reasons"><div><strong>GT Reason</strong><p>The robot fails to place the panda into the pink plate; the panda is not inside the plate in the final state. Video quality is shaky and blurry, but the failed task is clear.</p></div><div><strong>Pred Reason</strong><p>The robot arm attempts to grasp the panda but fails to lift or move it into the pink plate. The panda remains on the table, and the final state does not show the task completed.</p></div></div>
-                    </div>
-                    <div class="video-card vlm-video-card">
-                        <video src="video/vlm_evaluator/score1/score1_02.mp4" controls autoplay muted loop playsinline preload="metadata"></video>
-                        <div class="vlm-caption">Put green bowl into pink plate.</div>
-                        <div class="vlm-score-strip">
-                            <span><strong>GT</strong>1</span><span><strong>Pred</strong>1</span><span><strong>Match</strong>0.766</span><span><strong>Levels</strong>All levels match</span><span><strong>Reason</strong>0.473</span>
-                        </div>
-                        <table class="vlm-eval-table">
-                            <tbody>
-                                <tr><th>Overall Video Quality</th><td><span class="vlm-badge poor">Poor</span><p>Video is extremely blurry, shaky, and lacks clear object details, making it difficult to identify objects or actions.</p></td><td><span class="vlm-badge poor">Poor</span><p>Video is extremely blurry, shaky, and lacks clear object visibility, making it difficult to discern actions or final states.</p></td><td>0.737</td></tr>
-                                <tr><th>Instruction Following</th><td><span class="vlm-badge poor">Poor</span><p>The task 'put green bowl into pink plate' is not completed; the final state does not show a green bowl inside a pink plate.</p></td><td><span class="vlm-badge poor">Poor</span><p>The video does not clearly show the green bowl being placed into the pink plate; the final state is ambiguous and not visible.</p></td><td>0.503</td></tr>
-                                <tr><th>Physical Adherence</th><td><span class="vlm-badge unclear">Unclear</span><p>Due to severe visual corruption, it's impossible to assess physical interactions, contact, or stability.</p></td><td><span class="vlm-badge unclear">Unclear</span><p>Due to severe visual corruption and lack of clear contact or placement, physical interactions cannot be reliably assessed.</p></td><td>0.478</td></tr>
-                            </tbody>
-                        </table>
-                        <div class="vlm-reasons"><div><strong>GT Reason</strong><p>The video is too corrupted to clearly identify objects or actions. The task is not completed, and the final state is ambiguous due to poor video quality.</p></div><div><strong>Pred Reason</strong><p>The video is severely corrupted with extreme blur and motion, preventing clear identification of objects or actions. The task of putting the green bowl into the pink plate is not visibly completed, and the final state is ambiguous. Therefore, the task is failed.</p></div></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="vlm-panel" role="tabpanel" data-panel="score2">
-                <div class="video-grid video-grid--2col vlm-eval-grid">
-                    <div class="video-card vlm-video-card">
-                        <video src="video/vlm_evaluator/score2/score2_01.mp4" controls autoplay muted loop playsinline preload="metadata"></video>
-                        <div class="vlm-caption">Put banana into basket.</div>
-                        <div class="vlm-score-strip">
-                            <span><strong>GT</strong>2</span><span><strong>Pred</strong>2</span><span><strong>Match</strong>0.801</span><span><strong>Levels</strong>All levels match</span><span><strong>Reason</strong>0.661</span>
-                        </div>
-                        <table class="vlm-eval-table">
-                            <tbody>
-                                <tr><th>Overall Video Quality</th><td><span class="vlm-badge medium">Medium</span><p>The video is clear with consistent views from three cameras, but the action is partially obscured by robotic arms and objects.</p></td><td><span class="vlm-badge medium">Medium</span><p>Video is clear but shows a split view; the right panel is often blurry or shows only a partial object.</p></td><td>0.290</td></tr>
-                                <tr><th>Instruction Following</th><td><span class="vlm-badge medium">Medium</span><p>The robot arm picks up the banana and moves it toward the basket, but the final placement is not clearly visible.</p></td><td><span class="vlm-badge medium">Medium</span><p>The robot arm picks up the banana and moves it toward the basket, but the final placement is not clearly shown.</p></td><td>0.922</td></tr>
-                                <tr><th>Physical Adherence</th><td><span class="vlm-badge medium">Medium</span><p>The banana is grasped and moved plausibly, but the interaction with the basket is not fully shown, leaving stability and containment ambiguous.</p></td><td><span class="vlm-badge medium">Medium</span><p>The banana is grasped and moved, but the video ends before confirming stable containment in the basket.</p></td><td>0.477</td></tr>
-                            </tbody>
-                        </table>
-                        <div class="vlm-reasons"><div><strong>GT Reason</strong><p>The robot arm attempts to place the banana into the basket, showing meaningful progress. However, the final state is not clearly visible, making completion ambiguous and supporting a partial score.</p></div><div><strong>Pred Reason</strong><p>The robot successfully grasps the banana and moves it toward the basket, showing meaningful progress. However, the final state is not clearly visible, making completion ambiguous.</p></div></div>
-                    </div>
-                    <div class="video-card vlm-video-card">
-                        <video src="video/vlm_evaluator/score2/score2_02.mp4" controls autoplay muted loop playsinline preload="metadata"></video>
-                        <div class="vlm-caption">Put panda into pink plate.</div>
-                        <div class="vlm-score-strip">
-                            <span><strong>GT</strong>2</span><span><strong>Pred</strong>2</span><span><strong>Match</strong>0.788</span><span><strong>Levels</strong>All levels match</span><span><strong>Reason</strong>0.584</span>
-                        </div>
-                        <table class="vlm-eval-table">
-                            <tbody>
-                                <tr><th>Overall Video Quality</th><td><span class="vlm-badge medium">Medium</span><p>Three camera views are provided, but motion blur and varying camera angles reduce clarity in some frames.</p></td><td><span class="vlm-badge medium">Medium</span><p>Video is split into three views; middle and right panels are often blurry or obstructed, making detailed observation difficult.</p></td><td>0.238</td></tr>
-                                <tr><th>Instruction Following</th><td><span class="vlm-badge medium">Medium</span><p>The robot picks up the panda toy and moves it toward the pink plate, but the final placement is not clearly completed.</p></td><td><span class="vlm-badge medium">Medium</span><p>Robot arm picks up the panda toy and moves it toward the pink plate, but the final placement is not clearly shown.</p></td><td>0.883</td></tr>
-                                <tr><th>Physical Adherence</th><td><span class="vlm-badge medium">Medium</span><p>The robot arm makes plausible contact with the panda toy and moves it, but the final state in the pink plate is ambiguous.</p></td><td><span class="vlm-badge medium">Medium</span><p>The robot arm grasps the panda and moves it, but the final state of the panda on the plate is ambiguous due to camera angles.</p></td><td>0.593</td></tr>
-                            </tbody>
-                        </table>
-                        <div class="vlm-reasons"><div><strong>GT Reason</strong><p>The robot successfully picks up the panda toy and initiates movement toward the pink plate, showing meaningful progress. However, the final placement into the plate is not clearly visible or completed in the provided frames.</p></div><div><strong>Pred Reason</strong><p>The robot arm successfully picks up the panda and moves it toward the pink plate, showing progress. However, the final placement is not clearly visible, making the task completion ambiguous.</p></div></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="vlm-panel" role="tabpanel" data-panel="score3">
-                <div class="video-grid video-grid--2col vlm-eval-grid">
-                    <div class="video-card vlm-video-card">
-                        <video src="video/vlm_evaluator/score3/score3_01.mp4" controls autoplay muted loop playsinline preload="metadata"></video>
-                        <div class="vlm-caption">Put panda into pink plate.</div>
-                        <div class="vlm-score-strip">
-                            <span><strong>GT</strong>3</span><span><strong>Pred</strong>3</span><span><strong>Match</strong>0.787</span><span><strong>Levels</strong>All levels match</span><span><strong>Reason</strong>0.554</span>
-                        </div>
-                        <table class="vlm-eval-table">
-                            <tbody>
-                                <tr><th>Overall Video Quality</th><td><span class="vlm-badge good">Good</span><p>All three camera views are clear, showing consistent object positions and robot movements without major artifacts.</p></td><td><span class="vlm-badge good">Good</span><p>The video is clear, with consistent object identities and smooth camera movements across all three views.</p></td><td>0.482</td></tr>
-                                <tr><th>Instruction Following</th><td><span class="vlm-badge good">Good</span><p>The robot picks up the panda toy and places it directly onto the pink plate, achieving the requested action.</p></td><td><span class="vlm-badge good">Good</span><p>The robot successfully picks up the panda toy and places it into the pink plate, as instructed.</p></td><td>0.639</td></tr>
-                                <tr><th>Physical Adherence</th><td><span class="vlm-badge good">Good</span><p>The robot arm makes plausible contact with the panda, lifts it, moves it, and releases it stably onto the plate.</p></td><td><span class="vlm-badge good">Good</span><p>The robot's gripper makes plausible contact with the panda, lifts it, and releases it into the plate without physical impossibilities.</p></td><td>0.637</td></tr>
-                            </tbody>
-                        </table>
-                        <div class="vlm-reasons"><div><strong>GT Reason</strong><p>The video clearly shows the robot arm successfully grasping the panda toy, transporting it, and placing it into the pink plate. All three views confirm the action and stable final state.</p></div><div><strong>Pred Reason</strong><p>The video shows the robot arm picking up the panda toy and placing it into the pink plate, which is the correct final state. The action is completed, and the final state is stable and correct.</p></div></div>
-                    </div>
-                    <div class="video-card vlm-video-card">
-                        <video src="video/vlm_evaluator/score3/score3_02.mp4" controls autoplay muted loop playsinline preload="metadata"></video>
-                        <div class="vlm-caption">Put panda into pink plate.</div>
-                        <div class="vlm-score-strip">
-                            <span><strong>GT</strong>3</span><span><strong>Pred</strong>3</span><span><strong>Match</strong>0.754</span><span><strong>Levels</strong>All levels match</span><span><strong>Reason</strong>0.588</span>
-                        </div>
-                        <table class="vlm-eval-table">
-                            <tbody>
-                                <tr><th>Overall Video Quality</th><td><span class="vlm-badge good">Good</span><p>Three synchronized camera views are clear, with consistent object identity and no major visual artifacts.</p></td><td><span class="vlm-badge good">Good</span><p>The video is clear, with consistent object identities and smooth camera movements across all three views.</p></td><td>0.453</td></tr>
-                                <tr><th>Instruction Following</th><td><span class="vlm-badge good">Good</span><p>The robot arm picks up the panda toy and places it directly into the pink plate, fulfilling the instruction.</p></td><td><span class="vlm-badge good">Good</span><p>The robot correctly identifies the panda and moves it into the pink plate, completing the task as instructed.</p></td><td>0.490</td></tr>
-                                <tr><th>Physical Adherence</th><td><span class="vlm-badge good">Good</span><p>The robot's grasp is stable, the panda is lifted and moved plausibly, and it lands securely inside the plate.</p></td><td><span class="vlm-badge good">Good</span><p>The robot's gripper makes plausible contact with the panda, lifts it, and places it stably onto the plate.</p></td><td>0.418</td></tr>
-                            </tbody>
-                        </table>
-                        <div class="vlm-reasons"><div><strong>GT Reason</strong><p>The video clearly shows the robot successfully picking up the panda and placing it into the pink plate, with stable motion and a correct final state across all three views.</p></div><div><strong>Pred Reason</strong><p>The video shows the robot successfully picking up the panda and placing it into the pink plate, with clear visual evidence of the final state. All aspects of the task are completed correctly and plausibly.</p></div></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        
-
-<!-- Transfer & Generalization -->
-        <section id="transfer" class="section">
-            <h2>Transfer &amp; Generalization</h2>
-            <div class="section-divider"></div>
-            <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 2rem;">
-                Beyond standard OOD evaluation, GigaWorld-1 demonstrates strong transfer capabilities across
-                new domains and conditioning modalities. The same world-model design can be rapidly adapted
-                to <strong>autonomous driving</strong>, supports <strong>edge / depth map conditioning</strong>,
-                generalizes across <strong>different robot embodiments</strong>, and produces
-                <strong>long-horizon rollouts</strong> of arbitrary length.
-            </p>
-
-            <div class="ood-subgroup">
-                <div class="ood-subgroup-title">Cross-Domain Transfer</div>
-                <div class="video-grid video-grid--2col video-grid--fixed-h">
-                    <div class="video-cell">
-                        <div class="video-cell-title">NUScenes driving</div>
-                        <div class="video-card">
-                            <video src="video/model_trans/nus/飞书20260629-234106.mp4" controls autoplay muted loop
-                                playsinline preload="metadata"></video>
-                        </div>
-                    </div>
-                    <div class="video-cell">
-                        <div class="video-cell-title">AGI manipulation</div>
-                        <div class="video-card">
-                            <video src="video/model_trans/agi/episode_000014_90s_125s_10fps_annotated.mp4" controls autoplay muted loop
-                                playsinline preload="metadata"></video>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="ood-subgroup">
-                <div class="ood-subgroup-title">Geometric Conditioning</div>
-                <div class="video-grid video-grid--3col video-grid--aspect geometric-grid">
-                    <div class="video-cell">
-                        <div class="video-cell-title">First frame condition</div>
-                        <div class="video-card geometric-image-card">
-                            <img src="images/Geometric%20Conditioning/first_frame.png" alt="First frame condition" />
-                        </div>
-                    </div>
-                    <div class="video-cell">
-                        <div class="video-cell-title">Sobel + Video</div>
-                        <div class="video-card">
-                            <video src="video/model_trans/trans/stack_sobel_video_annotated.mp4" controls autoplay muted loop
-                                playsinline preload="metadata"></video>
-                        </div>
-                    </div>
-                    <div class="video-cell">
-                        <div class="video-cell-title">Depth (Plasma) + Video</div>
-                        <div class="video-card">
-                            <video src="video/model_trans/trans/stack_depth_video_annotated.mp4" controls autoplay muted loop
-                                playsinline preload="metadata"></video>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            </section>
-
-        
-
-<!-- Flash & Long-Horizon Generation -->
-        <div class="section-alt">
-            <section id="flash" class="section" style="padding-top: 0; padding-bottom: 0;">
-                <h2>Flash &amp; Long-Horizon Generation</h2>
-                <div class="section-divider"></div>
-                <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 1.8rem;">
-                    GigaWorld-1 combines a step-distilled diffusion sampler (DMD2) with hierarchical memory
-                    to deliver both <strong>real-time flash generation</strong> and
-                    <strong>unbounded long-horizon rollouts</strong> without quality collapse.
-                </p>
-
+            <div id="flash" class="model-subsection">
+                <h3 class="model-experiment-title">⚡ Flash &amp; Ultra-Long-Horizon Generation</h3>
                 <div class="flash-highlights">
                     <div class="flash-highlight-card">
                         <div class="flash-heading">🖥️ Consumer-Ready</div>
@@ -1094,7 +762,7 @@
                         <div class="flash-heading">♾️ Infinite Horizon</div>
                         <div class="flash-metric">&gt; 10 min</div>
                         <div class="flash-desc">
-                            Sustained <strong>10,000+ frames</strong> of autoregressive rollout
+                            Sustained <strong>11,000+ frames</strong> of autoregressive rollout
                             without crashing or quality drift.
                         </div>
                     </div>
@@ -1107,7 +775,6 @@
                             <div class="video-label">📊 Acceleration Benchmark</div>
                         </div>
                         <p class="fig-caption">
-                            <strong>Acceleration benchmark.</strong> Speedup over the xformers baseline.
                             DMD2 step-distillation + tensor-parallel scaling pushes the world model
                             to 27.23× on 4 GPUs, unlocking real-time interactive use.
                         </p>
@@ -1119,14 +786,212 @@
                             <div class="video-label">♾️ Real-time Generation</div>
                         </div>
                         <p class="fig-caption">
-                            <strong>Long-horizon demo.</strong> Continuous autoregressive rollout.
-                            The hierarchical memory keeps scene identity and dynamics stable across
-                            thousands of frames without explicit restart.
+                            <strong>⚡ Flash &amp; Ultra-Long-Horizon Generation.</strong> Real-time uninterrupted generation
+                            demo: <strong class="metric-highlight">over 10 minutes and 11K frames</strong>.
                         </p>
                     </div>
                 </div>
-            </section>
-        </div>
+            </div>
+
+            <div id="transfer" class="model-subsection">
+            <h3 class="model-experiment-title">Transfer &amp; Generalization</h3>
+            <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 0 auto 2rem;">
+                Beyond standard OOD evaluation, GigaWorld-1 demonstrates <strong>rapid transfer capabilities</strong>
+                across new domains and conditioning modalities. The same world-model design can be <strong>effortlessly adapted</strong>
+                to <strong>autonomous driving</strong>, supports <strong>edge / depth map conditioning</strong>,
+                and generalizes across <strong>different robot embodiments</strong>. Fine-tuning on new datasets or conditioning
+                modalities typically requires only <strong>8 GPUs and a few thousand training steps</strong>, making domain
+                adaptation and modality extension highly efficient.
+            </p>
+
+            <div class="ood-subgroup">
+                <div class="ood-subgroup-title">Cross-Domain Transfer</div>
+                <div class="video-grid video-grid--2col video-grid--fixed-h">
+                    <div class="video-cell">
+                        <div class="video-cell-title">Autonomous Driving</div>
+                        <div class="video-card">
+                            <video src="video/model_trans/nus/飞书20260629-234106.mp4" controls autoplay muted loop
+                                playsinline preload="metadata"></video>
+                        </div>
+                    </div>
+                    <div class="video-cell">
+                        <div class="video-cell-title">AGI Robot</div>
+                        <div class="video-card">
+                            <video src="video/model_trans/agi/episode_000014_90s_125s_10fps_annotated.mp4" controls autoplay muted loop
+                                playsinline preload="metadata"></video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ood-subgroup">
+                <div class="ood-subgroup-title">Control-Condition Transfer</div>
+                <div class="video-grid video-grid--3col video-grid--aspect geometric-grid">
+                    <div class="video-cell">
+                        <div class="video-cell-title">First frame condition</div>
+                        <div class="video-card geometric-image-card">
+                            <img src="images/Geometric%20Conditioning/first_frame.png" alt="First frame condition" />
+                        </div>
+                    </div>
+                    <div class="video-cell">
+                        <div class="video-cell-title">Edge-to-Video</div>
+                        <div class="video-card">
+                            <video src="video/model_trans/trans/stack_sobel_video_annotated.mp4" controls autoplay muted loop
+                                playsinline preload="metadata"></video>
+                        </div>
+                    </div>
+                    <div class="video-cell">
+                        <div class="video-cell-title">Depth-to-Video</div>
+                        <div class="video-card">
+                            <video src="video/model_trans/trans/stack_depth_video_annotated.mp4" controls autoplay muted loop
+                                playsinline preload="metadata"></video>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </section>
+
+        
+
+<!-- VLM-assisted Rollout Evaluator -->
+        <section id="vlm-evaluator" class="section">
+            <h2>VLM-assisted Rollout Evaluator</h2>
+            <div class="section-divider"></div>
+            <div class="vlm-pipeline-layout">
+                <div class="fig-container vlm-pipeline-figure">
+                    <img src="images/vlm/vlm.png" alt="VLM-assisted rollout evaluator pipeline" />
+                </div>
+                <p class="vlm-pipeline-text">
+                    The <strong>VLM-assisted rollout evaluator</strong> scores generated videos on the same
+                    <strong>1–3 ordinal scale</strong> as human annotators. Across <strong>5,000+ videos</strong>, it reaches
+                    <strong>87.80% exact agreement</strong> and <strong>99.16% adjacent agreement</strong> with human ratings,
+                    with only <strong>0.84%</strong> off by two score levels. Strong correlations
+                    (<strong>Spearman 0.7574</strong>, <strong>Kendall τ<sub>b</sub> 0.7507</strong>) show that it is a reliable proxy
+                    for method-level WMES comparison.
+                </p>
+            </div>
+
+            <div class="vlm-slider-controls">
+                <div class="vlm-score-slider-wrap">
+                    <strong id="vlm-score-current">Score 1</strong>
+                    <div class="vlm-slider-stack">
+                        <input id="vlm-score-slider" class="vlm-score-slider" type="range" min="1" max="3" step="1" value="1" aria-label="Select VLM score" />
+                        <div class="vlm-slider-ticks" aria-hidden="true"><span>1</span><span>2</span><span>3</span></div>
+                    </div>
+                </div>
+                <div class="vlm-case-switch" aria-label="Select VLM case">
+                    <button class="vlm-case-btn active" type="button" data-case="1">Case 1</button>
+                    <button class="vlm-case-btn" type="button" data-case="2">Case 2</button>
+                </div>
+            </div>
+
+            <div class="vlm-panel active" role="tabpanel" data-panel="score1">
+                <div class="video-grid video-grid--2col vlm-eval-grid">
+                    <div class="video-card vlm-video-card active" data-case="1">
+                        <video src="video/vlm_evaluator/score1/score1_01.mp4" controls autoplay muted loop playsinline preload="metadata"></video>
+                        <div class="vlm-caption">Put panda into pink plate.</div>
+                        <div class="vlm-score-strip">
+                            <span><strong>GT</strong>1</span><span><strong>Pred</strong>1</span><span><strong>Match</strong>0.763</span><span><strong>Levels</strong>All levels match</span><span><strong>Reason</strong>0.472</span>
+                        </div>
+                        <table class="vlm-eval-table">
+                            <tbody>
+                                <tr><th>Overall Video Quality</th><td><span class="vlm-badge medium">Medium</span><p>Video is split into three views, but all are shaky and blurry with frequent motion blur and fast panning.</p></td><td><span class="vlm-badge medium">Medium</span><p>Video is blurry and shaky, but objects (panda, plates, banana) are identifiable across all three views.</p></td><td>0.355</td></tr>
+                                <tr><th>Instruction Following</th><td><span class="vlm-badge poor">Poor</span><p>The robot arm attempts to pick up a panda but fails to place it into the pink plate; the panda remains on the table.</p></td><td><span class="vlm-badge poor">Poor</span><p>The robot arm attempts to grasp the panda but fails to place it into the pink plate; the panda remains on the table.</p></td><td>0.863</td></tr>
+                                <tr><th>Physical Adherence</th><td><span class="vlm-badge medium">Medium</span><p>Contact is attempted but unstable; the panda is not securely grasped or placed, and final state shows panda outside the plate.</p></td><td><span class="vlm-badge medium">Medium</span><p>The robot arm makes contact with the panda, but the grasp is unstable and the panda is not lifted or moved toward the plate.</p></td><td>0.467</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="vlm-reasons"><div><strong>GT Reason</strong><p>The robot fails to place the panda into the pink plate; the panda is not inside the plate in the final state. Video quality is shaky and blurry, but the failed task is clear.</p></div><div><strong>Pred Reason</strong><p>The robot arm attempts to grasp the panda but fails to lift or move it into the pink plate. The panda remains on the table, and the final state does not show the task completed.</p></div></div>
+                    </div>
+                    <div class="video-card vlm-video-card" data-case="2">
+                        <video src="video/vlm_evaluator/score1/score1_02.mp4" controls autoplay muted loop playsinline preload="metadata"></video>
+                        <div class="vlm-caption">Put green bowl into pink plate.</div>
+                        <div class="vlm-score-strip">
+                            <span><strong>GT</strong>1</span><span><strong>Pred</strong>1</span><span><strong>Match</strong>0.766</span><span><strong>Levels</strong>All levels match</span><span><strong>Reason</strong>0.473</span>
+                        </div>
+                        <table class="vlm-eval-table">
+                            <tbody>
+                                <tr><th>Overall Video Quality</th><td><span class="vlm-badge poor">Poor</span><p>Video is extremely blurry, shaky, and lacks clear object details, making it difficult to identify objects or actions.</p></td><td><span class="vlm-badge poor">Poor</span><p>Video is extremely blurry, shaky, and lacks clear object visibility, making it difficult to discern actions or final states.</p></td><td>0.737</td></tr>
+                                <tr><th>Instruction Following</th><td><span class="vlm-badge poor">Poor</span><p>The task 'put green bowl into pink plate' is not completed; the final state does not show a green bowl inside a pink plate.</p></td><td><span class="vlm-badge poor">Poor</span><p>The video does not clearly show the green bowl being placed into the pink plate; the final state is ambiguous and not visible.</p></td><td>0.503</td></tr>
+                                <tr><th>Physical Adherence</th><td><span class="vlm-badge unclear">Unclear</span><p>Due to severe visual corruption, it's impossible to assess physical interactions, contact, or stability.</p></td><td><span class="vlm-badge unclear">Unclear</span><p>Due to severe visual corruption and lack of clear contact or placement, physical interactions cannot be reliably assessed.</p></td><td>0.478</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="vlm-reasons"><div><strong>GT Reason</strong><p>The video is too corrupted to clearly identify objects or actions. The task is not completed, and the final state is ambiguous due to poor video quality.</p></div><div><strong>Pred Reason</strong><p>The video is severely corrupted with extreme blur and motion, preventing clear identification of objects or actions. The task of putting the green bowl into the pink plate is not visibly completed, and the final state is ambiguous. Therefore, the task is failed.</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vlm-panel" role="tabpanel" data-panel="score2">
+                <div class="video-grid video-grid--2col vlm-eval-grid">
+                    <div class="video-card vlm-video-card active" data-case="1">
+                        <video src="video/vlm_evaluator/score2/score2_01.mp4" controls autoplay muted loop playsinline preload="metadata"></video>
+                        <div class="vlm-caption">Put banana into basket.</div>
+                        <div class="vlm-score-strip">
+                            <span><strong>GT</strong>2</span><span><strong>Pred</strong>2</span><span><strong>Match</strong>0.801</span><span><strong>Levels</strong>All levels match</span><span><strong>Reason</strong>0.661</span>
+                        </div>
+                        <table class="vlm-eval-table">
+                            <tbody>
+                                <tr><th>Overall Video Quality</th><td><span class="vlm-badge medium">Medium</span><p>The video is clear with consistent views from three cameras, but the action is partially obscured by robotic arms and objects.</p></td><td><span class="vlm-badge medium">Medium</span><p>Video is clear but shows a split view; the right panel is often blurry or shows only a partial object.</p></td><td>0.290</td></tr>
+                                <tr><th>Instruction Following</th><td><span class="vlm-badge medium">Medium</span><p>The robot arm picks up the banana and moves it toward the basket, but the final placement is not clearly visible.</p></td><td><span class="vlm-badge medium">Medium</span><p>The robot arm picks up the banana and moves it toward the basket, but the final placement is not clearly shown.</p></td><td>0.922</td></tr>
+                                <tr><th>Physical Adherence</th><td><span class="vlm-badge medium">Medium</span><p>The banana is grasped and moved plausibly, but the interaction with the basket is not fully shown, leaving stability and containment ambiguous.</p></td><td><span class="vlm-badge medium">Medium</span><p>The banana is grasped and moved, but the video ends before confirming stable containment in the basket.</p></td><td>0.477</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="vlm-reasons"><div><strong>GT Reason</strong><p>The robot arm attempts to place the banana into the basket, showing meaningful progress. However, the final state is not clearly visible, making completion ambiguous and supporting a partial score.</p></div><div><strong>Pred Reason</strong><p>The robot successfully grasps the banana and moves it toward the basket, showing meaningful progress. However, the final state is not clearly visible, making completion ambiguous.</p></div></div>
+                    </div>
+                    <div class="video-card vlm-video-card" data-case="2">
+                        <video src="video/vlm_evaluator/score2/score2_02.mp4" controls autoplay muted loop playsinline preload="metadata"></video>
+                        <div class="vlm-caption">Put panda into pink plate.</div>
+                        <div class="vlm-score-strip">
+                            <span><strong>GT</strong>2</span><span><strong>Pred</strong>2</span><span><strong>Match</strong>0.788</span><span><strong>Levels</strong>All levels match</span><span><strong>Reason</strong>0.584</span>
+                        </div>
+                        <table class="vlm-eval-table">
+                            <tbody>
+                                <tr><th>Overall Video Quality</th><td><span class="vlm-badge medium">Medium</span><p>Three camera views are provided, but motion blur and varying camera angles reduce clarity in some frames.</p></td><td><span class="vlm-badge medium">Medium</span><p>Video is split into three views; middle and right panels are often blurry or obstructed, making detailed observation difficult.</p></td><td>0.238</td></tr>
+                                <tr><th>Instruction Following</th><td><span class="vlm-badge medium">Medium</span><p>The robot picks up the panda toy and moves it toward the pink plate, but the final placement is not clearly completed.</p></td><td><span class="vlm-badge medium">Medium</span><p>Robot arm picks up the panda toy and moves it toward the pink plate, but the final placement is not clearly shown.</p></td><td>0.883</td></tr>
+                                <tr><th>Physical Adherence</th><td><span class="vlm-badge medium">Medium</span><p>The robot arm makes plausible contact with the panda toy and moves it, but the final state in the pink plate is ambiguous.</p></td><td><span class="vlm-badge medium">Medium</span><p>The robot arm grasps the panda and moves it, but the final state of the panda on the plate is ambiguous due to camera angles.</p></td><td>0.593</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="vlm-reasons"><div><strong>GT Reason</strong><p>The robot successfully picks up the panda toy and initiates movement toward the pink plate, showing meaningful progress. However, the final placement into the plate is not clearly visible or completed in the provided frames.</p></div><div><strong>Pred Reason</strong><p>The robot arm successfully picks up the panda and moves it toward the pink plate, showing progress. However, the final placement is not clearly visible, making the task completion ambiguous.</p></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="vlm-panel" role="tabpanel" data-panel="score3">
+                <div class="video-grid video-grid--2col vlm-eval-grid">
+                    <div class="video-card vlm-video-card active" data-case="1">
+                        <video src="video/vlm_evaluator/score3/score3_01.mp4" controls autoplay muted loop playsinline preload="metadata"></video>
+                        <div class="vlm-caption">Put panda into pink plate.</div>
+                        <div class="vlm-score-strip">
+                            <span><strong>GT</strong>3</span><span><strong>Pred</strong>3</span><span><strong>Match</strong>0.787</span><span><strong>Levels</strong>All levels match</span><span><strong>Reason</strong>0.554</span>
+                        </div>
+                        <table class="vlm-eval-table">
+                            <tbody>
+                                <tr><th>Overall Video Quality</th><td><span class="vlm-badge good">Good</span><p>All three camera views are clear, showing consistent object positions and robot movements without major artifacts.</p></td><td><span class="vlm-badge good">Good</span><p>The video is clear, with consistent object identities and smooth camera movements across all three views.</p></td><td>0.482</td></tr>
+                                <tr><th>Instruction Following</th><td><span class="vlm-badge good">Good</span><p>The robot picks up the panda toy and places it directly onto the pink plate, achieving the requested action.</p></td><td><span class="vlm-badge good">Good</span><p>The robot successfully picks up the panda toy and places it into the pink plate, as instructed.</p></td><td>0.639</td></tr>
+                                <tr><th>Physical Adherence</th><td><span class="vlm-badge good">Good</span><p>The robot arm makes plausible contact with the panda, lifts it, moves it, and releases it stably onto the plate.</p></td><td><span class="vlm-badge good">Good</span><p>The robot's gripper makes plausible contact with the panda, lifts it, and releases it into the plate without physical impossibilities.</p></td><td>0.637</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="vlm-reasons"><div><strong>GT Reason</strong><p>The video clearly shows the robot arm successfully grasping the panda toy, transporting it, and placing it into the pink plate. All three views confirm the action and stable final state.</p></div><div><strong>Pred Reason</strong><p>The video shows the robot arm picking up the panda toy and placing it into the pink plate, which is the correct final state. The action is completed, and the final state is stable and correct.</p></div></div>
+                    </div>
+                    <div class="video-card vlm-video-card" data-case="2">
+                        <video src="video/vlm_evaluator/score3/score3_02.mp4" controls autoplay muted loop playsinline preload="metadata"></video>
+                        <div class="vlm-caption">Put panda into pink plate.</div>
+                        <div class="vlm-score-strip">
+                            <span><strong>GT</strong>3</span><span><strong>Pred</strong>3</span><span><strong>Match</strong>0.754</span><span><strong>Levels</strong>All levels match</span><span><strong>Reason</strong>0.588</span>
+                        </div>
+                        <table class="vlm-eval-table">
+                            <tbody>
+                                <tr><th>Overall Video Quality</th><td><span class="vlm-badge good">Good</span><p>Three synchronized camera views are clear, with consistent object identity and no major visual artifacts.</p></td><td><span class="vlm-badge good">Good</span><p>The video is clear, with consistent object identities and smooth camera movements across all three views.</p></td><td>0.453</td></tr>
+                                <tr><th>Instruction Following</th><td><span class="vlm-badge good">Good</span><p>The robot arm picks up the panda toy and places it directly into the pink plate, fulfilling the instruction.</p></td><td><span class="vlm-badge good">Good</span><p>The robot correctly identifies the panda and moves it into the pink plate, completing the task as instructed.</p></td><td>0.490</td></tr>
+                                <tr><th>Physical Adherence</th><td><span class="vlm-badge good">Good</span><p>The robot's grasp is stable, the panda is lifted and moved plausibly, and it lands securely inside the plate.</p></td><td><span class="vlm-badge good">Good</span><p>The robot's gripper makes plausible contact with the panda, lifts it, and places it stably onto the plate.</p></td><td>0.418</td></tr>
+                            </tbody>
+                        </table>
+                        <div class="vlm-reasons"><div><strong>GT Reason</strong><p>The video clearly shows the robot successfully picking up the panda and placing it into the pink plate, with stable motion and a correct final state across all three views.</p></div><div><strong>Pred Reason</strong><p>The video shows the robot successfully picking up the panda and placing it into the pink plate, with clear visual evidence of the final state. All aspects of the task are completed correctly and plausibly.</p></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         
 
@@ -1136,62 +1001,74 @@
                 <h2>WMBench at a Glance</h2>
                 <div class="section-divider"></div>
 
-                <p style="text-align: center; color: var(--text-light); max-width: 860px; margin: 1.5rem auto 2rem;">
-                    WMBench evaluates every rollout along <strong>15 fine-grained metrics</strong>,
-                    organised across two axes: <strong>rollout source (rows)</strong> and
-                    <strong>evaluation dimensions (columns)</strong>.
+                <p class="wmbench-summary">
+                    WMBench separates <strong>good generation</strong> from <strong>good evaluation</strong>. Beyond outcome-level
+                    <strong>WMES</strong>, it uses automated diagnostics to analyze rollout quality, geometry, semantics,
+                    dynamics, interaction, and evaluator reliability.
                 </p>
 
                 <div class="wmbench-features">
                     <div class="feature-card">
-                        <div class="feature-icon">🌐</div>
-                        <h4>Multi-dimensional Evaluation</h4>
-                        <p>15 fine-grained metrics covering perceptual quality, temporal
-                            consistency, geometry, motion, and instruction grounding — a
-                            holistic view of every rollout.</p>
+                        <div class="feature-kicker">Outcome</div>
+                        <h4>WMES for Policy Evaluation</h4>
+                        <p>Measures whether a world model can replace real robot rollouts for method-level policy comparison.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🧠</div>
-                        <h4>Metrics + VLM</h4>
-                        <p>Pair deterministic metric scoring with vision-language model
-                            judgements to capture both measurable fidelity and semantic
-                            correctness of the rollout.</p>
+                        <div class="feature-kicker">Diagnosis</div>
+                        <h4>Generation Process Metrics</h4>
+                        <p>Diagnoses visual realism, temporal stability, geometry, semantics, motion, and interaction quality.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🔁</div>
-                        <h4>Closed-loop Policy Evaluation</h4>
-                        <p>Generated observations are fed back into the policy to produce the
-                            next action — paired against real-world rollouts for true
-                            evaluator agreement.</p>
+                        <div class="feature-kicker">Reliability</div>
+                        <h4>Evaluator Agreement</h4>
+                        <p>Uses correlation and rank-stability metrics to test whether simulated evaluation matches real outcomes.</p>
                     </div>
                 </div>
 
-                <div class="benchmark-metrics">
-                    <h4 class="metrics-title">Evaluation Metrics</h4>
-                    <ul class="metrics-list">
-                        <li class="cat-perceptual">Aesthetic Quality</li>
-                        <li class="cat-temporal">Background Consistency</li>
-                        <li class="cat-geometry">Depth Accuracy</li>
-                        <li class="cat-temporal">Dynamic Degree</li>
-                        <li class="cat-temporal">Flow Score</li>
-                        <li class="cat-perceptual">Image Quality</li>
-                        <li class="cat-semantic">Instruction Following</li>
-                        <li class="cat-semantic">Interaction Quality</li>
-                        <li class="cat-representation">JEPA Similarity</li>
-                        <li class="cat-temporal">Motion Smoothness</li>
-                        <li class="cat-geometry">Perspectivity</li>
-                        <li class="cat-geometry">Photometric Consistency</li>
-                        <li class="cat-semantic">Semantic Alignment</li>
-                        <li class="cat-perceptual">Subject Consistency</li>
-                        <li class="cat-trajectory">Trajectory Accuracy</li>
-                    </ul>
-                    <div class="metrics-legend">
-                        <span class="legend-dot cat-perceptual"></span> Perceptual
-                        <span class="legend-dot cat-temporal"></span> Temporal / Motion
-                        <span class="legend-dot cat-geometry"></span> Geometry
-                        <span class="legend-dot cat-semantic"></span> Semantic / Instruction
-                        <span class="legend-dot cat-representation"></span> Representation
-                        <span class="legend-dot cat-trajectory"></span> Trajectory
+                <div class="benchmark-metrics metric-family-grid">
+                    <div class="metric-family-card">
+                        <h4>Generation Quality & Appearance Stability</h4>
+                        <p>Low-level realism and pixel-level consistency, including reconstruction quality, distribution distance, visual preference, background stability, and photometric consistency.</p>
+                        <ul class="metrics-list compact">
+                            <li class="cat-perceptual">PSNR</li>
+                            <li class="cat-perceptual">FID / FVD</li>
+                            <li class="cat-perceptual">Image Quality</li>
+                            <li class="cat-perceptual">Aesthetic Quality</li>
+                            <li class="cat-temporal">Background Consistency</li>
+                            <li class="cat-geometry">Photometric Consistency</li>
+                        </ul>
+                    </div>
+                    <div class="metric-family-card">
+                        <h4>Visual & Geometric Fidelity</h4>
+                        <p>Structural integrity of the robot scene, object identity, embodiment consistency, and stable 3D geometry across viewpoints.</p>
+                        <ul class="metrics-list compact">
+                            <li class="cat-perceptual">Subject Consistency</li>
+                            <li class="cat-geometry">Perspectivity</li>
+                            <li class="cat-geometry">Depth Accuracy</li>
+                            <li class="cat-representation">JEPA Similarity</li>
+                        </ul>
+                    </div>
+                    <div class="metric-family-card">
+                        <h4>Semantics, Dynamics & Interaction</h4>
+                        <p>Task intent, physical plausibility, action following, contact correctness, motion continuity, and trajectory agreement.</p>
+                        <ul class="metrics-list compact">
+                            <li class="cat-semantic">Semantic Alignment</li>
+                            <li class="cat-semantic">Instruction Following</li>
+                            <li class="cat-semantic">Interaction Quality</li>
+                            <li class="cat-trajectory">Trajectory Accuracy</li>
+                            <li class="cat-temporal">Motion Smoothness</li>
+                            <li class="cat-temporal">Dynamic Degree</li>
+                            <li class="cat-temporal">Flow Score</li>
+                        </ul>
+                    </div>
+                    <div class="metric-family-card metric-family-card--highlight">
+                        <h4>Evaluator Reliability</h4>
+                        <p>Meta-evaluation metrics quantify whether world-model scores preserve real-world policy rankings and outcome trends.</p>
+                        <ul class="metrics-list compact">
+                            <li class="cat-representation">PCC</li>
+                            <li class="cat-trajectory">MMRV</li>
+                            <li class="cat-semantic">VLM-assisted WMES</li>
+                        </ul>
                     </div>
                 </div>
             </section>
@@ -1199,23 +1076,9 @@
 
         
 
-<!-- Team -->
-        <section id="team" class="section">
-            <h2>Team</h2>
-            <div class="section-divider"></div>
-            <p style="text-align: center; color: var(--text-light); margin-bottom: 1rem;">
-                GigaWorld Team, GigaAI
-            </p>
-            <div class="team-grid">
-                <span class="team-tag">GigaAI</span>
-            </div>
-        </section>
-
-        
-
 <!-- BibTeX -->
         <div class="section-alt">
-            <section class="section" style="padding-top: 0; padding-bottom: 0;">
+            <section id="citation" class="section" style="padding-top: 0; padding-bottom: 0;">
                 <h2>Citation</h2>
                 <div class="section-divider"></div>
                 <pre
@@ -1886,32 +1749,58 @@
                 });
             }
 
-            /* ========== VLM EVALUATOR TABS ========== */
+            /* ========== VLM EVALUATOR SLIDER ========== */
             function setupVlmEvaluatorTabs() {
-                var tabs = document.querySelectorAll('.vlm-tab');
+                var slider = document.getElementById('vlm-score-slider');
+                var current = document.getElementById('vlm-score-current');
+                var caseButtons = document.querySelectorAll('.vlm-case-btn');
                 var panels = document.querySelectorAll('.vlm-panel');
-                if (!tabs.length || !panels.length) return;
+                if (!slider || !current || !panels.length) return;
 
-                tabs.forEach(function (tab) {
-                    tab.addEventListener('click', function () {
-                        var target = tab.getAttribute('data-tab');
-                        tabs.forEach(function (t) {
-                            t.classList.remove('active');
-                            t.setAttribute('aria-selected', 'false');
+                document.querySelectorAll('.vlm-video-card').forEach(function (card) {
+                    if (card.querySelector('.vlm-eval-scroll')) return;
+                    var table = card.querySelector('.vlm-eval-table');
+                    var reasons = card.querySelector('.vlm-reasons');
+                    if (!table || !reasons) return;
+                    var scroll = document.createElement('div');
+                    scroll.className = 'vlm-eval-scroll';
+                    card.insertBefore(scroll, table);
+                    scroll.appendChild(table);
+                    scroll.appendChild(reasons);
+                });
+
+                var activeCase = '1';
+
+                function updateVlmView() {
+                    var target = 'score' + slider.value;
+                    current.textContent = 'Score ' + slider.value;
+
+                    panels.forEach(function (panel) {
+                        var isActivePanel = panel.getAttribute('data-panel') === target;
+                        panel.classList.toggle('active', isActivePanel);
+                        panel.querySelectorAll('video').forEach(function (video) { video.pause(); });
+                        panel.querySelectorAll('.vlm-video-card').forEach(function (card) {
+                            var isActiveCard = card.getAttribute('data-case') === activeCase;
+                            card.classList.toggle('active', isActiveCard);
+                            if (isActivePanel && isActiveCard) {
+                                var activeVideo = card.querySelector('video');
+                                if (activeVideo) activeVideo.play().catch(function () {});
+                            }
                         });
-                        panels.forEach(function (p) {
-                            p.classList.remove('active');
-                            p.querySelectorAll('video').forEach(function (v) { v.pause(); });
-                        });
-                        tab.classList.add('active');
-                        tab.setAttribute('aria-selected', 'true');
-                        var panel = document.querySelector('.vlm-panel[data-panel="' + target + '"]');
-                        if (panel) {
-                            panel.classList.add('active');
-                            panel.querySelectorAll('video').forEach(function (v) { v.play().catch(function () {}); });
-                        }
+                    });
+                }
+
+                slider.addEventListener('input', updateVlmView);
+                caseButtons.forEach(function (button) {
+                    button.addEventListener('click', function () {
+                        activeCase = button.getAttribute('data-case');
+                        caseButtons.forEach(function (btn) { btn.classList.remove('active'); });
+                        button.classList.add('active');
+                        updateVlmView();
                     });
                 });
+
+                updateVlmView();
             }
 
             /* ========== RL AUTO CAROUSEL ========== */
