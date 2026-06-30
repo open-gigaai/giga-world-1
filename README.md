@@ -171,23 +171,9 @@ xformers>=0.0.28.post3   # memory-efficient attention
 
 ## 2. 🗃️ Data Preparation
 
-This release provides a small toy data package for verifying inference, data loading, and training workflows.
+This release provides a small toy data package for verifying inference, data loading, visualization, and training workflows. The toy data is available from [Hugging Face](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) and [ModelScope](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata).
 
-### 2.1 Where to Download
-
-| Platform | Repository |
-| --- | --- |
-| 🤗 Hugging Face | [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
-| 🔷 ModelScope | [GigaAI/Giga-World-1-Toydata](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata) |
-
-### 2.2 One-click Download
-
-Use the download helper:
-
-- Script: [download_giga_world.sh](./tools/download_tool/download_giga_world.sh)
-- Full usage: [tools/download_tool/README.md](./tools/download_tool/README.md)
-
-Download toy data from Hugging Face:
+Use the one-click downloader:
 
 ```bash
 bash tools/download_tool/download_giga_world.sh \
@@ -196,129 +182,50 @@ bash tools/download_tool/download_giga_world.sh \
   --output-dir ./downloads
 ```
 
-Download toy data from ModelScope:
-
-```bash
-bash tools/download_tool/download_giga_world.sh \
-  --platform modelscope \
-  --target toydata \
-  --output-dir ./downloads
-```
-
-### 2.3 Recommended Placement
+For ModelScope, replace `--platform hf` with `--platform modelscope`. See [tools/download_tool/README.md](./tools/download_tool/README.md) for all options.
 
 After downloading, place or symlink the toy data under `example/`:
-
-```text
-giga-world-release/
-├── example/
-│   ├── infer_assest/
-│   ├── toy_datapipeline_dataset/
-│   └── toy_train_dataset/
-└── tools/
-    └── download_tool/
-```
-
-If the downloader saves data under `./downloads/Giga-World-1-Toydata/`, you can copy or symlink it into the repository:
 
 ```bash
 mkdir -p example
 cp -r ./downloads/Giga-World-1-Toydata/* ./example/
 ```
 
-### 2.4 Toy Data Structure
+Expected project structure:
 
 ```text
-example/
-├── infer_assest/                # inference / rollout assets
-│   ├── control_video.mp4
-│   └── input_image.png
-├── toy_datapipeline_dataset/    # raw LeRobot-format toy dataset
-│   ├── gt/                      # RGB videos
-│   ├── depth/                   # Depth Anything V2 outputs
-│   ├── plucker/                 # Plücker coordinate control signals
-│   ├── sketch/                  # sketch control signals
-│   └── labels/                  # data.pkl + config.json
-└── toy_train_dataset/           # model training data
-    ├── nano/
-    │   ├── dataset_cache.pkl
-    │   └── episode_*.pt
-    └── pro/
-        ├── dataset_cache.pkl
-        └── episode_*.pt
+giga-world-release/
+└── example/
+    ├── infer_assest/                # inference / rollout assets
+    ├── toy_datapipeline_dataset/    # raw LeRobot-format toy dataset
+    │   ├── gt/
+    │   ├── depth/
+    │   ├── plucker/
+    │   ├── sketch/
+    │   └── labels/
+    └── toy_train_dataset/           # model training data
+        ├── nano/
+        │   ├── dataset_cache.pkl
+        │   └── episode_*.pt
+        └── pro/
+            ├── dataset_cache.pkl
+            └── episode_*.pt
 ```
 
-`toy_train_dataset/` is already in the training format used by the provided configs:
+`toy_train_dataset/` is already in the format used by the training configs: [stage_1_post_functrl_wan21.yaml](./scripts/training/configs/stage_1_post_functrl_wan21.yaml), [stage_1_post_functrl_wan22_5b.yaml](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml), and [stage_2_dmd_functrl_wan21.yaml](./scripts/training/configs/stage_2_dmd_functrl_wan21.yaml).
 
-- [stage_1_post_functrl_wan21.yaml](./scripts/training/configs/stage_1_post_functrl_wan21.yaml)
-- [stage_1_post_functrl_wan22_5b.yaml](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml)
-- [stage_2_dmd_functrl_wan21.yaml](./scripts/training/configs/stage_2_dmd_functrl_wan21.yaml)
-
-### 2.5 Raw Data Visualization
-
-You can inspect the raw LeRobot-format toy data with the web visualization tool:
-
-- Tool README: [tools/data_vis_tools/README.md](./tools/data_vis_tools/README.md)
-- Demo GIF: [assets/data_vis.gif](./assets/data_vis.gif)
-
-<p align="center">
-  <img src="assets/data_vis.gif" width="90%" alt="Raw data visualization demo" />
-</p>
-
-Start the visualization server:
+For raw data visualization, run the web tool and open `http://127.0.0.1:8090/` or `http://127.0.0.1:8090/calib`:
 
 ```bash
 cd tools/data_vis_tools
 python app.py --host 0.0.0.0 --port 8090
 ```
 
-Open in browser:
+<p align="center">
+  <img src="assets/data_vis.gif" width="90%" alt="Raw data visualization demo" />
+</p>
 
-| Page | URL | Usage |
-| --- | --- | --- |
-| 🦾 URDF 3D Viewer | `http://127.0.0.1:8090/` | Load `labels/data.pkl` and inspect action / qpos trajectories with the robot model |
-| 📷 Camera Calibration | `http://127.0.0.1:8090/calib` | Visualize camera intrinsics / extrinsics, 3D FK, and camera projection |
-
-### 2.6 Offline Latent Pre-computation
-
-Offline latent pre-computation converts videos, control videos, and prompts into `.pt` samples before training to reduce runtime I/O and VAE / text-encoder overhead.
-
-Related scripts:
-
-- [get_short-latents-giga-ctrl.py](./tools/offload_data/get_short-latents-giga-ctrl.py) for Nano / Wan2.1-style data
-- [get_short-latents-giga-ctrl-wan22-5b.py](./tools/offload_data/get_short-latents-giga-ctrl-wan22-5b.py) for Pro / Wan2.2-5B-style data
-- [data_format.md](./tools/offload_data/data_format.md) for input / output schema
-
-Expected input:
-
-```text
-<data_root>/
-├── helios_giga_ctrl.jsonl
-├── videos/
-└── control_videos/
-```
-
-Expected output:
-
-```text
-<output_root>/
-├── {uttid}_{num_frame}_{height}_{width}.pt
-└── ...
-```
-
-Run the matching script for your model branch, for example:
-
-```bash
-bash tools/offload_data/get_short-latents-giga-ctrl.sh
-```
-
-or:
-
-```bash
-bash tools/offload_data/get_short-latents-giga-ctrl-wan22-5b.sh
-```
-
-Each `.pt` sample contains precomputed `vae_latent`, `control_latent`, `prompt_embed`, `prompt_attention_mask`, `first_frames_image`, and related metadata. See [data_format.md](./tools/offload_data/data_format.md) for the full schema.
+For offline latent pre-computation, use [get_short-latents-giga-ctrl.py](./tools/offload_data/get_short-latents-giga-ctrl.py) or [get_short-latents-giga-ctrl-wan22-5b.py](./tools/offload_data/get_short-latents-giga-ctrl-wan22-5b.py). The input data should contain `helios_giga_ctrl.jsonl`, `videos/`, and `control_videos/`; outputs are `.pt` samples containing precomputed `vae_latent`, `control_latent`, `prompt_embed`, and related metadata. See [tools/offload_data/data_format.md](./tools/offload_data/data_format.md) for the data format.
 
 ## 3. 🧩 Model Preparation
 
@@ -402,54 +309,6 @@ bash scripts/training/stage1/train_deepspeed_stage1_functrl_wan21.sh
 bash scripts/training/stage1/train_deepspeed_stage1_functrl_wan22_5b.sh
 ```
 
-**Key config fields** (using `stage_1_post_functrl_wan21.yaml` as the example):
-
-```yaml
-data_config:
-  single_res: true
-  single_height: 480
-  single_width: 1920            # width after the three views are concatenated
-  dataloader_num_workers: 8
-  caption_dropout_p: 0
-  instance_data_root:
-    - "example/toy_train_dataset/nano"
-
-model_config:
-  model_type: "wan2.1"
-  pretrained_model_name_or_path: "...Wan2.1-Fun-V1.1-1.3B-giga-ctrl-2200"
-  transformer_model_name_or_path: "...Wan2.1-Fun-V1.1-1.3B-giga-ctrl-2200"
-  lora_rank: 128
-  lora_alpha: 128.0
-  lora_layers: "all-linear"     # LoRA applied to all Linear layers (excluding norm)
-  lora_exclude_modules: [down, up]   # no LoRA on down/up sampling
-  is_control_model: true
-
-training_config:
-  max_train_steps: 1000000
-  train_batch_size: 1
-  gradient_accumulation_steps: 1
-  checkpointing_steps: 500
-  learning_rate: 3e-5
-  lr_scheduler: "constant"
-  lr_warmup_steps: 500
-  optimizer: "adamw"
-  mixed_precision: "bf16"
-  allow_tf32: true
-  gradient_checkpointing: true
-  enable_xformers_memory_efficient_attention: true
-  # Multi-term memory + sliding window
-  history_sizes: [16, 2, 1]     # 16 / 2 / 1-frame long-term context
-  latent_window_size: [9]       # latent window per forward pass
-  # Anti-drift / anti-forgetting
-  is_random_drop: true
-  random_drop_v2v_ratio: 0.4
-  random_drop_t2v_ratio: 0.4
-  corrupt_history: true
-  corrupt_mode_history: "noise"
-  # Validation cadence
-  validation_steps: 500
-```
-
 Default output layout:
 
 ```text
@@ -481,42 +340,6 @@ Example output:
 ```text
 output/exp/Giga-world-Nano-Train-DMD/
 ```
-
-### 3.3 Multi-GPU / DeepSpeed Configuration
-
-The launcher scripts auto-detect the number of visible GPUs via `nvidia-smi -L` and launch with DeepSpeed ZeRO-2:
-
-- [CODE0](./scripts/accelerate_configs/example_zero2.yaml)
-- [CODE0](./scripts/accelerate_configs/example_zero3.yaml)
-- [CODE0](./scripts/accelerate_configs/zero2.json)
-- [CODE0](./scripts/accelerate_configs/zero3.json)
-
-> The launchers set `NCCL_TIMEOUT` / `TORCH_NCCL_BLOCKING_WAIT` and friends to keep long runs from being kicked out. The EMA ZeRO-3 port is adjustable via `ema_zero3_port` in the config.
-
----
-
-## 4. 🖼️ Data & Trajectory Visualization
-
-[CODE0](./tools/data_vis_tools/README.md) ships a dual-page web tool:
-
-| Page | URL | Description |
-| --- | --- | --- |
-| 🦾 URDF 3D Viewer | `http://127.0.0.1:8090/` | Load pkl → parse `action` / `qpos` → 3D bimanual URDF/STL animation |
-| 📷 Camera Calibration | `http://127.0.0.1:8090/calib` | Intrinsics/extrinsics visualization + multi-frame overlay + 3D FK + camera projection |
-
-```bash
-cd tools/data_vis_tools
-python app.py --host 0.0.0.0 --port 8090
-```
-
-**Feature highlights:**
-
-- **6 joint angles per arm** with live updates and draggable sliders
-- **WebM recording** of the current 3D view
-- **Multi-frame overlay** on the calibration page (configurable frame step) for projection-consistency inspection
-- **Normalized joint curves** at the bottom-right showing min-max-normalized left/right arm joints over time, with a vertical line marking the current frame
-
----
 
 ## 5. 🔄 Model Merge & Checkpoint Conversion
 
@@ -558,9 +381,9 @@ The merge process also writes a **visual HTML report** at `<save_dir>/merge_repo
 | Script | Mode | Model | Link |
 | --- | --- | --- | --- |
 | `run_infer_nano_i2v.sh` | i2v | Nano 1.3B | [script](./scripts/infer/run_infer_nano_i2v.sh) |
-| `run_infer_nano_t2v.sh` | t2v | Nano 1.3B | [CODE0](./scripts/infer/run_infer_nano_t2v.sh) |
+| `run_infer_nano_t2v.sh` | t2v | Nano 1.3B | [script](./scripts/infer/run_infer_nano_t2v.sh) |
 | `run_infer_pro_i2v.sh` | i2v | Pro 5B | [script](./scripts/infer/run_infer_pro_i2v.sh) |
-| `run_infer_pro_t2v.sh` | t2v | Pro 5B | [CODE0](./scripts/infer/run_infer_pro_t2v.sh) |
+| `run_infer_pro_t2v.sh` | t2v | Pro 5B | [CODE0./scripts/infer/run_infer_pro_t2v.sh) |
 
 Usage:
 
@@ -586,7 +409,7 @@ Output videos are saved at **10 FPS** by default.
 
 ### 6.2 Command-Line Arguments
 
-The underlying entrypoint [CODE0](./infer/infer_giga_world.py) exposes the following arguments:
+The underlying entrypoint [infer_giga_world.py](./infer/infer_giga_world.py) exposes the following arguments:
 
 | Argument | Required | Default | Description |
 | --- | :---: | --- | --- |
@@ -614,103 +437,17 @@ The underlying entrypoint [CODE0](./infer/infer_giga_world.py) exposes the follo
 
 | First Frame | Control Video | Generated Rollout |
 | :---: | :---: | :---: |
-| ![input](example/infer_assest/input_image.png) | ▶ [CODE0](./example/infer_assest/control_video.mp4) | *(produced under `output/infer_results/`)* |
+| ![input](example/infer_assest/input_image.png) | ▶ [control_video.mp4](./example/infer_assest/control_video.mp4) | *(produced under `output/infer_results/`)* |
 
 </div>
 
-> In i2v mode, the model uses [CODE0](./example/infer_assest/input_image.png) as the first frame and consumes the Plücker / Ray Map control signal from `control_video.mp4` in the same directory.
+> In i2v mode, the model uses [input_image.png](./example/infer_assest/input_image.png) as the first frame and consumes the Plücker / Ray Map control signal from `control_video.mp4` in the same directory.
 
 For richer visual results, see the project page:
 
 - 🦾 **Multi-view control GIF grid** — [Giga-World-1-projectpage/video/control_gif](https://github.com/Yvonne-OH/Giga-World-1-projectpage/tree/main/video/control_gif)
 - ♾️ **Long-horizon rollout demo** — [Giga-World-1-projectpage/video/flash_and_ultra_gen](https://github.com/Yvonne-OH/Giga-World-1-projectpage/tree/main/video/flash_and_ultra_gen)
 - ✅❌ **Closed-loop rollout comparison** — [Giga-World-1-projectpage/video/cc](https://github.com/Yvonne-OH/Giga-World-1-projectpage/tree/main/video/cc)
-
----
-
-## 7. 📥 Download Models and Toy Data
-
-Use the one-click downloader in [CODE0](./tools/download_tool/README.md) to download released model weights and toy data from Hugging Face or ModelScope.
-
-Supported release URLs:
-
-| Platform | Target | URL |
-| --- | --- | --- |
-| Hugging Face | Model | [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) |
-| Hugging Face | Toy data | [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
-| ModelScope | Model | [GigaAI/Giga-World-1](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
-| ModelScope | Toy data | [GigaAI/Giga-World-1-Toydata](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata) |
-
-Download from Hugging Face:
-
-```bash
-python tools/download_tool/download_giga_world.py \
-  --platform hf \
-  --target all \
-  --output-dir ./downloads
-```
-
-Download from ModelScope:
-
-```bash
-python tools/download_tool/download_giga_world.py \
-  --platform modelscope \
-  --target all \
-  --output-dir ./downloads
-```
-
-You can also download only one target:
-
-```bash
-# model only
-python tools/download_tool/download_giga_world.py --platform hf --target model --output-dir ./downloads
-
-# toy data only
-python tools/download_tool/download_giga_world.py --platform hf --target toydata --output-dir ./downloads
-```
-
-Downloaded files are saved as:
-
-```text
-./downloads/
-├── Giga-World-1/              # model weights
-└── Giga-World-1-Toydata/      # toy data
-```
-
-## 8. 🚀 Quick Start
-
-In about 30 minutes you can go from a fresh clone to a first inference:
-
-```bash
-# 0) Set your local path variables (adjust to your machine)
-export PROJECT_ROOT="$(pwd)"             # the directory you cloned this repo into
-export BASE_NANO="<PATH_TO_BASE_NANO>"   # e.g. ./downloads/Giga-World-1/before_stage1/Wan2p1_1p3B-FunControl-diffusers
-export STAGE1_NANO="<PATH_TO_STAGE1_MERGED_NANO>"  # e.g. ./downloads/Giga-World-1/stage1/nano/Giga-World-1-nano-stage1_final-diffusers
-
-# 1) Install dependencies (auto-activates the configured Conda env)
-cd "${PROJECT_ROOT}"
-bash install.sh
-
-# 2) Run a Nano Stage-1 toy training (auto-uses example/toy_train_dataset/nano)
-bash scripts/training/stage1/train_deepspeed_stage1_functrl_wan21.sh
-
-# 3) After some steps, merge LoRA + patch into a stand-alone transformer
-python tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py \
-  --base_model "${BASE_NANO}" \
-  --save_dir   "${STAGE1_NANO}" \
-  --ckpt_dir   "${PROJECT_ROOT}/output/exp/Giga-world-Nano-Train-Stage-1/checkpoint-500" \
-  --model_type wan2.1
-
-# 4) Run an i2v inference with the merged transformer
-bash scripts/infer/run_infer_nano_i2v.sh
-```
-
-> For **Pro 5B** replace the corresponding items in 1)/3)/4):
-> 
-> - Config: `stage_1_post_functrl_wan22_5b.yaml`
-> - Launcher: `scripts/training/stage1/train_deepspeed_stage1_functrl_wan22_5b.sh`
-> - Merge with `--model_type wan2.2_5b`
-> - Inference: `scripts/infer/run_infer_pro_i2v.sh`
 
 ---
 
