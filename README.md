@@ -285,7 +285,7 @@ cp -r ./downloads/Giga-World-1/* ./model/
 
 Training entrypoints and launcher scripts are paired (each pair = one `accelerate launch` command + one YAML).
 
-### 3.1 Stage-1 Training (Controllable Pre-training)
+### 4.1 Stage-1 Training (Controllable Pre-training)
 
 | Entrypoint / Config | Launcher | Note |
 | --- | --- | --- |
@@ -315,7 +315,7 @@ output/
 └── logs/
 ```
 
-### 3.2 Stage-2 DMD Training (Acceleration Distillation)
+### 4.2 Stage-2 DMD Training (Acceleration Distillation)
 
 | Entrypoint / Config | Launcher |
 | --- | --- |
@@ -337,7 +337,7 @@ Example output:
 output/exp/Giga-world-Nano-Train-DMD/
 ```
 
-### 3.3 Training on Other Domains
+### 4.3 Training on Other Domains
 
 To adapt GigaWorld-1 to a new domain, no code changes are required. In practice, you only need to construct training data in the same format as the provided GigaWorld data, then launch the existing Stage-1 training pipeline with the corresponding config.
 
@@ -408,9 +408,9 @@ Inference output example:
 
 ## 6. 🔄 Model Merge & Checkpoint Conversion
 
-Unified merge tool: [uni_merge_lora_for_giga_world_1.py](./tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py)
+Use [uni_merge_lora_for_giga_world_1.py](./tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py) to merge LoRA or partial checkpoints into a standalone transformer for deployment.
 
-Supports both `wan2.1` and `wan2.2_5b`; auto-resolves LoRA and partial state dicts from a checkpoint directory; the output is a stand-alone, deployment-ready transformer.
+The tool supports both `wan2.1` and `wan2.2_5b`, automatically resolves checkpoint files from the specified checkpoint directory, and saves the merged transformer to `--save_dir`.
 
 ```bash
 python tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py \
@@ -429,8 +429,6 @@ python tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py \
   --ckpt_dir   /path/to/checkpoint-XXXX \
   --model_type wan2.2_5b
 ```
-
-The merge process also writes a **visual HTML report** at `<save_dir>/merge_report.html`, recording the source, merge method, and success status of every part — handy for release traceability.
 
 ---
 
