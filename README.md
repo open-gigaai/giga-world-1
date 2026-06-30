@@ -36,16 +36,12 @@
 
 - [1. 📦 Environment Setup](#1--environment-setup)
 - [2. 🗃️ Data Preparation](#2-%EF%B8%8F-data-preparation)
-- [3. 🚂 Training](#3--training)
-- [4. 🖼️ Data & Trajectory Visualization](#4-%EF%B8%8F-data--trajectory-visualization)
+- [3. 🧩 Model Preparation](#3--model-preparation)
+- [4. 🚂 Training](#4--training)
 - [5. 🎬 Inference](#5--inference)
 - [6. 🔄 Model Merge & Checkpoint Conversion](#6--model-merge--checkpoint-conversion)
-- [7. 📥 Download Models and Toy Data](#7--download-models-and-toy-data)
-- [8. 🚀 Quick Start](#8--quick-start)
-- [9. 📁 Repository Layout](#9--repository-layout)
-- [10. ❓ FAQ & Tips](#10--faq--tips)
+- [7. 📁 Repository Layout](#7--repository-layout)
 - [🙏 Acknowledgements](#-acknowledgements)
-- [🤝 Contact](#-contact)
 - [📖 Citation](#-citation)
 
 ---
@@ -343,8 +339,6 @@ output/exp/Giga-world-Nano-Train-DMD/
 
 ## 5. 🎬 Inference
 
-### 5.1 One-Click Scripts (i2v / t2v × Nano / Pro)
-
 | Script | Mode | Model | Link |
 | --- | --- | --- | --- |
 | `run_infer_nano_i2v.sh` | i2v | Nano 1.3B | [script](./scripts/infer/run_infer_nano_i2v.sh) |
@@ -362,8 +356,6 @@ bash scripts/infer/run_infer_nano_i2v.sh
 bash scripts/infer/run_infer_pro_t2v.sh
 ```
 
-
-### 5.2 Command-Line Arguments
 
 The underlying entrypoint [infer_giga_world.py](./infer/infer_giga_world.py) exposes the following arguments:
 
@@ -387,13 +379,22 @@ The underlying entrypoint [infer_giga_world.py](./infer/infer_giga_world.py) exp
 | `--guidance_scale` |   | 5.0 | Classifier-free guidance strength |
 | `--enable_tiling` |   | False | VAE tiling for memory savings |
 
-### 5.3 Inference Output Example
+Inference output example:
 
 <div align="center">
 
-| First Frame | Control Video | Generated Rollout |
-| :---: | :---: | :---: |
-| ![input](assets/input_image.png) | ▶ [control_video.mp4](./assets/control_video.mp4) | ▶ [i2v_sample.mp4](./assets/i2v_sample.mp4) |
+<table>
+  <tr>
+    <th>First Frame</th>
+    <th>Control Video</th>
+    <th>Generated Rollout</th>
+  </tr>
+  <tr>
+    <td><img src="assets/input_image.png" alt="input image" width="260" /></td>
+    <td><video src="assets/control_video.mp4" controls muted loop width="260"></video></td>
+    <td><video src="assets/i2v_sample.mp4" controls muted loop width="260"></video></td>
+  </tr>
+</table>
 
 </div>
 
