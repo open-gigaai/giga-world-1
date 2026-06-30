@@ -4,7 +4,7 @@
 
 # GigaWorld-1: A Roadmap to World Models for Robot Policy Evaluation
 
-**Open-source training, inference, data processing, checkpoint conversion, and LoRA merge workflow.**
+**🚀 Open-source training, inference, data processing, checkpoint conversion, and LoRA merge workflows for robot world models.**
 
 </div>
 
@@ -19,11 +19,11 @@
 [![WMBench](https://img.shields.io/badge/📊_Benchmark-WMBench_Coming_Soon-orange.svg?style=for-the-badge)](#-wmbench-benchmark)
 [![CVPR 2026](https://img.shields.io/badge/CVPR-2026-7B68EE.svg?style=for-the-badge)](#-citation)
 
-[![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat-square&logo=python&logoColor=white)](#1-environment-setup)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C.svg?style=flat-square&logo=pytorch&logoColor=white)](#1-environment-setup)
-[![Diffusers](https://img.shields.io/badge/Diffusers-Custom-FFD21E.svg?style=flat-square)](#5-model-merge--checkpoint-conversion)
+[![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat-square&logo=python&logoColor=white)](#1--environment-setup)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C.svg?style=flat-square&logo=pytorch&logoColor=white)](#1--environment-setup)
+[![Diffusers](https://img.shields.io/badge/Diffusers-Custom-FFD21E.svg?style=flat-square)](#6--model-merge--checkpoint-conversion)
 [![License](https://img.shields.io/badge/License-Apache_2.0-green.svg?style=flat-square)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Linux-black.svg?style=flat-square&logo=linux&logoColor=white)](#1-environment-setup)
+[![Platform](https://img.shields.io/badge/Platform-Linux-black.svg?style=flat-square&logo=linux&logoColor=white)](#1--environment-setup)
 
 </div>
 
@@ -35,9 +35,14 @@
 - [📊 Open-Source Progress](#-open-source-progress)
 
 - [1. 📦 Environment Setup](#1--environment-setup)
+  - [1.1 🖥️ Hardware & OS](#11-%EF%B8%8F-hardware--os)
+  - [1.2 🧰 Install Dependencies](#12--install-dependencies)
 - [2. 🗃️ Data Preparation](#2-%EF%B8%8F-data-preparation)
 - [3. 🧩 Model Preparation](#3--model-preparation)
 - [4. 🚂 Training](#4--training)
+  - [4.1 Stage-1 Training](#41-stage-1-training-controllable-pre-training)
+  - [4.2 Stage-2 DMD Training](#42-stage-2-dmd-training-acceleration-distillation)
+  - [4.3 Training on Other Domains](#43-training-on-other-domains)
 - [5. 🎬 Inference](#5--inference)
 - [6. 🔄 Model Merge & Checkpoint Conversion](#6--model-merge--checkpoint-conversion)
 - [7. 📁 Repository Layout](#7--repository-layout)
@@ -70,10 +75,10 @@
 | Status | Component | Description |
 | :---: | --- | --- |
 | 🟢 | **Stage-1 weights (Nano / Pro)** | Released on [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) and [ModelScope](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
-| 🟢 | **Training code** | Stage-1: `train_gigaworld_functrl_uni_stage1.py` for Nano (1.3B) and Pro (5B), DeepSpeed ZeRO-2/3 ready — see [§3.1](#31-stage-1-training-controllable-pre-training); Stage-2: `train_gigaworld_functrl_uni_stage2_dmd.py` for DMD2 distillation (4–6 steps) — see [§3.2](#32-stage-2-dmd-training-acceleration-distillation) |
+| 🟢 | **Training code** | Stage-1: `train_gigaworld_functrl_uni_stage1.py` for Nano (1.3B) and Pro (5B), DeepSpeed ZeRO-2/3 ready — see [§4.1](#41-stage-1-training-controllable-pre-training); Stage-2: `train_gigaworld_functrl_uni_stage2_dmd.py` for DMD2 distillation (4–6 steps) — see [§4.2](#42-stage-2-dmd-training-acceleration-distillation) |
 | 🟢 | **Inference code (i2v / t2v)** | Nano + Pro one-click scripts, 10 FPS, 33 s rollouts — see [§5](#5--inference) |
-| 🟡 | **Data preprocessing pipeline & toy data** | LeRobot-style → GigaWorld format with Qwen3-VL captions + Depth Anything V2 — see [§2.4](#24-lerobot-raw-data-preprocessing-pipeline); toy data: [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
-| 🟢 | **Tools** | LoRA merge / checkpoint conversion, visualization, and offline latent utilities — see [§4](#4-%EF%B8%8F-data--trajectory-visualization), [§6](#6--model-merge--checkpoint-conversion), [§2.5](#25-offline-latent-pre-computation--conversion) |
+| 🟡 | **Data preprocessing pipeline & toy data** | LeRobot-style → GigaWorld format with Qwen3-VL captions + Depth Anything V2 — see [§2](#2-%EF%B8%8F-data-preparation); toy data: [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
+| 🟢 | **Tools** | LoRA merge / checkpoint conversion, visualization, and offline latent utilities — see [§2](#2-%EF%B8%8F-data-preparation), [§6](#6--model-merge--checkpoint-conversion) |
 | 🔴 | **📊 WMBench benchmark** | Coming soon — 15 fine-grained metrics, leaderboard + VLM judging |
 | 🔴 | **Stage-2 distilled weights** | Distilled Nano / Pro checkpoints — coming soon |
 | 🔴 | **RL post-training** | 3D RL post-training scripts for stronger 3D scene modeling — coming soon |
@@ -94,13 +99,13 @@
 | 📊 **WMBench** | Public benchmark (coming soon) | *TBA* |
 | 🆘 **Support** | Issues and discussions | <a href="../../issues"><img src="https://img.shields.io/badge/GitHub-Issues-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub Issues"></a> |
 
-> 🛠️ Want a component to ship sooner? File an issue or open a PR — see [§10 FAQ & Tips](#10--faq--tips).
+> 🛠️ Want a component to ship sooner? Please [file an issue](../../issues) or open a PR.
 
 ---
 
 ## 1. 📦 Environment Setup
 
-### 1.1 Hardware & OS
+### 1.1 🖥️ Hardware & OS
 
 | Item | Requirement / Recommendation |
 | --- | --- |
@@ -112,7 +117,7 @@
 
 > **Note:** We use a single-node 8× H20 or 8× A100 setup for production training. With appropriate memory optimization techniques, the released code can also run training and inference experiments on consumer-grade GPUs.
 
-### 1.2 Install Dependencies
+### 1.2 🧰 Install Dependencies
 
 The repository expects to reuse an existing Conda environment (by default `<PATH_TO_ENV>`, e.g. `~/envs/Helios`). You can point `install.sh` at any other env via the `DEFAULT_ENV_PATH` variable at the top of the script. `install.sh` auto-detects and activates that environment, then installs all dependencies.
 
@@ -192,7 +197,6 @@ Expected project structure:
 ```text
 giga-world-release/
 └── example/
-    ├── infer_assest/                # inference / rollout assets
     ├── toy_datapipeline_dataset/    # raw LeRobot-format toy dataset
     │   ├── gt/
     │   ├── depth/
@@ -341,7 +345,7 @@ output/exp/Giga-world-Nano-Train-DMD/
 
 To adapt GigaWorld-1 to a new domain, no code changes are required. In practice, you only need to construct training data in the same format as the provided GigaWorld data, then launch the existing Stage-1 training pipeline with the corresponding config.
 
-For most new domains, training for a few thousand steps on 8 GPUs is typically sufficient and can usually be completed within one day.
+For most new domains, training for a few thousand steps on 8 GPUs is typically sufficient and can usually finish within one day.
 
 ## 5. 🎬 Inference
 
@@ -385,7 +389,7 @@ The underlying entrypoint [infer_giga_world.py](./infer/infer_giga_world.py) exp
 | `--guidance_scale` |   | 5.0 | Classifier-free guidance strength |
 | `--enable_tiling` |   | False | VAE tiling for memory savings |
 
-Inference output example:
+**Inference output example:**
 
 <div align="center">
 
@@ -462,11 +466,13 @@ python tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py \
 │   ├── download_tool/                 #   one-click HF / ModelScope downloader
 │   ├── offload_data/                  #   offline latent pre-computation / format conversion
 │   └── others/                        #   misc conversion tools
-├── assets/                            #   project page hero / teaser media
+├── assets/                            #   README figures and demo media
 │   ├── main_page.png                  #   main teaser image
-│   └── data_vis.gif                   #   data visualization demo
+│   ├── data_vis.gif                   #   data visualization demo
+│   ├── input_image.png                #   inference first frame
+│   ├── control_video.mp4              #   inference control video
+│   └── i2v_sample.mp4                 #   generated rollout sample
 ├── example/
-│   ├── infer_assest/                  #   example first frame + control video
 │   ├── toy_train_dataset/             #   Nano / Pro toy training datasets
 │   └── toy_datapipeline_dataset/      #   toy preprocessing output (gt / depth / plucker / sketch)
 ├── model/
