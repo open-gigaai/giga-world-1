@@ -33,7 +33,7 @@
 
 - [📰 Latest Updates](#-latest-updates)
 - [📊 Open-Source Progress](#-open-source-progress)
-- [🏗️ GigaWorld-1 Architecture](#%EF%B8%8F-gigaworld-1-architecture)
+
 - [1. 📦 Environment Setup](#1--environment-setup)
 - [2. 🗃️ Data Preparation](#2-%EF%B8%8F-data-preparation)
 - [3. 🚂 Training](#3--training)
@@ -102,58 +102,19 @@
 
 ---
 
-## 🏗️ GigaWorld-1 Architecture
-
-GigaWorld-1 is an **autoregressive diffusion-transformer world generator** with **parameter-efficient LoRA adaptation**, designed for evaluator-oriented post-training rather than generic video generation.
-
-```text
-┌──────────────────────────────────────────────────────────────────┐
-│                      GigaWorld-1 Generator                      │
-│                                                                  │
-│  Prompt (T5)            First Frame (i2v) / No first frame (t2v)│
-│      │                          │                                │
-│      ▼                          ▼                                │
-│  ┌──────────┐         ┌──────────────────────┐                   │
-│  │ T5 Encode│         │  ControlNet (Plücker │                   │
-│  │  → text  │         │   / ray map / depth) │                   │
-│  │  embeds  │         └──────────┬───────────┘                   │
-│  └────┬─────┘                    │                                │
-│       └─────────────┐            │                                │
-│                     ▼            ▼                                │
-│            ┌────────────────────────────────────┐                 │
-│            │   DiT Blocks + LoRA (rank=128)     │                 │
-│            │   + Multi-term Memory Patch       │                 │
-│            │       (short / mid / long)         │                 │
-│            └─────────────────┬──────────────────┘                 │
-│                              ▼                                    │
-│              Latent → Wan-VAE Decode → Video                      │
-│                                                                  │
-│  Stage-1: LoRA pre-training / post-training                      │
-│  Stage-2: DMD2 step-distillation                                 │
-│  Reward (optional): VideoReward / JEPA                            │
-└──────────────────────────────────────────────────────────────────┘
-```
-
-**Key design points:**
-
-- 🎯 **Evaluator-Oriented** — preserve the relative success/failure of real robot rollouts, not just short-horizon visual realism
-- 🎥 **Pixel-aligned multi-view control** — view-specific Plücker / Ray Map signals keep head & wrist views geometrically consistent over long horizons
-- 🧊 **3D RL post-training** — strengthens 3D scene modeling for more faithful physical dynamics
-- 🌐 **Cross-domain transfer** — rapid adaptation to autonomous driving (NUScenes) and beyond
-
----
-
 ## 1. 📦 Environment Setup
 
 ### 1.1 Hardware & OS
 
-| Spec | Nano (wan2.1) | Pro (wan2.2_5b) |
-| --- | --- | --- |
-| Recommended VRAM (inference) | **< 24 GB** (single RTX 4090 works) | 24–48 GB (single H20 / A100) |
-| Recommended VRAM (training) | 4 × 24 GB minimum (ZeRO-2) | 8 × 48 GB minimum (ZeRO-2/3) |
-| OS | Linux (verified on Ubuntu 20.04 / 22.04) | Same |
-| CUDA | Matches your local PyTorch (CUDA 12.x recommended) | Same |
-| Disk | ≥ 80 GB for inference; ≥ 500 GB NVMe for training | ≥ 1 TB NVMe |
+| Item | Requirement / Recommendation |
+| --- | --- |
+| Production setup | Single node with **8 × H20** or **8 × A100** GPUs |
+| Inference | Supports both Nano (1.3B) and Pro (5B); consumer-grade GPUs can be used with memory-saving settings |
+| Training | Production experiments are run on 8-GPU nodes; consumer-grade GPU training is possible with ZeRO, offloading, gradient checkpointing, and reduced batch / resolution settings |
+| OS | Linux, verified on Ubuntu 20.04 / 22.04 |
+| CUDA | CUDA 12.x recommended, matching the local PyTorch installation |
+
+> **Note:** We use a single-node 8× H20 or 8× A100 setup for production training. With appropriate memory optimization techniques, the released code can also run training and inference experiments on consumer-grade GPUs.
 
 ### 1.2 Install Dependencies
 
@@ -206,176 +167,124 @@ xformers>=0.0.28.post3   # memory-efficient attention
 > # Follow its README
 > ```
 
-### 1.3 Released Model Weights
+### 1.3 Model Preparation
 
-Released weights are available from:
+Released model weights are available from:
 
-- Hugging Face: [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1)
-- ModelScope: [GigaAI/Giga-World-1](https://modelscope.cn/models/GigaAI/Giga-World-1/summary)
+| Platform | Repository |
+| --- | --- |
+| 🤗 Hugging Face | [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) |
+| 🔷 ModelScope | [GigaAI/Giga-World-1](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
 
-| Stage | Name | Path | Notes |
-| --- | --- | --- | --- |
-| Open Source | WAN 2.1 1.3B FunControl | [Wan2.1-Fun-1.3B-Control](https://www.bing.com/search?q=WAN+2.1+1.3B+FunControl&form=ANNTH1&refig=6a436fa312dd427c9dfef065aca873ed&pc=CNNDDB) ![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Model-FFD21E?logo=huggingface&logoColor=black) | Open-source model. |
-| Open Source | WAN 2.2 5B FunControl | [Wan2.2-Fun-5B-Control](https://huggingface.co/alibaba-pai/Wan2.2-Fun-5B-Control) ![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Model-FFD21E?logo=huggingface&logoColor=black) | Open-source model. |
-| Before Stage 1 | GigaRobo Alpha Diffusers | `before_stage1/Wan2p1_1p3B-FunContro-GigaRobo-alpha-diffusers/` | Pretrained on Giga dataset, then converted to Diffusers. |
-| Before Stage 1 | WAN 2.1 1.3B Diffusers | `before_stage1/Wan2p1_1p3B-FunControl-diffusers/` | Vanilla Diffusers-converted checkpoint. |
-| Before Stage 1 | WAN 2.2 5B Diffusers | `before_stage1/Wan2p2_5B-FunControl-diffusers/` | Vanilla Diffusers-converted checkpoint. |
-| Stage 1 | Nano (1.3B) | `stage1/nano/` | Stage-1 fine-tuned from the 1.3B branches. |
-| Stage 1 | Pro (5B) | `stage1/pro/` | Stage-1 fine-tuned from the 5B branch. |
-| Stage 2 | Nano Distill | 🚧 Coming soon | 🚧 Coming soon. |
-| Stage 2 | Pro Distill | 🚧 Coming soon | 🚧 Coming soon. |
+Use the download helper:
 
-Each Stage-1 variant (`nano` / `pro`) contains two artifacts: a full Diffusers-format checkpoint and a scene LoRA checkpoint.
+- Script: [download_giga_world.sh](./tools/download_tool/download_giga_world.sh)
+- Full usage: [tools/download_tool/README.md](./tools/download_tool/README.md)
 
-```text
-stage1/{nano,pro}/
-├── Giga-World-1-*-stage1_final-diffusers/         # full Diffusers checkpoint
-│   ├── model_index.json                           # Diffusers pipeline index
-│   ├── transformer/                               # DiT / video transformer weights
-│   ├── vae/                                       # VAE weights
-│   ├── text_encoder/                              # text encoder weights
-│   ├── tokenizer/                                 # tokenizer files
-│   ├── scheduler/                                 # scheduler config
-│   ├── image_encoder/                             # image encoder weights
-│   └── image_processor/                           # image preprocessing config
-└── Giga-World-1-*-stage1_scene_lora/              # scene LoRA checkpoint
-    ├── pytorch_lora_weights.safetensors           # LoRA weights for inference
-    ├── transformer_full/                          # full transformer export
-    ├── transformer_partial.pth                    # partial transformer checkpoint
-    ├── pytorch_model/                             # training checkpoint shards
-    ├── distributed_checkpoint/                    # distributed training checkpoint
-    ├── scheduler.bin                              # training scheduler state
-    ├── latest                                     # latest checkpoint pointer
-    ├── zero_to_fp32.py                            # ZeRO checkpoint conversion script
-    └── random_states_*.pkl                        # training random states
-```
-
-### 1.4 Key Environment Variables
-
-The inference and training scripts export a set of HuggingFace / NCCL / Vulkan-friendly variables by default:
+Download model weights from Hugging Face:
 
 ```bash
-# HuggingFace
-export HF_ENABLE_PARALLEL_LOADING=yes
-export HF_PARALLEL_LOADING_WORKERS=8
-export TOKENIZERS_PARALLELISM=false
-
-# Attention / acceleration
-export FLASH_ATTENTION_SKIP_CUDA_BUILD=TRUE    # skip FA compile at inference
-export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True,max_split_size_mb:512
-
-# NCCL (multi-GPU)
-export NCCL_TIMEOUT=360000000
-export TORCH_NCCL_BLOCKING_WAIT=1
-export TORCH_NCCL_TIMEOUT=360000000
-export NCCL_P2P_DISABLE=1
-export NCCL_IB_DISABLE=1
-export NCCL_DEBUG=WARN
-
-# Vulkan (prevent CPU-side errors)
-export VK_ICD_FILENAMES=/etc/vulkan/icd.d/nvidia_icd.json
-
-# W&B
-export WANDB_MODE=offline    # default; switch to online with WANDB_API_KEY=...
+bash tools/download_tool/download_giga_world.sh \
+  --platform hf \
+  --target model \
+  --output-dir ./downloads
 ```
+
+Download model weights from ModelScope:
+
+```bash
+bash tools/download_tool/download_giga_world.sh \
+  --platform modelscope \
+  --target model \
+  --output-dir ./downloads
+```
+
+After downloading, place or symlink the model files under `model/`:
+
+```text
+giga-world-release/
+├── model/
+│   ├── before_stage1/
+│   │   ├── Wan2p1_1p3B-FunContro-GigaRobo-alpha-diffusers/
+│   │   ├── Wan2p1_1p3B-FunControl-diffusers/
+│   │   └── Wan2p2_5B-FunControl-diffusers/
+│   ├── stage1/
+│   │   ├── nano/
+│   │   └── pro/
+│   └── stage2_distill/          # coming soon
+└── tools/
+    └── download_tool/
+```
+
+If the downloader saves weights under `./downloads/Giga-World-1/`, copy or symlink them into the repository:
+
+```bash
+mkdir -p model
+cp -r ./downloads/Giga-World-1/* ./model/
+```
+
+For detailed model file structure, see [model/README.md](./model/README.md).
 
 ---
 
 ## 2. 🗃️ Data Preparation
 
-### 2.1 Data Schema
+This release provides a small toy data package for verifying inference, data loading, and training workflows.
 
-Training data in this repository is organized by **three camera views** (`cam_high` / `cam_left_wrist` / `cam_right_wrist`):
+### 2.1 Where to Download
 
-<div align="center">
+| Platform | Repository |
+| --- | --- |
+| 🤗 Hugging Face | [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
+| 🔷 ModelScope | [GigaAI/Giga-World-1-Toydata](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata) |
 
-<img src="assets/data_vis.gif" alt="Data Visualization" width="90%" />
+### 2.2 One-click Download
 
-</div>
+Use the download helper:
+
+- Script: [download_giga_world.sh](./tools/download_tool/download_giga_world.sh)
+- Full usage: [tools/download_tool/README.md](./tools/download_tool/README.md)
+
+Download toy data from Hugging Face:
+
+```bash
+bash tools/download_tool/download_giga_world.sh \
+  --platform hf \
+  --target toydata \
+  --output-dir ./downloads
+```
+
+Download toy data from ModelScope:
+
+```bash
+bash tools/download_tool/download_giga_world.sh \
+  --platform modelscope \
+  --target toydata \
+  --output-dir ./downloads
+```
+
+### 2.3 Recommended Placement
+
+After downloading, place or symlink the toy data under `example/`:
 
 ```text
-example/toy_datapipeline_dataset/
-├── gt/                          # RGB videos (ground truth)
-│   ├── cam_high/                #   head view
-│   ├── cam_left_wrist/          #   left wrist view
-│   └── cam_right_wrist/         #   right wrist view
-├── depth/                       # Depth Anything V2 outputs
-│   ├── cam_high/
-│   ├── cam_left_wrist/
-│   └── cam_right_wrist/
-├── plucker/                     # Plücker coordinate control signals (left/right per view)
-│   ├── episode_000001_left_direction.mp4
-│   ├── episode_000001_left_moment.mp4
-│   ├── episode_000001_right_direction.mp4
-│   └── episode_000001_right_moment.mp4
-├── sketch/                      # sketch control signals
-│   └── cam_high/
-└── labels/
-    ├── data.pkl                 # per-episode metadata (see below)
-    └── config.json
+giga-world-release/
+├── example/
+│   ├── infer_assest/
+│   ├── toy_datapipeline_dataset/
+│   └── toy_train_dataset/
+└── tools/
+    └── download_tool/
 ```
 
-A typical record in `labels/data.pkl` (from [CODE1](./tools/datapipeline/README_datapipeline.md)):
+If the downloader saves data under `./downloads/Giga-World-1-Toydata/`, you can copy or symlink it into the repository:
 
-```python
-{
-    "action": List[List[float]],                    # end-effector / joint actions
-    "data_index": int,
-    "episode_name": str,
-
-    "cam_high_video_path": str,
-    "cam_left_wrist_video_path": str,
-    "cam_right_wrist_video_path": str,
-
-    "cam_high_depth_path": str,
-    "cam_left_wrist_depth_path": str,
-    "cam_right_wrist_depth_path": str,
-
-    "qpos": List[List[float]],                      # current joint angles
-    "video_height": int,
-    "video_width": int,
-    "video_length": int,
-
-    "short-prompt": {                                # from meta/episodes.jsonl
-        "task1": {
-            "start_idx": "0",
-            "end_idx": "299",
-            "description": "put banana into basket"
-        }
-    },
-
-    "long-prompt": {                                 # generated by Qwen3-VL on cam_high
-        "long prompt 1": {
-            "start_idx": "0",
-            "end_idx": "299",
-            "caption": "The robot arm reaches toward ..."
-        }
-    }
-}
+```bash
+mkdir -p example
+cp -r ./downloads/Giga-World-1-Toydata/* ./example/
 ```
 
-### 2.2 Data Sources (≈12,980 hours)
-
-GigaWorld-1's pre-training corpus is composed of four complementary sources (figures from the [project page](https://github.com/Yvonne-OH/Giga-World-1-projectpage)):
-
-| Category | Representative Sources | Robot Type | Hours | Modality |
-| --- | --- | --- | ---: | --- |
-| 🌐 Physical | Internet Videos, Physics Videos | ⚙️ N/A | ~1,298 | 🎥 RGB Video |
-| 🤖 Robot | Open X, AgiBot | 🦿 Single-arm / 🤖 Dual-arm / 🧍 Humanoid | ~5,377 | 🦾 Robot Demonstration |
-| ✋ Human | EgoDex, SynData | ✋ Human Hands | ~2,411 | 🎥 RGB Video + 🖐️ Hand Pose |
-| 🧠 Giga | Giga Humanoid, Giga Dual-arm | 🧍 Humanoid / 🤖 Dual-arm | ~3,894 | 🦾 Robot Demonstration |
-| **🟦 Total** |   |   | **≈ 12,980 h** |   |
-
-> This repository ships only the toy subset for reproducible verification; large-scale data should be processed following the steps in this section.
-
-### 2.3 Use the Bundled Toy Datasets
-
-Toy data is available from:
-
-- Hugging Face: [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata)
-- ModelScope: [GigaAI/Giga-World-1-Toydata](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata)
-
-The toy data package contains inference assets, a raw LeRobot-format toy dataset, and preprocessed model training data:
+### 2.4 Toy Data Structure
 
 ```text
 example/
@@ -397,77 +306,77 @@ example/
         └── episode_*.pt
 ```
 
-`example/toy_train_dataset/` is already organized in the training format, referenced by:
+`toy_train_dataset/` is already in the training format used by the provided configs:
 
-- [CODE0](./scripts/training/configs/stage_1_post_functrl_wan21.yaml#L21-L22) → `example/toy_train_dataset/nano`
-- [CODE0](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml#L21-L22) → `example/toy_train_dataset/pro`
-- [CODE0](./scripts/training/configs/stage_2_dmd_functrl_wan21.yaml#L23) → `example/toy_train_dataset/nano`
+- [stage_1_post_functrl_wan21.yaml](./scripts/training/configs/stage_1_post_functrl_wan21.yaml)
+- [stage_1_post_functrl_wan22_5b.yaml](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml)
+- [stage_2_dmd_functrl_wan21.yaml](./scripts/training/configs/stage_2_dmd_functrl_wan21.yaml)
 
-Use them directly — no extra preprocessing required.
+### 2.5 Raw Data Visualization
 
-### 2.4 LeRobot Raw-Data Preprocessing Pipeline
+You can inspect the raw LeRobot-format toy data with the web visualization tool:
 
-Main script: [CODE0](./tools/datapipeline/datapipeline_lerobot.py)
+- Tool README: [tools/data_vis_tools/README.md](./tools/data_vis_tools/README.md)
+- Demo GIF: [assets/data_vis.gif](./assets/data_vis.gif)
 
-Expected input layout (LeRobot-style):
+<p align="center">
+  <img src="assets/data_vis.gif" width="90%" alt="Raw data visualization demo" />
+</p>
 
-```text
-task_name/
-├── data/
-│   └── chunk-000/
-│       └── episode_000000.parquet
-├── videos/
-│   └── chunk-000/
-│       ├── observation.images.cam_high/
-│       ├── observation.images.cam_left_wrist/
-│       └── observation.images.cam_right_wrist/
-└── meta/
-    └── episodes.jsonl
-```
-
-Run with a single command:
+Start the visualization server:
 
 ```bash
-python tools/datapipeline/datapipeline_lerobot.py \
-  --output_base output \
-  --data_dir_list origin_data/task1 \
-  --num_gpus 8 \
-  --max_tasks -1
+cd tools/data_vis_tools
+python app.py --host 0.0.0.0 --port 8090
 ```
 
-The pipeline will:
+Open in browser:
 
-1. Read episode metadata from `data/chunk-*/episode_*.parquet`
-2. Read the three camera-view RGB videos
-3. Load short task descriptions from `meta/episodes.jsonl`
-4. Use **Qwen3-VL** on the `cam_high` view to generate dense long captions
-5. Run **Depth Anything V2** on all three views to produce depth videos
-6. Write the final dataset: `gt/`, `depth/`, `labels/data.pkl`, `labels/config.json`, `config.json`
-
-Key constants at the top of the script that you may need to tune:
-
-| Variable | Default | Description |
+| Page | URL | Usage |
 | --- | --- | --- |
-| `VIDEO_FPS` | 30 | Output video FPS |
-| `TARGET_HEIGHT` | 480 | Output video height |
-| `TARGET_WIDTH` | 640 | Output video width |
-| `CAPTION_MODEL_PATH` | local Qwen3-VL path | Caption model checkpoint |
-| `CAPTION_MAX_PIXELS` | `360 * 420` | Video tokenization limit |
-| `CAPTION_FPS` | 2.0 | Sampling FPS sent to the VLM |
-| `CAPTION_MAX_NEW_TOKENS` | 256 | Max caption generation length |
-| `LONG_PROMPT_SEGMENT_FRAMES` | 300 | Frames per long-caption segment |
+| 🦾 URDF 3D Viewer | `http://127.0.0.1:8090/` | Load `labels/data.pkl` and inspect action / qpos trajectories with the robot model |
+| 📷 Camera Calibration | `http://127.0.0.1:8090/calib` | Visualize camera intrinsics / extrinsics, 3D FK, and camera projection |
 
-> 📖 Full field reference: [CODE0](./tools/datapipeline/README_datapipeline.md).
+### 2.6 Offline Latent Pre-computation
 
-### 2.5 Offline Latent Pre-computation & Conversion
+Offline latent pre-computation converts videos, control videos, and prompts into `.pt` samples before training to reduce runtime I/O and VAE / text-encoder overhead.
 
-To reduce I/O overhead during training, you can pre-encode latents before training:
+Related scripts:
 
-- [CODE0](./tools/offload_data/get_short-latents-giga-ctrl.py)
-- [CODE0](./tools/offload_data/get_short-latents-giga-ctrl-wan22-5b.py)
-- [CODE0](./tools/offload_data/gigactrl2helios.py)
+- [get_short-latents-giga-ctrl.py](./tools/offload_data/get_short-latents-giga-ctrl.py) for Nano / Wan2.1-style data
+- [get_short-latents-giga-ctrl-wan22-5b.py](./tools/offload_data/get_short-latents-giga-ctrl-wan22-5b.py) for Pro / Wan2.2-5B-style data
+- [data_format.md](./tools/offload_data/data_format.md) for input / output schema
 
-Checkpoint key normalization: [CODE0](./tools/others/convert_ckpt.py)
+Expected input:
+
+```text
+<data_root>/
+├── helios_giga_ctrl.jsonl
+├── videos/
+└── control_videos/
+```
+
+Expected output:
+
+```text
+<output_root>/
+├── {uttid}_{num_frame}_{height}_{width}.pt
+└── ...
+```
+
+Run the matching script for your model branch, for example:
+
+```bash
+bash tools/offload_data/get_short-latents-giga-ctrl.sh
+```
+
+or:
+
+```bash
+bash tools/offload_data/get_short-latents-giga-ctrl-wan22-5b.sh
+```
+
+Each `.pt` sample contains precomputed `vae_latent`, `control_latent`, `prompt_embed`, `prompt_attention_mask`, `first_frames_image`, and related metadata. See [data_format.md](./tools/offload_data/data_format.md) for the full schema.
 
 ---
 
