@@ -125,7 +125,7 @@ cd <PROJECT_ROOT>
 bash install.sh
 ```
 
-[CODE0](./install.sh) workflow:
+[install.sh](./install.sh) workflow:
 
 1. Source `miniconda3/etc/profile.d/conda.sh` if it exists
 2. `conda activate <PATH_TO_ENV>`  (e.g. `conda activate /path/to/your/env`)
@@ -134,7 +134,7 @@ bash install.sh
 5. If `thirdparty/diffusers` exists, `pip install -e ./thirdparty/diffusers` (editable install — required for custom diffusers modifications)
 6. If `thirdparty/flash-attention-3` exists, **print a notice only — do not auto-compile** (depends on your CUDA / PyTorch version)
 
-Main dependencies (see [CODE0](./requirements.txt)):
+Main dependencies (see [requirements.txt](./requirements.txt)):
 
 ```text
 accelerate>=1.1.0        # accelerate launch / DDP / DeepSpeed
