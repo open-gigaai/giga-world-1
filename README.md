@@ -167,64 +167,6 @@ xformers>=0.0.28.post3   # memory-efficient attention
 > # Follow its README
 > ```
 
-### 1.3 Model Preparation
-
-Released model weights are available from:
-
-| Platform | Repository |
-| --- | --- |
-| 🤗 Hugging Face | [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) |
-| 🔷 ModelScope | [GigaAI/Giga-World-1](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
-
-Use the download helper:
-
-- Script: [download_giga_world.sh](./tools/download_tool/download_giga_world.sh)
-- Full usage: [tools/download_tool/README.md](./tools/download_tool/README.md)
-
-Download model weights from Hugging Face:
-
-```bash
-bash tools/download_tool/download_giga_world.sh \
-  --platform hf \
-  --target model \
-  --output-dir ./downloads
-```
-
-Download model weights from ModelScope:
-
-```bash
-bash tools/download_tool/download_giga_world.sh \
-  --platform modelscope \
-  --target model \
-  --output-dir ./downloads
-```
-
-After downloading, place or symlink the model files under `model/`:
-
-```text
-giga-world-release/
-├── model/
-│   ├── before_stage1/
-│   │   ├── Wan2p1_1p3B-FunContro-GigaRobo-alpha-diffusers/
-│   │   ├── Wan2p1_1p3B-FunControl-diffusers/
-│   │   └── Wan2p2_5B-FunControl-diffusers/
-│   ├── stage1/
-│   │   ├── nano/
-│   │   └── pro/
-│   └── stage2_distill/          # coming soon
-└── tools/
-    └── download_tool/
-```
-
-If the downloader saves weights under `./downloads/Giga-World-1/`, copy or symlink them into the repository:
-
-```bash
-mkdir -p model
-cp -r ./downloads/Giga-World-1/* ./model/
-```
-
-For detailed model file structure, see [model/README.md](./model/README.md).
-
 ---
 
 ## 2. 🗃️ Data Preparation
@@ -378,9 +320,65 @@ bash tools/offload_data/get_short-latents-giga-ctrl-wan22-5b.sh
 
 Each `.pt` sample contains precomputed `vae_latent`, `control_latent`, `prompt_embed`, `prompt_attention_mask`, `first_frames_image`, and related metadata. See [data_format.md](./tools/offload_data/data_format.md) for the full schema.
 
+## 3. 🧩 Model Preparation
+
+Released model weights are available from:
+
+| Platform | Repository |
+| --- | --- |
+| 🤗 Hugging Face | [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) |
+| 🔷 ModelScope | [GigaAI/Giga-World-1](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
+
+Use the download helper:
+
+- Script: [download_giga_world.sh](./tools/download_tool/download_giga_world.sh)
+- Full usage: [tools/download_tool/README.md](./tools/download_tool/README.md)
+
+Download model weights from Hugging Face:
+
+```bash
+bash tools/download_tool/download_giga_world.sh \
+  --platform hf \
+  --target model \
+  --output-dir ./downloads
+```
+
+Download model weights from ModelScope:
+
+```bash
+bash tools/download_tool/download_giga_world.sh \
+  --platform modelscope \
+  --target model \
+  --output-dir ./downloads
+```
+
+After downloading, place or symlink the model files under `model/`:
+
+```text
+giga-world-release/
+├── model/
+│   ├── before_stage1/
+│   │   ├── Wan2p1_1p3B-FunContro-GigaRobo-alpha-diffusers/
+│   │   ├── Wan2p1_1p3B-FunControl-diffusers/
+│   │   └── Wan2p2_5B-FunControl-diffusers/
+│   ├── stage1/
+│   │   ├── nano/
+│   │   └── pro/
+│   └── stage2_distill/          # coming soon
+└── tools/
+    └── download_tool/
+```
+
+If the downloader saves weights under `./downloads/Giga-World-1/`, copy or symlink them into the repository:
+
+```bash
+mkdir -p model
+cp -r ./downloads/Giga-World-1/* ./model/
+```
+
 ---
 
-## 3. 🚂 Training
+## 4. 🚂 Training
 
 Training entrypoints and launcher scripts are paired (each pair = one `accelerate launch` command + one YAML).
 
