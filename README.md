@@ -293,9 +293,9 @@ Training entrypoints and launcher scripts are paired (each pair = one `accelerat
 
 | Entrypoint / Config | Launcher | Note |
 | --- | --- | --- |
-| Trainer: [CODE0](./train_gigaworld_functrl_uni_stage1.py) |   | Unified trainer handling both Nano and Pro |
-| Config: [CODE0](./scripts/training/configs/stage_1_post_functrl_wan21.yaml) | [CODE0](./scripts/training/stage1/train_deepspeed_stage1_functrl_wan21.sh) | Nano (1.3B) |
-| Config: [CODE0](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml) | [CODE0](./scripts/training/stage1/train_deepspeed_stage1_functrl_wan22_5b.sh) | Pro (5B) |
+| Trainer: [train_gigaworld_functrl_uni_stage1.py](./train_gigaworld_functrl_uni_stage1.py) |   | Unified trainer handling both Nano and Pro |
+| Config: [stage_1_post_functrl_wan21.yaml](./scripts/training/configs/stage_1_post_functrl_wan21.yaml) | [train_deepspeed_stage1_functrl_wan21.sh](./scripts/training/stage1/train_deepspeed_stage1_functrl_wan21.sh) | Nano (1.3B) |
+| Config: [stage_1_post_functrl_wan22_5b.yaml](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml) | [train_deepspeed_stage1_functrl_wan22_5b.sh](./scripts/training/stage1/train_deepspeed_stage1_functrl_wan22_5b.sh) | Pro (5B) |
 
 **Launch Nano**:
 
@@ -343,7 +343,7 @@ output/exp/Giga-world-Nano-Train-DMD/
 
 ## 5. 🔄 Model Merge & Checkpoint Conversion
 
-Unified merge tool: [CODE0](./tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py)
+Unified merge tool: [uni_merge_lora_for_giga_world_1.py](./tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py)
 
 Supports both `wan2.1` and `wan2.2_5b`; auto-resolves LoRA and partial state dicts from a checkpoint directory; the output is a stand-alone, deployment-ready transformer.
 
@@ -369,8 +369,8 @@ The merge process also writes a **visual HTML report** at `<save_dir>/merge_repo
 
 **Auxiliary conversion tools:**
 
-- Key rename / normalization: [CODE0](./tools/others/convert_ckpt.py)
-- Data-layout migration / pre-computation: [CODE0](./tools/offload_data/gigactrl2helios.py)
+- Key rename / normalization: [convert_ckpt.py](./tools/others/convert_ckpt.py)
+- Data-layout migration / pre-computation: [gigactrl2helios.py](./tools/offload_data/gigactrl2helios.py)
 
 ---
 
@@ -383,7 +383,7 @@ The merge process also writes a **visual HTML report** at `<save_dir>/merge_repo
 | `run_infer_nano_i2v.sh` | i2v | Nano 1.3B | [script](./scripts/infer/run_infer_nano_i2v.sh) |
 | `run_infer_nano_t2v.sh` | t2v | Nano 1.3B | [script](./scripts/infer/run_infer_nano_t2v.sh) |
 | `run_infer_pro_i2v.sh` | i2v | Pro 5B | [script](./scripts/infer/run_infer_pro_i2v.sh) |
-| `run_infer_pro_t2v.sh` | t2v | Pro 5B | [CODE0./scripts/infer/run_infer_pro_t2v.sh) |
+| `run_infer_pro_t2v.sh` | t2v | Pro 5B | [script](./scripts/infer/run_infer_pro_t2v.sh) |
 
 Usage:
 
@@ -490,10 +490,10 @@ A: Yes. `pretrained_model_name_or_path`, `transformer_model_name_or_path`, `real
 A: Before launching, set `export WANDB_MODE=online` and `export WANDB_API_KEY=...`. The default `offline` mode writes logs locally without uploading.
 
 - **Q: I2V motion is very slow at the beginning — what should I do?**
-A: See the comments in [CODE0](./scripts/training/configs/correct.yaml). Adding the "first-frame + last-frame anchor" data format during training significantly mitigates this. The same YAML also enables the anti-drift switches `corrupt_mode_history: "random"` and `is_add_saturation: true`.
+A: See the comments in [correct.yaml](./scripts/training/configs/correct.yaml). Adding the "first-frame + last-frame anchor" data format during training significantly mitigates this. The same YAML also enables the anti-drift switches `corrupt_mode_history: "random"` and `is_add_saturation: true`.
 
 - **Q: Why must diffusers be installed in editable mode?**
-A: This repository makes small custom modifications to diffusers' attention processor / scheduler etc. (see [CODE0](./thirdparty/diffusers)). `pip install -e` is required for those changes to be loaded.
+A: This repository makes small custom modifications to diffusers' attention processor / scheduler etc. (see [thirdparty/diffusers](./thirdparty/diffusers)). `pip install -e` is required for those changes to be loaded.
 
 - **Q: Stage-2 warns "real score model path should be checked"**
 A: Stage-2 DMD needs a frozen real score model. The public config intentionally marks this field as `FIXME`; point `real_score_model_name_or_path` to your Stage-1 merged transformer.
