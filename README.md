@@ -38,8 +38,8 @@
 - [2. 🗃️ Data Preparation](#2-%EF%B8%8F-data-preparation)
 - [3. 🚂 Training](#3--training)
 - [4. 🖼️ Data & Trajectory Visualization](#4-%EF%B8%8F-data--trajectory-visualization)
-- [5. 🔄 Model Merge & Checkpoint Conversion](#5--model-merge--checkpoint-conversion)
-- [6. 🎬 Inference](#6--inference)
+- [5. 🎬 Inference](#5--inference)
+- [6. 🔄 Model Merge & Checkpoint Conversion](#6--model-merge--checkpoint-conversion)
 - [7. 📥 Download Models and Toy Data](#7--download-models-and-toy-data)
 - [8. 🚀 Quick Start](#8--quick-start)
 - [9. 📁 Repository Layout](#9--repository-layout)
@@ -75,9 +75,9 @@
 | :---: | --- | --- |
 | 🟢 | **Stage-1 weights (Nano / Pro)** | Released on [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) and [ModelScope](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
 | 🟢 | **Training code** | Stage-1: `train_gigaworld_functrl_uni_stage1.py` for Nano (1.3B) and Pro (5B), DeepSpeed ZeRO-2/3 ready — see [§3.1](#31-stage-1-training-controllable-pre-training); Stage-2: `train_gigaworld_functrl_uni_stage2_dmd.py` for DMD2 distillation (4–6 steps) — see [§3.2](#32-stage-2-dmd-training-acceleration-distillation) |
-| 🟢 | **Inference code (i2v / t2v)** | Nano + Pro one-click scripts, 10 FPS, 33 s rollouts — see [§6](#6--inference) |
+| 🟢 | **Inference code (i2v / t2v)** | Nano + Pro one-click scripts, 10 FPS, 33 s rollouts — see [§5](#5--inference) |
 | 🟡 | **Data preprocessing pipeline & toy data** | LeRobot-style → GigaWorld format with Qwen3-VL captions + Depth Anything V2 — see [§2.4](#24-lerobot-raw-data-preprocessing-pipeline); toy data: [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
-| 🟢 | **Tools** | LoRA merge / checkpoint conversion, visualization, and offline latent utilities — see [§4](#4-%EF%B8%8F-data--trajectory-visualization), [§5](#5--model-merge--checkpoint-conversion), [§2.5](#25-offline-latent-pre-computation--conversion) |
+| 🟢 | **Tools** | LoRA merge / checkpoint conversion, visualization, and offline latent utilities — see [§4](#4-%EF%B8%8F-data--trajectory-visualization), [§6](#6--model-merge--checkpoint-conversion), [§2.5](#25-offline-latent-pre-computation--conversion) |
 | 🔴 | **📊 WMBench benchmark** | Coming soon — 15 fine-grained metrics, leaderboard + VLM judging |
 | 🔴 | **Stage-2 distilled weights** | Distilled Nano / Pro checkpoints — coming soon |
 | 🔴 | **RL post-training** | 3D RL post-training scripts for stronger 3D scene modeling — coming soon |
@@ -341,7 +341,65 @@ Example output:
 output/exp/Giga-world-Nano-Train-DMD/
 ```
 
-## 5. 🔄 Model Merge & Checkpoint Conversion
+## 5. 🎬 Inference
+
+### 5.1 One-Click Scripts (i2v / t2v × Nano / Pro)
+
+| Script | Mode | Model | Link |
+| --- | --- | --- | --- |
+| `run_infer_nano_i2v.sh` | i2v | Nano 1.3B | [script](./scripts/infer/run_infer_nano_i2v.sh) |
+| `run_infer_nano_t2v.sh` | t2v | Nano 1.3B | [script](./scripts/infer/run_infer_nano_t2v.sh) |
+| `run_infer_pro_i2v.sh` | i2v | Pro 5B | [script](./scripts/infer/run_infer_pro_i2v.sh) |
+| `run_infer_pro_t2v.sh` | t2v | Pro 5B | [script](./scripts/infer/run_infer_pro_t2v.sh) |
+
+Usage:
+
+```bash
+# Nano i2v: first frame + control video + text prompt
+bash scripts/infer/run_infer_nano_i2v.sh
+
+# Pro t2v: text prompt only (omit --image_path → t2v mode)
+bash scripts/infer/run_infer_pro_t2v.sh
+```
+
+
+### 5.2 Command-Line Arguments
+
+The underlying entrypoint [infer_giga_world.py](./infer/infer_giga_world.py) exposes the following arguments:
+
+| Argument | Required | Default | Description |
+| --- | :---: | --- | --- |
+| `--config` | ✅ | — | Training / inference YAML config (drives model type and hyperparams) |
+| `--base_model_path` | ✅ | — | Base diffusers model directory (VAE / T5 / Transformer) |
+| `--transformer_model_name_or_path` |   | None | Path to the merged transformer; falls back to `--base_model_path` if None |
+| `--checkpoint_path` |   | None | Optional LoRA / partial checkpoint path |
+| `--image_path` |   | None | **First frame for i2v**; omit to enter **t2v mode** |
+| `--prompt` | ✅ | — | Text prompt |
+| `--control_video_path` |   | None | Control video (Plücker / Ray Map), optional |
+| `--output_dir` | ✅ | — | Output root directory |
+| `--sample_name` |   | sample | Output video name prefix |
+| `--seed` |   | 42 | Random seed |
+| `--fps` |   | 10 | Output video FPS |
+| `--num_frames` |   | 99 | Total frames (330 ≈ 33 s @ 10 FPS) |
+| `--height` |   | 480 | Output height |
+| `--width` |   | 1920 | Output width (typically 640×3 = 1920 for three views) |
+| `--num_inference_steps` |   | 20 | 20 steps for Stage-1; 4–6 for Stage-2 / DMD |
+| `--guidance_scale` |   | 5.0 | Classifier-free guidance strength |
+| `--enable_tiling` |   | False | VAE tiling for memory savings |
+
+### 5.3 Inference Output Example
+
+<div align="center">
+
+| First Frame | Control Video | Generated Rollout |
+| :---: | :---: | :---: |
+| ![input](example/infer_assest/input_image.png) | ▶ [control_video.mp4](./example/infer_assest/control_video.mp4) | *(produced under `output/infer_results/`)* |
+
+</div>
+
+---
+
+## 6. 🔄 Model Merge & Checkpoint Conversion
 
 Unified merge tool: [uni_merge_lora_for_giga_world_1.py](./tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py)
 
@@ -367,72 +425,9 @@ python tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py \
 
 The merge process also writes a **visual HTML report** at `<save_dir>/merge_report.html`, recording the source, merge method, and success status of every part — handy for release traceability.
 
-**Auxiliary conversion tools:**
-
-- Key rename / normalization: [convert_ckpt.py](./tools/others/convert_ckpt.py)
-- Data-layout migration / pre-computation: [gigactrl2helios.py](./tools/offload_data/gigactrl2helios.py)
-
 ---
 
-## 6. 🎬 Inference
-
-### 6.1 One-Click Scripts (i2v / t2v × Nano / Pro)
-
-| Script | Mode | Model | Link |
-| --- | --- | --- | --- |
-| `run_infer_nano_i2v.sh` | i2v | Nano 1.3B | [script](./scripts/infer/run_infer_nano_i2v.sh) |
-| `run_infer_nano_t2v.sh` | t2v | Nano 1.3B | [script](./scripts/infer/run_infer_nano_t2v.sh) |
-| `run_infer_pro_i2v.sh` | i2v | Pro 5B | [script](./scripts/infer/run_infer_pro_i2v.sh) |
-| `run_infer_pro_t2v.sh` | t2v | Pro 5B | [script](./scripts/infer/run_infer_pro_t2v.sh) |
-
-Usage:
-
-```bash
-# Nano i2v: first frame + control video + text prompt
-bash scripts/infer/run_infer_nano_i2v.sh
-
-# Pro t2v: text prompt only (omit --image_path → t2v mode)
-bash scripts/infer/run_infer_pro_t2v.sh
-```
-
-
-### 6.2 Command-Line Arguments
-
-The underlying entrypoint [infer_giga_world.py](./infer/infer_giga_world.py) exposes the following arguments:
-
-| Argument | Required | Default | Description |
-| --- | :---: | --- | --- |
-| `--config` | ✅ | — | Training / inference YAML config (drives model type and hyperparams) |
-| `--base_model_path` | ✅ | — | Base diffusers model directory (VAE / T5 / Transformer) |
-| `--transformer_model_name_or_path` |   | None | Path to the merged transformer; falls back to `--base_model_path` if None |
-| `--checkpoint_path` |   | None | Optional LoRA / partial checkpoint path |
-| `--image_path` |   | None | **First frame for i2v**; omit to enter **t2v mode** |
-| `--prompt` | ✅ | — | Text prompt |
-| `--control_video_path` |   | None | Control video (Plücker / Ray Map), optional |
-| `--output_dir` | ✅ | — | Output root directory |
-| `--sample_name` |   | sample | Output video name prefix |
-| `--seed` |   | 42 | Random seed |
-| `--fps` |   | 10 | Output video FPS |
-| `--num_frames` |   | 99 | Total frames (330 ≈ 33 s @ 10 FPS) |
-| `--height` |   | 480 | Output height |
-| `--width` |   | 1920 | Output width (typically 640×3 = 1920 for three views) |
-| `--num_inference_steps` |   | 20 | 20 steps for Stage-1; 4–6 for Stage-2 / DMD |
-| `--guidance_scale` |   | 5.0 | Classifier-free guidance strength |
-| `--enable_tiling` |   | False | VAE tiling for memory savings |
-
-### 6.3 Inference Output Example
-
-<div align="center">
-
-| First Frame | Control Video | Generated Rollout |
-| :---: | :---: | :---: |
-| ![input](example/infer_assest/input_image.png) | ▶ [control_video.mp4](./example/infer_assest/control_video.mp4) | *(produced under `output/infer_results/`)* |
-
-</div>
-
----
-
-## 9. 📁 Repository Layout
+## 7. 📁 Repository Layout
 
 ```text
 .
@@ -481,31 +476,6 @@ The underlying entrypoint [infer_giga_world.py](./infer/infer_giga_world.py) exp
 
 ---
 
-## 10. ❓ FAQ & Tips
-
-- **Q: Do I need to rewrite all the absolute paths in the YAMLs?**
-A: Yes. `pretrained_model_name_or_path`, `transformer_model_name_or_path`, `real_score_model_name_or_path`, and `reward_model_name_or_path` are all hard-coded for the original machine. Replace them with paths matching your local `mnt / shared_disk` layout, as listed in Section 1.3.
-
-- **Q: How do I switch W&B to online mode?**
-A: Before launching, set `export WANDB_MODE=online` and `export WANDB_API_KEY=...`. The default `offline` mode writes logs locally without uploading.
-
-- **Q: I2V motion is very slow at the beginning — what should I do?**
-A: See the comments in [correct.yaml](./scripts/training/configs/correct.yaml). Adding the "first-frame + last-frame anchor" data format during training significantly mitigates this. The same YAML also enables the anti-drift switches `corrupt_mode_history: "random"` and `is_add_saturation: true`.
-
-- **Q: Why must diffusers be installed in editable mode?**
-A: This repository makes small custom modifications to diffusers' attention processor / scheduler etc. (see [thirdparty/diffusers](./thirdparty/diffusers)). `pip install -e` is required for those changes to be loaded.
-
-- **Q: Stage-2 warns "real score model path should be checked"**
-A: Stage-2 DMD needs a frozen real score model. The public config intentionally marks this field as `FIXME`; point `real_score_model_name_or_path` to your Stage-1 merged transformer.
-
-- **Q: Can I run this on consumer GPUs?**
-A: Nano (1.3B) + Stage-2 DMD fits in a single **< 24 GB** card (RTX 4090 works). Pro 5B needs at least 24 GB, ideally 48 GB.
-
-- **Q: The visualization tool won't open?**
-A: The default port is 8090. If it is occupied, run `python app.py --port 8091`. Use `http://<host>:8090/calib` to switch to the camera calibration page.
-
----
-
 ## 🙏 Acknowledgements
 
 GigaWorld-1 stands on the shoulders of a vibrant open-source ecosystem. We are deeply grateful to the following communities and projects that made this work possible:
@@ -513,6 +483,8 @@ GigaWorld-1 stands on the shoulders of a vibrant open-source ecosystem. We are d
 ### 🤗 Foundation Models & Architectures
 - [**Wan (Alibaba)**](https://github.com/Wan-Video/Wan2.1) — the `wan2.1` and `wan2.2_5b` backbones that power GigaWorld-1 Nano and Pro
 - [**Diffusers**](https://github.com/huggingface/diffusers) — the modular diffusion framework we extend with custom attention processors and pipelines
+- [**Helios**](https://github.com/PKU-YuanGroup/Helios) — a video generation model that achieves minute-scale, high-quality video synthesis
+- [**Genesis**](https://github.com/xiaomi-research/genesis) — a generative universal physics engine and robotics/embodied AI simulation platform
 - [**Hugging Face 🤗**](https://huggingface.co/) — hosting, `transformers`, `accelerate`, and the entire model & dataset ecosystem
 - [**GigaAI-Research/Giga-World-1**](https://huggingface.co/GigaAI-Research/Giga-World-1) and [**GigaAI-Research/Giga-World-1-Toydata**](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) — the public Hugging Face model and toy-data repositories
 
@@ -531,7 +503,6 @@ GigaWorld-1 stands on the shoulders of a vibrant open-source ecosystem. We are d
 - [**Open X-Embodiment**](https://robotics-transformer-x.github.io/) & [**AgiBot**](https://www.agibot.com/) — large-scale robot demonstration datasets
 
 ### 🦿 Robotics, Visualization & Tooling
-- [**Helios**](https://github.com/PKU-Alignment/helios) — the upstream distributed-training environment whose setup script (`helios_setup.sh`) this repo reuses via `install.sh`; thank you for paving the road on which this release travels 🚀
 - [**Three.js**](https://threejs.org/) — the WebGL renderer behind the URDF Viewer and camera-calibration tool
 - [**Three.js + URDFLoader**](https://github.com/gkjohnson/urdf-loaders) — URDF/STL loading and forward kinematics
 - [**WandB**](https://wandb.ai/) — experiment tracking (offline-by-default in this repo)
@@ -562,14 +533,6 @@ If you find GigaWorld-1 useful, please consider ⭐ starring the repo and citing
   primaryClass  = {cs.CV}
 }
 ```
-
-- 📄 Paper: [arxiv.org/abs/2511.19861](https://arxiv.org/abs/2511.19861)
-- 🌐 Project page: [https://yvonne-oh.github.io/Giga-World-1-projectpage](https://yvonne-oh.github.io/Giga-World-1-projectpage)
-- 🧑‍💻 Project repo: [https://github.com/Yvonne-OH/Giga-World-1-projectpage](https://github.com/Yvonne-OH/Giga-World-1-projectpage)
-- 🤗 Model: [https://huggingface.co/GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1)
-- 🤗 Toy data: [https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata)
-- 🔷 ModelScope model: [https://modelscope.cn/models/GigaAI/Giga-World-1/summary](https://modelscope.cn/models/GigaAI/Giga-World-1/summary)
-- 🔷 ModelScope toy data: [https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata)
 
 ---
 
