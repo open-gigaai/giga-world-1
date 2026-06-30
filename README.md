@@ -118,23 +118,27 @@
 
 ### 1.2 🧰 Install Dependencies
 
-The repository expects to reuse an existing Conda environment (by default `<PATH_TO_ENV>`, e.g. `~/envs/Helios`). You can point `install.sh` at any other env via the `DEFAULT_ENV_PATH` variable at the top of the script. `install.sh` auto-detects and activates that environment, then installs all dependencies.
+Install PyTorch first according to your CUDA version, then install the remaining dependencies with [install.sh](./install.sh).
 
 ```bash
 cd <PROJECT_ROOT>
+
+# CUDA 12.6
+pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cu126
+
+# CUDA 12.8
+pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cu128
+
+# CUDA 13.0
+pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 --index-url https://download.pytorch.org/whl/cu130
+
+# Install dependencies
 bash install.sh
 ```
 
-[install.sh](./install.sh) workflow:
+[install.sh](./install.sh) installs packages from [requirements.txt](./requirements.txt).
 
-1. Source `miniconda3/etc/profile.d/conda.sh` if it exists
-2. `conda activate <PATH_TO_ENV>`  (e.g. `conda activate /path/to/your/env`)
-3. `pip install --upgrade pip setuptools wheel`
-4. `pip install -r requirements.txt`
-5. If `thirdparty/diffusers` exists, `pip install -e ./thirdparty/diffusers` (editable install — required for custom diffusers modifications)
-6. If `thirdparty/flash-attention-3` exists, **print a notice only — do not auto-compile** (depends on your CUDA / PyTorch version)
-
-Main dependencies (see [requirements.txt](./requirements.txt)):
+Main dependencies:
 
 ```text
 accelerate>=1.1.0        # accelerate launch / DDP / DeepSpeed
@@ -158,6 +162,8 @@ tqdm>=4.66.0
 transformers>=4.45.0
 wandb>=0.18.0            # offline by default
 xformers>=0.0.28.post3   # memory-efficient attention
+deepspeed==0.19.2
+ftfy==6.3.1
 ```
 
 > **Optional: build flash-attention-3 manually** (only if you need FA3)
@@ -221,7 +227,7 @@ python app.py --host 0.0.0.0 --port 8090
 ```
 
 <p align="center">
-  <img src="assets/data_vis.gif" width="90%" alt="Raw data visualization demo" />
+<img src="assets/data_vis.gif" width="90%" alt="Raw data visualization demo" />
 </p>
 
 For offline latent pre-computation, use [get_short-latents-giga-ctrl.py](./tools/offload_data/get_short-latents-giga-ctrl.py) or [get_short-latents-giga-ctrl-wan22-5b.py](./tools/offload_data/get_short-latents-giga-ctrl-wan22-5b.py). The input data should contain `helios_giga_ctrl.jsonl`, `videos/`, and `control_videos/`; outputs are `.pt` samples containing precomputed `vae_latent`, `control_latent`, `prompt_embed`, and related metadata. See [tools/offload_data/data_format.md](./tools/offload_data/data_format.md) for the data format.
@@ -393,16 +399,16 @@ The underlying entrypoint [infer_giga_world.py](./infer/infer_giga_world.py) exp
 <div align="center">
 
 <table>
-  <tr>
-    <th>First Frame</th>
-    <th>Control Video</th>
-    <th>Generated Rollout</th>
-  </tr>
-  <tr>
-    <td><img src="assets/input_image.png" alt="input image" width="260" /></td>
-    <td><a href="./assets/control_video.mp4">🎬 control_video.mp4</a></td>
-    <td><a href="./assets/i2v_sample.mp4">🎬 i2v_sample.mp4</a></td>
-  </tr>
+<tr>
+<th>First Frame</th>
+<th>Control Video</th>
+<th>Generated Rollout</th>
+</tr>
+<tr>
+<td><img src="assets/input_image.png" alt="input image" width="260" /></td>
+<td><a href="./assets/control_video.mp4">🎬 control_video.mp4</a></td>
+<td><a href="./assets/i2v_sample.mp4">🎬 i2v_sample.mp4</a></td>
+</tr>
 </table>
 
 </div>
