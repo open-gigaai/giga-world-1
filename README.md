@@ -337,6 +337,12 @@ Example output:
 output/exp/Giga-world-Nano-Train-DMD/
 ```
 
+### 3.3 Training on Other Domains
+
+To adapt GigaWorld-1 to a new domain, no code changes are required. In practice, you only need to construct training data in the same format as the provided GigaWorld data, then launch the existing Stage-1 training pipeline with the corresponding config.
+
+For most new domains, training for a few thousand steps on 8 GPUs is typically sufficient and can usually be completed within one day.
+
 ## 5. 🎬 Inference
 
 | Script | Mode | Model | Link |
@@ -391,7 +397,7 @@ Inference output example:
   </tr>
   <tr>
     <td><img src="assets/input_image.png" alt="input image" width="260" /></td>
-    <td><a href="assets/control_video.mp4"><img src="assets/input_image.png" alt="control video" width="260" /><br />control_video.mp4</a></td>
+    <td><a href="./assets/control_video.mp4"><img src="assets/input_image.png" alt="control video" width="260" /><br />control_video.mp4</a></td>
     <td><a href="assets/i2v_sample.mp4"><img src="assets/input_image.png" alt="generated rollout" width="260" /><br />i2v_sample.mp4</a></td>
   </tr>
 </table>
