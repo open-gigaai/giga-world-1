@@ -298,6 +298,68 @@ cp -r ./downloads/Giga-World-1/* ./model/
 
 ## 4. 🚂 Training
 
+```mermaid
+flowchart LR
+    %% Base Models
+    A1["WAN 2.1<br/>1.3B FunControl"]
+    A2["WAN 2.2<br/>5B FunControl"]
+
+    %% Before Stage1
+    B1["GigaRobo Alpha<br/>Diffusers"]
+    B2["WAN2.1 1.3B<br/>Diffusers"]
+    B3["WAN2.2 5B<br/>Diffusers"]
+
+    %% Stage1
+    C1["Nano"]
+    C2["Pro"]
+
+    %% Stage2
+    D1["Nano Distill"]
+    D2["Pro Distill"]
+
+    %% Connections
+    A1 -- "Pretrain on Giga Dataset<br/>Convert to Diffusers" --> B1
+    A1 -- "Convert to Diffusers" --> B2
+
+    B1 --> C1
+    B2 --> C1
+    C1 --> D1
+
+    A2 -- "Convert to Diffusers" --> B3
+    B3 --> C2
+    C2 --> D2
+
+    subgraph S0["Before Stage 1"]
+        subgraph S0A["Interchangeable"]
+            B1
+            B2
+        end
+        B3
+    end
+
+    subgraph S1["Stage 1"]
+        C1
+        C2
+    end
+
+    subgraph S2["Stage 2"]
+        D1
+        D2
+    end
+
+    classDef base    fill:#4F8EF7,color:#fff,stroke:#2D5FD2,stroke-width:3px;
+    classDef diff    fill:#7C4DFF,color:#fff,stroke:#5B2DCC,stroke-width:3px;
+    classDef stage   fill:#00C853,color:#fff,stroke:#009624,stroke-width:3px;
+    classDef distill fill:#FF6D00,color:#fff,stroke:#DD2C00,stroke-width:3px;
+
+    style S0A fill:none,stroke:#FF0000,stroke-width:3px,stroke-dasharray:8 4,color:#FF0000;
+
+    class A1,A2 base;
+    class B1,B2,B3 diff;
+    class C1,C2 stage;
+    class D1,D2 distill;
+```
+
 Training entrypoints and launcher scripts are paired (each pair = one `accelerate launch` command + one YAML).
 
 ### 4.1 Stage-1 Training (Controllable Pre-training)
