@@ -391,8 +391,18 @@ Inference output example:
   </tr>
   <tr>
     <td><img src="assets/input_image.png" alt="input image" width="260" /></td>
-    <td><video src="assets/control_video.mp4" controls muted loop width="260"></video></td>
-    <td><video src="assets/i2v_sample.mp4" controls muted loop width="260"></video></td>
+    <td>
+      <video controls muted loop width="260">
+        <source src="assets/control_video.mp4" type="video/mp4" />
+        <a href="assets/control_video.mp4">control_video.mp4</a>
+      </video>
+    </td>
+    <td>
+      <video controls muted loop width="260">
+        <source src="assets/i2v_sample.mp4" type="video/mp4" />
+        <a href="assets/i2v_sample.mp4">i2v_sample.mp4</a>
+      </video>
+    </td>
   </tr>
 </table>
 
