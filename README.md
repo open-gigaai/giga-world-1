@@ -397,8 +397,8 @@ Inference output example:
   </tr>
   <tr>
     <td><img src="assets/input_image.png" alt="input image" width="260" /></td>
-    <td><a href="./assets/control_video.mp4"><img src="assets/input_image.png" alt="control video" width="260" /><br />control_video.mp4</a></td>
-    <td><a href="assets/i2v_sample.mp4"><img src="assets/input_image.png" alt="generated rollout" width="260" /><br />i2v_sample.mp4</a></td>
+    <td><a href="./assets/control_video.mp4">🎬 control_video.mp4</a></td>
+    <td><a href="./assets/i2v_sample.mp4">🎬 i2v_sample.mp4</a></td>
   </tr>
 </table>
 
