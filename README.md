@@ -12,8 +12,10 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2511.19861-b31b1b.svg?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2511.19861)
 [![Project Page](https://img.shields.io/badge/Project-Page-blueviolet.svg?style=for-the-badge&logo=google-chrome&logoColor=white)](https://github.com/Yvonne-OH/Giga-World-1-projectpage)
-[![HuggingFace Model](https://img.shields.io/badge/🤗_Model-open--gigaai-FFD21E.svg?style=for-the-badge)](https://huggingface.co/open-gigaai)
-[![HuggingFace Dataset](https://img.shields.io/badge/🤗_Dataset-Beta-FFD21E.svg?style=for-the-badge)](https://huggingface.co/open-gigaai)
+[![HuggingFace Model](https://img.shields.io/badge/🤗_Model-Giga--World--1-FFD21E.svg?style=for-the-badge)](https://huggingface.co/GigaAI-Research/Giga-World-1)
+[![HuggingFace Dataset](https://img.shields.io/badge/🤗_Dataset-Giga--World--1--Toydata-FFD21E.svg?style=for-the-badge)](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata)
+[![ModelScope Model](https://img.shields.io/badge/ModelScope-Model-624AFF.svg?style=for-the-badge)](https://modelscope.cn/models/GigaAI/Giga-World-1/summary)
+[![ModelScope Dataset](https://img.shields.io/badge/ModelScope-Dataset-624AFF.svg?style=for-the-badge)](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata)
 [![WMBench](https://img.shields.io/badge/📊_Benchmark-WMBench_Coming_Soon-orange.svg?style=for-the-badge)](#-wmbench-benchmark)
 [![CVPR 2026](https://img.shields.io/badge/CVPR-2026-7B68EE.svg?style=for-the-badge)](#-citation)
 
@@ -58,8 +60,9 @@
 | 🟢 | **LoRA merge tool** | Unified `uni_merge_lora_for_giga_world_1.py` with HTML merge report — see [§5](#5--model-merge--checkpoint-conversion) |
 | 🟢 | **URDF + Camera-Calibration Web tool** | Three.js dual-page viewer (`:8090/` and `:8090/calib`) — see [§4](#4-%EF%B8%8F-data--trajectory-visualization) |
 | 🟢 | **Custom Triton / Flash kernels** | fp32_rmsnorm, triton_norm, triton_rope, tiled_linear |
-| 🟡 | **🤗 Model weights on Hugging Face** | Nano (1.3B) base + LoRA; Pro (5B) staged rollout — see [huggingface.co/open-gigaai](https://huggingface.co/open-gigaai) |
-| 🟡 | **🤗 Dataset on Hugging Face** | Beta access; full 12,980 h corpus staged for release — see [huggingface.co/open-gigaai](https://huggingface.co/open-gigaai) |
+| 🟢 | **🤗 Model weights on Hugging Face** | Nano (1.3B) and Pro (5B) Stage-1 checkpoints — see [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) |
+| 🟢 | **🤗 Toy data on Hugging Face** | Inference assets, raw LeRobot-format toy data, and toy training data — see [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
+| 🟢 | **ModelScope mirrors** | Model and toy data mirrors are available on [ModelScope Model](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) and [ModelScope Dataset](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata) |
 | 🟡 | **Offline latent pre-computation** | `tools/offload_data/get_short-latents-giga-ctrl*.py` — see [§2.5](#25-offline-latent-pre-computation--conversion) |
 | 🔴 | **📊 WMBench benchmark** | Coming soon — 15 fine-grained metrics, leaderboard + VLM judging |
 | 🔴 | **Full 12,980 h pre-training corpus** | The full heterogeneous pre-training dataset (Physical / Robot / Human / Giga) — coming soon |
@@ -72,12 +75,15 @@
 | Channel | Purpose | Where |
 | --- | --- | --- |
 | 🐙 **GitHub Releases** | Tagged source snapshots with changelogs | [Releases](../../releases) |
-| 🤗 **Hugging Face** | Pre-trained checkpoints & datasets (Beta) | [huggingface.co/open-gigaai](https://huggingface.co/open-gigaai) |
+| 🤗 **Hugging Face Model** | Giga-World-1 model weights | [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) |
+| 🤗 **Hugging Face Dataset** | Giga-World-1 toy data | [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
+| 🔷 **ModelScope Model** | ModelScope mirror for model weights | [GigaAI/Giga-World-1](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
+| 🔷 **ModelScope Dataset** | ModelScope mirror for toy data | [GigaAI/Giga-World-1-Toydata](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata) |
 | 📄 **arXiv** | Paper PDF, BibTeX | [arxiv.org/abs/2511.19861](https://arxiv.org/abs/2511.19861) |
 | 🌐 **Project Page** | Videos, leaderboard, demos | [yvonne-oh.github.io/Giga-World-1-projectpage](https://yvonne-oh.github.io/Giga-World-1-projectpage) |
 | 📊 **WMBench** | Public benchmark (coming soon) | *TBA* |
 
-> 🛠️ Want a component to ship sooner? File an issue or open a PR — see [§9 FAQ & Tips](#9--faq--tips).
+> 🛠️ Want a component to ship sooner? File an issue or open a PR — see [§10 FAQ & Tips](#10--faq--tips).
 
 ---
 
@@ -94,9 +100,10 @@
 - [4. 🖼️ Data & Trajectory Visualization](#4-%EF%B8%8F-data--trajectory-visualization)
 - [5. 🔄 Model Merge & Checkpoint Conversion](#5--model-merge--checkpoint-conversion)
 - [6. 🎬 Inference](#6--inference)
-- [7. 🚀 Quick Start](#7--quick-start)
-- [8. 📁 Repository Layout](#8--repository-layout)
-- [9. ❓ FAQ & Tips](#9--faq--tips)
+- [7. 📥 Download Models and Toy Data](#7--download-models-and-toy-data)
+- [8. 🚀 Quick Start](#8--quick-start)
+- [9. 📁 Repository Layout](#9--repository-layout)
+- [10. ❓ FAQ & Tips](#10--faq--tips)
 - [🙏 Acknowledgements](#-acknowledgements)
 - [🤝 Contact](#-contact)
 - [📖 Citation](#-citation)
@@ -224,7 +231,7 @@ bash install.sh
 5. If `thirdparty/diffusers` exists, `pip install -e ./thirdparty/diffusers` (editable install — required for custom diffusers modifications)
 6. If `thirdparty/flash-attention-3` exists, **print a notice only — do not auto-compile** (depends on your CUDA / PyTorch version)
 
-Main dependencies (see [`requirements.txt`](./requirements.txt)):
+Main dependencies (see [CODE0](./requirements.txt)):
 
 ```text
 accelerate>=1.1.0        # accelerate launch / DDP / DeepSpeed
@@ -257,16 +264,49 @@ xformers>=0.0.28.post3   # memory-efficient attention
 > # Follow its README
 > ```
 
-### 1.3 Pretrained Weights
+### 1.3 Released Model Weights
 
-| Stage | Role | Path (Nano / wan2.1) | Path (Pro / wan2.2_5b) |
+Released weights are available from:
+
+- Hugging Face: [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1)
+- ModelScope: [GigaAI/Giga-World-1](https://modelscope.cn/models/GigaAI/Giga-World-1/summary)
+
+| Stage | Name | Path | Notes |
 | --- | --- | --- | --- |
-| Base | VAE / T5 / Transformer | `<PATH_TO_BASE_NANO>`  e.g. `Wan2.1-Fun-V1.1-1.3B-giga-ctrl-2200` | `<PATH_TO_BASE_PRO>`  e.g. `Wan2.2-Fun-5B-Control-diffusers` |
-| Stage-1 output | Mergeable transformer | `<PATH_TO_STAGE1_MERGED_NANO>`  e.g. `ckpt/stage-1/stage1_final` | `<PATH_TO_STAGE1_MERGED_PRO>`  e.g. `ckpt/wan22-5b_stage-1-16gpus-21k` |
-| Stage-2 input | Real score model | `<PATH_TO_REAL_SCORE_NANO>`  e.g. `ckpt/stage-3-init/stage1_final_3v_uni_s16k` | same as Stage-1 merged Pro |
-| Stage-2 reward (optional) | VideoReward | `<PATH_TO_VIDEO_REWARD>`  e.g. `Ckpts/Videoreward` | Same |
+| Open Source | WAN 2.1 1.3B FunControl | [Wan2.1-Fun-1.3B-Control](https://www.bing.com/search?q=WAN+2.1+1.3B+FunControl&form=ANNTH1&refig=6a436fa312dd427c9dfef065aca873ed&pc=CNNDDB) ![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Model-FFD21E?logo=huggingface&logoColor=black) | Open-source model. |
+| Open Source | WAN 2.2 5B FunControl | [Wan2.2-Fun-5B-Control](https://huggingface.co/alibaba-pai/Wan2.2-Fun-5B-Control) ![Hugging Face](https://img.shields.io/badge/Hugging%20Face-Model-FFD21E?logo=huggingface&logoColor=black) | Open-source model. |
+| Before Stage 1 | GigaRobo Alpha Diffusers | `before_stage1/Wan2p1_1p3B-FunContro-GigaRobo-alpha-diffusers/` | Pretrained on Giga dataset, then converted to Diffusers. |
+| Before Stage 1 | WAN 2.1 1.3B Diffusers | `before_stage1/Wan2p1_1p3B-FunControl-diffusers/` | Vanilla Diffusers-converted checkpoint. |
+| Before Stage 1 | WAN 2.2 5B Diffusers | `before_stage1/Wan2p2_5B-FunControl-diffusers/` | Vanilla Diffusers-converted checkpoint. |
+| Stage 1 | Nano (1.3B) | `stage1/nano/` | Stage-1 fine-tuned from the 1.3B branches. |
+| Stage 1 | Pro (5B) | `stage1/pro/` | Stage-1 fine-tuned from the 5B branch. |
+| Stage 2 | Nano Distill | 🚧 Coming soon | 🚧 Coming soon. |
+| Stage 2 | Pro Distill | 🚧 Coming soon | 🚧 Coming soon. |
 
-> ⚠️ The above table shows the **original developer's paths** as a reference. For your own machine, set these as shell variables (e.g. `export BASE_NANO=/path/to/your/Wan2.1-Fun-...-2200`) or edit the matching fields in the YAML configs at [`scripts/training/configs/`](./scripts/training/configs/) before training.
+Each Stage-1 variant (`nano` / `pro`) contains two artifacts: a full Diffusers-format checkpoint and a scene LoRA checkpoint.
+
+```text
+stage1/{nano,pro}/
+├── Giga-World-1-*-stage1_final-diffusers/         # full Diffusers checkpoint
+│   ├── model_index.json                           # Diffusers pipeline index
+│   ├── transformer/                               # DiT / video transformer weights
+│   ├── vae/                                       # VAE weights
+│   ├── text_encoder/                              # text encoder weights
+│   ├── tokenizer/                                 # tokenizer files
+│   ├── scheduler/                                 # scheduler config
+│   ├── image_encoder/                             # image encoder weights
+│   └── image_processor/                           # image preprocessing config
+└── Giga-World-1-*-stage1_scene_lora/              # scene LoRA checkpoint
+    ├── pytorch_lora_weights.safetensors           # LoRA weights for inference
+    ├── transformer_full/                          # full transformer export
+    ├── transformer_partial.pth                    # partial transformer checkpoint
+    ├── pytorch_model/                             # training checkpoint shards
+    ├── distributed_checkpoint/                    # distributed training checkpoint
+    ├── scheduler.bin                              # training scheduler state
+    ├── latest                                     # latest checkpoint pointer
+    ├── zero_to_fp32.py                            # ZeRO checkpoint conversion script
+    └── random_states_*.pkl                        # training random states
+```
 
 ### 1.4 Key Environment Variables
 
@@ -333,7 +373,7 @@ example/toy_datapipeline_dataset/
     └── config.json
 ```
 
-A typical record in `labels/data.pkl` (from [`README_datapipeline.md`](./tools/datapipeline/README_datapipeline.md)):
+A typical record in `labels/data.pkl` (from [CODE1](./tools/datapipeline/README_datapipeline.md)):
 
 ```python
 {
@@ -388,17 +428,44 @@ GigaWorld-1's pre-training corpus is composed of four complementary sources (fig
 
 ### 2.3 Use the Bundled Toy Datasets
 
+Toy data is available from:
+
+- Hugging Face: [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata)
+- ModelScope: [GigaAI/Giga-World-1-Toydata](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata)
+
+The toy data package contains inference assets, a raw LeRobot-format toy dataset, and preprocessed model training data:
+
+```text
+example/
+├── infer_assest/                # inference / rollout assets
+│   ├── control_video.mp4
+│   └── input_image.png
+├── toy_datapipeline_dataset/    # raw LeRobot-format toy dataset
+│   ├── gt/                      # RGB videos
+│   ├── depth/                   # Depth Anything V2 outputs
+│   ├── plucker/                 # Plücker coordinate control signals
+│   ├── sketch/                  # sketch control signals
+│   └── labels/                  # data.pkl + config.json
+└── toy_train_dataset/           # model training data
+    ├── nano/
+    │   ├── dataset_cache.pkl
+    │   └── episode_*.pt
+    └── pro/
+        ├── dataset_cache.pkl
+        └── episode_*.pt
+```
+
 `example/toy_train_dataset/` is already organized in the training format, referenced by:
 
-- [`stage_1_post_functrl_wan21.yaml`](./scripts/training/configs/stage_1_post_functrl_wan21.yaml#L21-L22) → `example/toy_train_dataset/nano`
-- [`stage_1_post_functrl_wan22_5b.yaml`](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml#L21-L22) → `example/toy_train_dataset/pro`
-- [`stage_2_dmd_functrl_wan21.yaml`](./scripts/training/configs/stage_2_dmd_functrl_wan21.yaml#L23) → `example/toy_train_dataset/nano`
+- [CODE0](./scripts/training/configs/stage_1_post_functrl_wan21.yaml#L21-L22) → `example/toy_train_dataset/nano`
+- [CODE0](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml#L21-L22) → `example/toy_train_dataset/pro`
+- [CODE0](./scripts/training/configs/stage_2_dmd_functrl_wan21.yaml#L23) → `example/toy_train_dataset/nano`
 
 Use them directly — no extra preprocessing required.
 
 ### 2.4 LeRobot Raw-Data Preprocessing Pipeline
 
-Main script: [`datapipeline_lerobot.py`](./tools/datapipeline/datapipeline_lerobot.py)
+Main script: [CODE0](./tools/datapipeline/datapipeline_lerobot.py)
 
 Expected input layout (LeRobot-style):
 
@@ -448,15 +515,15 @@ Key constants at the top of the script that you may need to tune:
 | `CAPTION_MAX_NEW_TOKENS` | 256 | Max caption generation length |
 | `LONG_PROMPT_SEGMENT_FRAMES` | 300 | Frames per long-caption segment |
 
-> 📖 Full field reference: [`README_datapipeline.md`](./tools/datapipeline/README_datapipeline.md).
+> 📖 Full field reference: [CODE0](./tools/datapipeline/README_datapipeline.md).
 
 ### 2.5 Offline Latent Pre-computation & Conversion
 
 To reduce I/O overhead during training, you can pre-encode latents before training:
 
-- [`get_short-latents-giga-ctrl.py`](./tools/offload_data/get_short-latents-giga-ctrl.py)
-- [`get_short-latents-giga-ctrl-wan22-5b.py`](./tools/offload_data/get_short-latents-giga-ctrl-wan22-5b.py)
-- [`gigactrl2helios.py`](./tools/offload_data/gigactrl2helios.py)
+- [CODE0](./tools/offload_data/get_short-latents-giga-ctrl.py)
+- [CODE0](./tools/offload_data/get_short-latents-giga-ctrl-wan22-5b.py)
+- [CODE0](./tools/offload_data/gigactrl2helios.py)
 
 Checkpoint key normalization: [CODE0](./tools/others/convert_ckpt.py)
 
@@ -470,9 +537,9 @@ Training entrypoints and launcher scripts are paired (each pair = one `accelerat
 
 | Entrypoint / Config | Launcher | Note |
 | --- | --- | --- |
-| Trainer: [`train_gigaworld_functrl_uni_stage1.py`](./train_gigaworld_functrl_uni_stage1.py) |   | Unified trainer handling both Nano and Pro |
-| Config: [CODE0](./scripts/training/configs/stage_1_post_functrl_wan21.yaml) | [`train_deepspeed_stage1_functrl_wan21.sh`](./scripts/training/stage1/train_deepspeed_stage1_functrl_wan21.sh) | Nano (1.3B) |
-| Config: [`stage_1_post_functrl_wan22_5b.yaml`](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml) | [`train_deepspeed_stage1_functrl_wan22_5b.sh`](./scripts/training/stage1/train_deepspeed_stage1_functrl_wan22_5b.sh) | Pro (5B) |
+| Trainer: [CODE0](./train_gigaworld_functrl_uni_stage1.py) |   | Unified trainer handling both Nano and Pro |
+| Config: [CODE0](./scripts/training/configs/stage_1_post_functrl_wan21.yaml) | [CODE0](./scripts/training/stage1/train_deepspeed_stage1_functrl_wan21.sh) | Nano (1.3B) |
+| Config: [CODE0](./scripts/training/configs/stage_1_post_functrl_wan22_5b.yaml) | [CODE0](./scripts/training/stage1/train_deepspeed_stage1_functrl_wan22_5b.sh) | Pro (5B) |
 
 **Launch Nano**:
 
@@ -548,9 +615,9 @@ output/
 
 | Entrypoint / Config | Launcher |
 | --- | --- |
-| Trainer: [`train_gigaworld_functrl_uni_stage2_dmd.py`](./train_gigaworld_functrl_uni_stage2_dmd.py) |   |
-| Config: [`stage_2_dmd_functrl_wan21.yaml`](./scripts/training/configs/stage_2_dmd_functrl_wan21.yaml) | [`train_deepspeed_stage2_functrl_wan21.sh`](./scripts/training/stage2/train_deepspeed_stage2_functrl_wan21.sh) |
-| Config: [`stage_2_dmd_functrl_wan22_5b.yaml`](./scripts/training/configs/stage_2_dmd_functrl_wan22_5b.yaml) | [`train_deepspeed_stage2_functrl_wan22_5b.sh`](./scripts/training/stage2/train_deepspeed_stage2_functrl_wan22_5b.sh) |
+| Trainer: [CODE0](./train_gigaworld_functrl_uni_stage2_dmd.py) |   |
+| Config: [CODE0](./scripts/training/configs/stage_2_dmd_functrl_wan21.yaml) | [CODE0](./scripts/training/stage2/train_deepspeed_stage2_functrl_wan21.sh) |
+| Config: [CODE0](./scripts/training/configs/stage_2_dmd_functrl_wan22_5b.yaml) | [CODE0](./scripts/training/stage2/train_deepspeed_stage2_functrl_wan22_5b.sh) |
 
 DMD2 compresses the denoising loop from 20 steps to **4–6 steps** (the Stage-2 config sets `num_inference_steps: 6`) and aligns with a frozen real score model via a `critic_lora`.
 
@@ -570,10 +637,10 @@ output/exp/Giga-world-Nano-Train-DMD/
 
 The launcher scripts auto-detect the number of visible GPUs via `nvidia-smi -L` and launch with DeepSpeed ZeRO-2:
 
-- [`example_zero2.yaml`](./scripts/accelerate_configs/example_zero2.yaml)
-- [`example_zero3.yaml`](./scripts/accelerate_configs/example_zero3.yaml)
-- [`zero2.json`](./scripts/accelerate_configs/zero2.json)
-- [`zero3.json`](./scripts/accelerate_configs/zero3.json)
+- [CODE0](./scripts/accelerate_configs/example_zero2.yaml)
+- [CODE0](./scripts/accelerate_configs/example_zero3.yaml)
+- [CODE0](./scripts/accelerate_configs/zero2.json)
+- [CODE0](./scripts/accelerate_configs/zero3.json)
 
 > The launchers set `NCCL_TIMEOUT` / `TORCH_NCCL_BLOCKING_WAIT` and friends to keep long runs from being kicked out. The EMA ZeRO-3 port is adjustable via `ema_zero3_port` in the config.
 
@@ -581,7 +648,7 @@ The launcher scripts auto-detect the number of visible GPUs via `nvidia-smi -L` 
 
 ## 4. 🖼️ Data & Trajectory Visualization
 
-[`README.md`](./tools/data_vis_tools/README.md) ships a dual-page web tool:
+[CODE0](./tools/data_vis_tools/README.md) ships a dual-page web tool:
 
 | Page | URL | Description |
 | --- | --- | --- |
@@ -604,7 +671,7 @@ python app.py --host 0.0.0.0 --port 8090
 
 ## 5. 🔄 Model Merge & Checkpoint Conversion
 
-Unified merge tool: [`uni_merge_lora_for_giga_world_1.py`](./tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py)
+Unified merge tool: [CODE0](./tools/ckpt_tools/uni_merge_lora_for_giga_world_1.py)
 
 Supports both `wan2.1` and `wan2.2_5b`; auto-resolves LoRA and partial state dicts from a checkpoint directory; the output is a stand-alone, deployment-ready transformer.
 
@@ -630,8 +697,8 @@ The merge process also writes a **visual HTML report** at `<save_dir>/merge_repo
 
 **Auxiliary conversion tools:**
 
-- Key rename / normalization: [`convert_ckpt.py`](./tools/others/convert_ckpt.py)
-- Data-layout migration / pre-computation: [`gigactrl2helios.py`](./tools/offload_data/gigactrl2helios.py)
+- Key rename / normalization: [CODE0](./tools/others/convert_ckpt.py)
+- Data-layout migration / pre-computation: [CODE0](./tools/offload_data/gigactrl2helios.py)
 
 ---
 
@@ -642,9 +709,9 @@ The merge process also writes a **visual HTML report** at `<save_dir>/merge_repo
 | Script | Mode | Model | Link |
 | --- | --- | --- | --- |
 | `run_infer_nano_i2v.sh` | i2v | Nano 1.3B | [script](./scripts/infer/run_infer_nano_i2v.sh) |
-| `run_infer_nano_t2v.sh` | t2v | Nano 1.3B | [`run_infer_nano_t2v.sh`](./scripts/infer/run_infer_nano_t2v.sh) |
+| `run_infer_nano_t2v.sh` | t2v | Nano 1.3B | [CODE0](./scripts/infer/run_infer_nano_t2v.sh) |
 | `run_infer_pro_i2v.sh` | i2v | Pro 5B | [script](./scripts/infer/run_infer_pro_i2v.sh) |
-| `run_infer_pro_t2v.sh` | t2v | Pro 5B | [`run_infer_pro_t2v.sh`](./scripts/infer/run_infer_pro_t2v.sh) |
+| `run_infer_pro_t2v.sh` | t2v | Pro 5B | [CODE0](./scripts/infer/run_infer_pro_t2v.sh) |
 
 Usage:
 
@@ -670,7 +737,7 @@ Output videos are saved at **10 FPS** by default.
 
 ### 6.2 Command-Line Arguments
 
-The underlying entrypoint [`infer_giga_world.py`](./infer/infer_giga_world.py) exposes the following arguments:
+The underlying entrypoint [CODE0](./infer/infer_giga_world.py) exposes the following arguments:
 
 | Argument | Required | Default | Description |
 | --- | :---: | --- | --- |
@@ -698,11 +765,11 @@ The underlying entrypoint [`infer_giga_world.py`](./infer/infer_giga_world.py) e
 
 | First Frame | Control Video | Generated Rollout |
 | :---: | :---: | :---: |
-| ![input](example/infer_assest/input_image.png) | ▶ [`control_video.mp4`](./example/infer_assest/control_video.mp4) | *(produced under `output/infer_results/`)* |
+| ![input](example/infer_assest/input_image.png) | ▶ [CODE0](./example/infer_assest/control_video.mp4) | *(produced under `output/infer_results/`)* |
 
 </div>
 
-> In i2v mode, the model uses [`input_image.png`](./example/infer_assest/input_image.png) as the first frame and consumes the Plücker / Ray Map control signal from `control_video.mp4` in the same directory.
+> In i2v mode, the model uses [CODE0](./example/infer_assest/input_image.png) as the first frame and consumes the Plücker / Ray Map control signal from `control_video.mp4` in the same directory.
 
 For richer visual results, see the project page:
 
@@ -712,15 +779,64 @@ For richer visual results, see the project page:
 
 ---
 
-## 7. 🚀 Quick Start
+## 7. 📥 Download Models and Toy Data
+
+Use the one-click downloader in [CODE0](./tools/download_tool/README.md) to download released model weights and toy data from Hugging Face or ModelScope.
+
+Supported release URLs:
+
+| Platform | Target | URL |
+| --- | --- | --- |
+| Hugging Face | Model | [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) |
+| Hugging Face | Toy data | [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
+| ModelScope | Model | [GigaAI/Giga-World-1](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
+| ModelScope | Toy data | [GigaAI/Giga-World-1-Toydata](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata) |
+
+Download from Hugging Face:
+
+```bash
+python tools/download_tool/download_giga_world.py \
+  --platform hf \
+  --target all \
+  --output-dir ./downloads
+```
+
+Download from ModelScope:
+
+```bash
+python tools/download_tool/download_giga_world.py \
+  --platform modelscope \
+  --target all \
+  --output-dir ./downloads
+```
+
+You can also download only one target:
+
+```bash
+# model only
+python tools/download_tool/download_giga_world.py --platform hf --target model --output-dir ./downloads
+
+# toy data only
+python tools/download_tool/download_giga_world.py --platform hf --target toydata --output-dir ./downloads
+```
+
+Downloaded files are saved as:
+
+```text
+./downloads/
+├── Giga-World-1/              # model weights
+└── Giga-World-1-Toydata/      # toy data
+```
+
+## 8. 🚀 Quick Start
 
 In about 30 minutes you can go from a fresh clone to a first inference:
 
 ```bash
 # 0) Set your local path variables (adjust to your machine)
 export PROJECT_ROOT="$(pwd)"             # the directory you cloned this repo into
-export BASE_NANO="<PATH_TO_BASE_NANO>"   # e.g. /mnt/pfs/users/zhanqian.wu/ckpt/Wan2.1-Fun-V1.1-1.3B-giga-ctrl-2200
-export STAGE1_NANO="<PATH_TO_STAGE1_MERGED_NANO>"  # e.g. /mnt/pfs/users/zhanqian.wu/ckpt/stage-1/stage1_final
+export BASE_NANO="<PATH_TO_BASE_NANO>"   # e.g. ./downloads/Giga-World-1/before_stage1/Wan2p1_1p3B-FunControl-diffusers
+export STAGE1_NANO="<PATH_TO_STAGE1_MERGED_NANO>"  # e.g. ./downloads/Giga-World-1/stage1/nano/Giga-World-1-nano-stage1_final-diffusers
 
 # 1) Install dependencies (auto-activates the configured Conda env)
 cd "${PROJECT_ROOT}"
@@ -749,7 +865,7 @@ bash scripts/infer/run_infer_nano_i2v.sh
 
 ---
 
-## 8. 📁 Repository Layout
+## 9. 📁 Repository Layout
 
 ```text
 .
@@ -776,6 +892,7 @@ bash scripts/infer/run_infer_nano_i2v.sh
 │   ├── ckpt_tools/                    #   LoRA merge and checkpoint utilities
 │   ├── datapipeline/                  #   LeRobot-style data preprocessing
 │   ├── data_vis_tools/                #   Web URDF + camera calibration viewer
+│   ├── download_tool/                 #   one-click HF / ModelScope downloader
 │   ├── offload_data/                  #   offline latent pre-computation / format conversion
 │   └── others/                        #   misc conversion tools
 ├── assets/                            #   project page hero / teaser media
@@ -785,6 +902,10 @@ bash scripts/infer/run_infer_nano_i2v.sh
 │   ├── infer_assest/                  #   example first frame + control video
 │   ├── toy_train_dataset/             #   Nano / Pro toy training datasets
 │   └── toy_datapipeline_dataset/      #   toy preprocessing output (gt / depth / plucker / sketch)
+├── model/
+│   ├── before_stage1/                 #   Diffusers-converted base checkpoints
+│   ├── stage1/                        #   Nano / Pro Stage-1 checkpoints
+│   └── stage2_distill/                #   distilled checkpoints (coming soon)
 ├── train_gigaworld_functrl_uni_stage1.py
 ├── train_gigaworld_functrl_uni_stage2_dmd.py
 ├── requirements.txt
@@ -793,7 +914,7 @@ bash scripts/infer/run_infer_nano_i2v.sh
 
 ---
 
-## 9. ❓ FAQ & Tips
+## 10. ❓ FAQ & Tips
 
 - **Q: Do I need to rewrite all the absolute paths in the YAMLs?**
 A: Yes. `pretrained_model_name_or_path`, `transformer_model_name_or_path`, `real_score_model_name_or_path`, and `reward_model_name_or_path` are all hard-coded for the original machine. Replace them with paths matching your local `mnt / shared_disk` layout, as listed in Section 1.3.
@@ -802,10 +923,10 @@ A: Yes. `pretrained_model_name_or_path`, `transformer_model_name_or_path`, `real
 A: Before launching, set `export WANDB_MODE=online` and `export WANDB_API_KEY=...`. The default `offline` mode writes logs locally without uploading.
 
 - **Q: I2V motion is very slow at the beginning — what should I do?**
-A: See the comments in [`correct.yaml`](./scripts/training/configs/correct.yaml). Adding the "first-frame + last-frame anchor" data format during training significantly mitigates this. The same YAML also enables the anti-drift switches `corrupt_mode_history: "random"` and `is_add_saturation: true`.
+A: See the comments in [CODE0](./scripts/training/configs/correct.yaml). Adding the "first-frame + last-frame anchor" data format during training significantly mitigates this. The same YAML also enables the anti-drift switches `corrupt_mode_history: "random"` and `is_add_saturation: true`.
 
 - **Q: Why must diffusers be installed in editable mode?**
-A: This repository makes small custom modifications to diffusers' attention processor / scheduler etc. (see [`thirdparty/diffusers/`](./thirdparty/diffusers)). `pip install -e` is required for those changes to be loaded.
+A: This repository makes small custom modifications to diffusers' attention processor / scheduler etc. (see [CODE0](./thirdparty/diffusers)). `pip install -e` is required for those changes to be loaded.
 
 - **Q: Stage-2 warns "real score model path should be checked"**
 A: Stage-2 DMD needs a frozen real score model. The public config intentionally marks this field as `FIXME`; point `real_score_model_name_or_path` to your Stage-1 merged transformer.
@@ -826,7 +947,7 @@ GigaWorld-1 stands on the shoulders of a vibrant open-source ecosystem. We are d
 - [**Wan (Alibaba)**](https://github.com/Wan-Video/Wan2.1) — the `wan2.1` and `wan2.2_5b` backbones that power GigaWorld-1 Nano and Pro
 - [**Diffusers**](https://github.com/huggingface/diffusers) — the modular diffusion framework we extend with custom attention processors and pipelines
 - [**Hugging Face 🤗**](https://huggingface.co/) — hosting, `transformers`, `accelerate`, and the entire model & dataset ecosystem
-- [**Open-GigaAI**](https://huggingface.co/open-gigaai) — the GigaAI organization on Hugging Face for hosting models, datasets, and the WMBench leaderboard
+- [**GigaAI-Research/Giga-World-1**](https://huggingface.co/GigaAI-Research/Giga-World-1) and [**GigaAI-Research/Giga-World-1-Toydata**](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) — the public Hugging Face model and toy-data repositories
 
 ### 🛠️ Training & Acceleration
 - [**PyTorch**](https://pytorch.org/) & [**DeepSpeed**](https://www.deepspeed.ai/) — the foundation of our distributed training stack
@@ -878,7 +999,10 @@ If you find GigaWorld-1 useful, please consider ⭐ starring the repo and citing
 - 📄 Paper: [arxiv.org/abs/2511.19861](https://arxiv.org/abs/2511.19861)
 - 🌐 Project page: [https://yvonne-oh.github.io/Giga-World-1-projectpage](https://yvonne-oh.github.io/Giga-World-1-projectpage)
 - 🧑‍💻 Project repo: [https://github.com/Yvonne-OH/Giga-World-1-projectpage](https://github.com/Yvonne-OH/Giga-World-1-projectpage)
-- 🤗 Models & Datasets: [https://huggingface.co/open-gigaai](https://huggingface.co/open-gigaai)
+- 🤗 Model: [https://huggingface.co/GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1)
+- 🤗 Toy data: [https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata)
+- 🔷 ModelScope model: [https://modelscope.cn/models/GigaAI/Giga-World-1/summary](https://modelscope.cn/models/GigaAI/Giga-World-1/summary)
+- 🔷 ModelScope toy data: [https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata)
 
 ---
 
