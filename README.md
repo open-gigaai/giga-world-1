@@ -323,9 +323,9 @@ output/
 
 | Entrypoint / Config | Launcher |
 | --- | --- |
-| Trainer: [CODE0](./train_gigaworld_functrl_uni_stage2_dmd.py) |   |
-| Config: [CODE0](./scripts/training/configs/stage_2_dmd_functrl_wan21.yaml) | [CODE0](./scripts/training/stage2/train_deepspeed_stage2_functrl_wan21.sh) |
-| Config: [CODE0](./scripts/training/configs/stage_2_dmd_functrl_wan22_5b.yaml) | [CODE0](./scripts/training/stage2/train_deepspeed_stage2_functrl_wan22_5b.sh) |
+| Trainer: [train_gigaworld_functrl_uni_stage2_dmd.py](./train_gigaworld_functrl_uni_stage2_dmd.py) |   |
+| Config: [stage_2_dmd_functrl_wan21.yaml](./scripts/training/configs/stage_2_dmd_functrl_wan21.yaml) | [train_deepspeed_stage2_functrl_wan21.sh](./scripts/training/stage2/train_deepspeed_stage2_functrl_wan21.sh) |
+| Config: [stage_2_dmd_functrl_wan22_5b.yaml](./scripts/training/configs/stage_2_dmd_functrl_wan22_5b.yaml) | [train_deepspeed_stage2_functrl_wan22_5b.sh](./scripts/training/stage2/train_deepspeed_stage2_functrl_wan22_5b.sh) |
 
 DMD2 compresses the denoising loop from 20 steps to **4–6 steps** (the Stage-2 config sets `num_inference_steps: 6`) and aligns with a frozen real score model via a `critic_lora`.
 
@@ -395,17 +395,6 @@ bash scripts/infer/run_infer_nano_i2v.sh
 bash scripts/infer/run_infer_pro_t2v.sh
 ```
 
-Output location (created by the script via `mkdir -p`):
-
-```text
-output/infer_results/
-├── giga_i2v_nano/
-├── giga_t2v_nano/
-├── giga_i2v_pro/
-└── giga_t2v_pro/
-```
-
-Output videos are saved at **10 FPS** by default.
 
 ### 6.2 Command-Line Arguments
 
@@ -423,7 +412,7 @@ The underlying entrypoint [infer_giga_world.py](./infer/infer_giga_world.py) exp
 | `--output_dir` | ✅ | — | Output root directory |
 | `--sample_name` |   | sample | Output video name prefix |
 | `--seed` |   | 42 | Random seed |
-| `--fps` |   | 24 | Output video FPS |
+| `--fps` |   | 10 | Output video FPS |
 | `--num_frames` |   | 99 | Total frames (330 ≈ 33 s @ 10 FPS) |
 | `--height` |   | 480 | Output height |
 | `--width` |   | 1920 | Output width (typically 640×3 = 1920 for three views) |
@@ -440,14 +429,6 @@ The underlying entrypoint [infer_giga_world.py](./infer/infer_giga_world.py) exp
 | ![input](example/infer_assest/input_image.png) | ▶ [control_video.mp4](./example/infer_assest/control_video.mp4) | *(produced under `output/infer_results/`)* |
 
 </div>
-
-> In i2v mode, the model uses [input_image.png](./example/infer_assest/input_image.png) as the first frame and consumes the Plücker / Ray Map control signal from `control_video.mp4` in the same directory.
-
-For richer visual results, see the project page:
-
-- 🦾 **Multi-view control GIF grid** — [Giga-World-1-projectpage/video/control_gif](https://github.com/Yvonne-OH/Giga-World-1-projectpage/tree/main/video/control_gif)
-- ♾️ **Long-horizon rollout demo** — [Giga-World-1-projectpage/video/flash_and_ultra_gen](https://github.com/Yvonne-OH/Giga-World-1-projectpage/tree/main/video/flash_and_ultra_gen)
-- ✅❌ **Closed-loop rollout comparison** — [Giga-World-1-projectpage/video/cc](https://github.com/Yvonne-OH/Giga-World-1-projectpage/tree/main/video/cc)
 
 ---
 
