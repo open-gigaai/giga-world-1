@@ -98,7 +98,7 @@
 | 🔷 **ModelScope Dataset** | ModelScope mirror for toy data | <a href="https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata"><img src="https://img.shields.io/badge/ModelScope-Dataset-624AFF?style=flat-square&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PHJlY3Qgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiByeD0iMiIgZmlsbD0iIzYyNEFGRiIvPjwvc3ZnPg%3D%3D&logoColor=white" alt="ModelScope Dataset"></a> |
 | 📄 **arXiv** | Paper PDF, BibTeX | <a href="https://arxiv.org/abs/2511.19861"><img src="https://img.shields.io/badge/arXiv-2511.19861-b31b1b?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv Paper"></a> |
 | 🌐 **Project Page** | Videos, leaderboard, demos | <a href="https://open-gigaai.github.io/giga-world-1/">🌐 Project Page</a> |
-| 📊 **WMBench** | Public benchmark (coming soon) | *TBA* |
+| 📊 **WMBench** | Public benchmark leaderboard | <a href="https://huggingface.co/spaces/open-gigaai/CVPR-2026-WorldModel-Track-LeaderBoard"><img src="https://img.shields.io/badge/Hugging%20Face-WMBench%20Leaderboard-FFD21E?style=flat-square&logo=huggingface&logoColor=black" alt="WMBench Leaderboard"></a> |
 | 🆘 **Support** | Issues and discussions | <a href="../../issues"><img src="https://img.shields.io/badge/GitHub-Issues-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub Issues"></a> |
 
 > 🛠️ Want a component to ship sooner? Please [file an issue](../../issues) or open a PR.
