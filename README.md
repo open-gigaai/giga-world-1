@@ -170,13 +170,13 @@ ftfy==6.3.1
 ```
 
 > **Optional: install FlashAttention 2 or 3**
->
+> 
 > FlashAttention 2 or 3 can be used depending on your CUDA / PyTorch environment. Install one compatible version if you need FlashAttention acceleration.
->
+> 
 > ```bash
 > # FlashAttention 2
 > pip install flash-attn --no-build-isolation
->
+> 
 > # Or build FlashAttention 3 manually
 > cd thirdparty/flash-attention-3
 > # Follow its README
