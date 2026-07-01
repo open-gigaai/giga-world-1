@@ -16,7 +16,7 @@
 [![HuggingFace Dataset](https://img.shields.io/badge/🤗_Dataset-ToyDataSet-FFD21E.svg?style=for-the-badge)](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata)
 [![ModelScope Model](https://img.shields.io/badge/ModelScope-Model-624AFF.svg?style=for-the-badge)](https://modelscope.cn/models/GigaAI/Giga-World-1/summary)
 [![ModelScope Dataset](https://img.shields.io/badge/ModelScope-ToyDataSet-624AFF.svg?style=for-the-badge)](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata)
-[![WMBench](https://img.shields.io/badge/📊_Benchmark-WMBench_Coming_Soon-orange.svg?style=for-the-badge)](#-wmbench-benchmark)
+[![WMBench](https://img.shields.io/badge/📊_Benchmark-WMBench-orange.svg?style=for-the-badge)](https://huggingface.co/spaces/open-gigaai/CVPR-2026-WorldModel-Track-LeaderBoard)
 
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB.svg?style=flat-square&logo=python&logoColor=white)](#1--environment-setup)
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C.svg?style=flat-square&logo=pytorch&logoColor=white)](#1--environment-setup)
@@ -59,6 +59,7 @@
 | 🧑‍💻 **2026-07** | Partial training, inference, data processing, and model utility code was open-sourced. |
 | 📦 **2026-07** | Partial model weights, toy data, and download tools were released. |
 | 📖 **2026-07** | The GigaWorld-1 technical report was released. |
+| 🏆 **2026-04** | We released the CVPR 2026 World Model Track leaderboard. See [CVPR-2026-WorldModel-Track-LeaderBoard](https://huggingface.co/spaces/open-gigaai/CVPR-2026-WorldModel-Track-LeaderBoard). |
 | 🏆 **2026-03** | We hosted the CVPR 2026 World Model Challenge. See [CVPR-2026-Workshop-WM-Track](https://github.com/open-gigaai/CVPR-2026-Workshop-WM-Track/tree/main/). |
 
 </div>
@@ -78,7 +79,7 @@
 | 🟢 | **Inference code (i2v / t2v)** | Nano + Pro one-click scripts, 10 FPS, 33 s rollouts — see [§5](#5--inference) |
 | 🟡 | **Data preprocessing pipeline & toy data** | LeRobot-style → GigaWorld format with Qwen3-VL captions + Depth Anything V2 — see [§2](#2-%EF%B8%8F-data-preparation); toy data: [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
 | 🟢 | **Tools** | LoRA merge / checkpoint conversion, visualization, and offline latent utilities — see [§2](#2-%EF%B8%8F-data-preparation), [§6](#6--model-merge--checkpoint-conversion) |
-| 🔴 | **📊 WMBench benchmark** | Coming soon — 15 fine-grained metrics, leaderboard + VLM judging |
+| 🟡 | **📊 WMBench benchmark** | Partially open-sourced — 15 fine-grained metrics, leaderboard + VLM judging |
 | 🔴 | **Stage-2 distilled weights** | Distilled Nano / Pro checkpoints — coming soon |
 | 🔴 | **RL post-training** | 3D RL post-training scripts for stronger 3D scene modeling — coming soon |
 | 🔴 | **Other-domain weights and training code** | Additional domain checkpoints and corresponding training recipes — coming soon |
@@ -88,7 +89,7 @@
 
 | Channel | Purpose | Where |
 | --- | --- | --- |
-| 🐙 **GitHub Releases** | Tagged source snapshots with changelogs | <a href="../../releases"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub Repository"></a> |
+| 🐙 **GitHub Releases** | Tagged source snapshots with changelogs | <a href="https://github.com/open-gigaai/giga-world-1#"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub Repository"></a> |
 | 🤗 **Hugging Face Model** | Giga-World-1 model weights | <a href="https://huggingface.co/GigaAI-Research/Giga-World-1"><img src="https://img.shields.io/badge/Hugging%20Face-Model-FFD21E?style=flat-square&logo=huggingface&logoColor=black" alt="Hugging Face Model"></a> |
 | 🤗 **Hugging Face Dataset** | Giga-World-1 toy data | <a href="https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata"><img src="https://img.shields.io/badge/Hugging%20Face-Dataset-FFD21E?style=flat-square&logo=huggingface&logoColor=black" alt="Hugging Face Dataset"></a> |
 | 🔷 **ModelScope Model** | ModelScope mirror for model weights | <a href="https://modelscope.cn/models/GigaAI/Giga-World-1/summary"><img src="https://img.shields.io/badge/ModelScope-Model-624AFF?style=flat-square&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PHJlY3Qgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiByeD0iMiIgZmlsbD0iIzYyNEFGRiIvPjwvc3ZnPg%3D%3D&logoColor=white" alt="ModelScope Model"></a> |
