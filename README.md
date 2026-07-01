@@ -12,8 +12,9 @@
 
 [![arXiv](https://img.shields.io/badge/arXiv-2511.19861-b31b1b.svg?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2511.19861)
 [![Project Page](https://img.shields.io/badge/Project-Page-blueviolet.svg?style=for-the-badge&logo=google-chrome&logoColor=white)](https://open-gigaai.github.io/giga-world-1/)
-[![HuggingFace Model](https://img.shields.io/badge/🤗_Model-Model-FFD21E.svg?style=for-the-badge)](https://huggingface.co/GigaAI-Research/Giga-World-1)
-[![HuggingFace Dataset](https://img.shields.io/badge/🤗_Dataset-ToyDataSet-FFD21E.svg?style=for-the-badge)](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata)
+[![HuggingFace Model](https://img.shields.io/badge/🤗_Model-Model-FFD21E.svg?style=for-the-badge)](https://huggingface.co/open-gigaai/Giga-World-1)
+[![HuggingFace Dataset](https://img.shields.io/badge/🤗_Dataset-ToyDataSet-FFD21E.svg?style=for-the-badge)](https://huggingface.co/datasets/open-gigaai/Giga-World-1-Toydata)
+[![HuggingFace Dataset (CVPR)](https://img.shields.io/badge/🤗_Dataset-CVPR-FFD21E.svg?style=for-the-badge)](https://huggingface.co/datasets/open-gigaai/CVPR-2026-WorldModel-Track-Dataset)
 [![ModelScope Model](https://img.shields.io/badge/ModelScope-Model-624AFF.svg?style=for-the-badge)](https://modelscope.cn/models/GigaAI/Giga-World-1/summary)
 [![ModelScope Dataset](https://img.shields.io/badge/ModelScope-ToyDataSet-624AFF.svg?style=for-the-badge)](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata)
 [![WMBench](https://img.shields.io/badge/📊_Benchmark-WMBench-orange.svg?style=for-the-badge)](https://huggingface.co/spaces/open-gigaai/CVPR-2026-WorldModel-Track-LeaderBoard)
@@ -74,10 +75,10 @@
 
 | Status | Component | Description |
 | :---: | --- | --- |
-| 🟢 | **Stage-1 weights (Nano / Pro)** | Released on [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) and [ModelScope](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
+| 🟢 | **Stage-1 weights (Nano / Pro)** | Released on [open-gigaai/Giga-World-1](https://huggingface.co/open-gigaai/Giga-World-1) and [ModelScope](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
 | 🟢 | **Training code** | Stage-1: `train_gigaworld_functrl_uni_stage1.py` for Nano (1.3B) and Pro (5B), DeepSpeed ZeRO-2/3 ready — see [§4.1](#41-stage-1-training-controllable-pre-training); Stage-2: `train_gigaworld_functrl_uni_stage2_dmd.py` for DMD2 distillation (4–6 steps) — see [§4.2](#42-stage-2-dmd-training-acceleration-distillation) |
 | 🟢 | **Inference code (i2v / t2v)** | Nano + Pro one-click scripts, 10 FPS, 33 s rollouts — see [§5](#5--inference) |
-| 🟡 | **Data preprocessing pipeline & toy data** | LeRobot-style → GigaWorld format with Qwen3-VL captions + Depth Anything V2 — see [§2](#2-%EF%B8%8F-data-preparation); toy data: [GigaAI-Research/Giga-World-1-Toydata](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) |
+| 🟡 | **Data preprocessing pipeline & toy data** | LeRobot-style → GigaWorld format with Qwen3-VL captions + Depth Anything V2 — see [§2](#2-%EF%B8%8F-data-preparation); toy data: [open-gigaai/Giga-World-1-Toydata](https://huggingface.co/datasets/open-gigaai/Giga-World-1-Toydata) |
 | 🟢 | **Tools** | LoRA merge / checkpoint conversion, visualization, and offline latent utilities — see [§2](#2-%EF%B8%8F-data-preparation), [§6](#6--model-merge--checkpoint-conversion) |
 | 🟡 | **📊 WMBench benchmark** | Partially open-sourced — 15 fine-grained metrics, leaderboard + VLM judging |
 | 🔴 | **Stage-2 distilled weights** | Distilled Nano / Pro checkpoints — coming soon |
@@ -90,8 +91,9 @@
 | Channel | Purpose | Where |
 | --- | --- | --- |
 | 🐙 **GitHub Releases** | Tagged source snapshots with changelogs | <a href="https://github.com/open-gigaai/giga-world-1#"><img src="https://img.shields.io/badge/GitHub-Repository-181717?style=flat-square&logo=github&logoColor=white" alt="GitHub Repository"></a> |
-| 🤗 **Hugging Face Model** | Giga-World-1 model weights | <a href="https://huggingface.co/GigaAI-Research/Giga-World-1"><img src="https://img.shields.io/badge/Hugging%20Face-Model-FFD21E?style=flat-square&logo=huggingface&logoColor=black" alt="Hugging Face Model"></a> |
-| 🤗 **Hugging Face Dataset** | Giga-World-1 toy data | <a href="https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata"><img src="https://img.shields.io/badge/Hugging%20Face-Dataset-FFD21E?style=flat-square&logo=huggingface&logoColor=black" alt="Hugging Face Dataset"></a> |
+| 🤗 **Hugging Face Model** | Giga-World-1 model weights | <a href="https://huggingface.co/open-gigaai/Giga-World-1"><img src="https://img.shields.io/badge/Hugging%20Face-Model-FFD21E?style=flat-square&logo=huggingface&logoColor=black" alt="Hugging Face Model"></a> |
+| 🤗 **Hugging Face Dataset** | Giga-World-1 toy data | <a href="https://huggingface.co/datasets/open-gigaai/Giga-World-1-Toydata"><img src="https://img.shields.io/badge/Hugging%20Face-Dataset-FFD21E?style=flat-square&logo=huggingface&logoColor=black" alt="Hugging Face Dataset"></a> |
+| 🤗 **Hugging Face Dataset (CVPR)** | CVPR 2026 WorldModel Track dataset | <a href="https://huggingface.co/datasets/open-gigaai/CVPR-2026-WorldModel-Track-Dataset"><img src="https://img.shields.io/badge/Hugging%20Face-CVPR%20Dataset-FFD21E?style=flat-square&logo=huggingface&logoColor=black" alt="Hugging Face Dataset CVPR"></a> |
 | 🔷 **ModelScope Model** | ModelScope mirror for model weights | <a href="https://modelscope.cn/models/GigaAI/Giga-World-1/summary"><img src="https://img.shields.io/badge/ModelScope-Model-624AFF?style=flat-square&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PHJlY3Qgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiByeD0iMiIgZmlsbD0iIzYyNEFGRiIvPjwvc3ZnPg%3D%3D&logoColor=white" alt="ModelScope Model"></a> |
 | 🔷 **ModelScope Dataset** | ModelScope mirror for toy data | <a href="https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata"><img src="https://img.shields.io/badge/ModelScope-Dataset-624AFF?style=flat-square&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMiAxMiI+PHJlY3Qgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiByeD0iMiIgZmlsbD0iIzYyNEFGRiIvPjwvc3ZnPg%3D%3D&logoColor=white" alt="ModelScope Dataset"></a> |
 | 📄 **arXiv** | Paper PDF, BibTeX | <a href="https://arxiv.org/abs/2511.19861"><img src="https://img.shields.io/badge/arXiv-2511.19861-b31b1b?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv Paper"></a> |
@@ -184,7 +186,7 @@ ftfy==6.3.1
 
 ## 2. 🗃️ Data Preparation
 
-This release provides a small toy data package for verifying inference, data loading, visualization, and training workflows. The toy data is available from [Hugging Face](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) and [ModelScope](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata).
+This release provides a small toy data package for verifying inference, data loading, visualization, and training workflows. The toy data is available from [Hugging Face](https://huggingface.co/datasets/open-gigaai/Giga-World-1-Toydata) and [ModelScope](https://modelscope.cn/datasets/GigaAI/Giga-World-1-Toydata).
 
 Use the one-click downloader:
 
@@ -245,7 +247,7 @@ Released model weights are available from:
 
 | Platform | Repository |
 | --- | --- |
-| 🤗 Hugging Face | [GigaAI-Research/Giga-World-1](https://huggingface.co/GigaAI-Research/Giga-World-1) |
+| 🤗 Hugging Face | [open-gigaai/Giga-World-1](https://huggingface.co/open-gigaai/Giga-World-1) |
 | 🔷 ModelScope | [GigaAI/Giga-World-1](https://modelscope.cn/models/GigaAI/Giga-World-1/summary) |
 
 Use the download helper:
@@ -571,7 +573,7 @@ GigaWorld-1 stands on the shoulders of a vibrant open-source ecosystem. We are d
 - [**Helios**](https://github.com/PKU-YuanGroup/Helios) — a video generation model that achieves minute-scale, high-quality video synthesis
 - [**Genesis**](https://github.com/xiaomi-research/genesis) — a generative universal physics engine and robotics/embodied AI simulation platform
 - [**Hugging Face 🤗**](https://huggingface.co/) — hosting, `transformers`, `accelerate`, and the entire model & dataset ecosystem
-- [**GigaAI-Research/Giga-World-1**](https://huggingface.co/GigaAI-Research/Giga-World-1) and [**GigaAI-Research/Giga-World-1-Toydata**](https://huggingface.co/datasets/GigaAI-Research/Giga-World-1-Toydata) — the public Hugging Face model and toy-data repositories
+- [**open-gigaai/Giga-World-1**](https://huggingface.co/open-gigaai/Giga-World-1) and [**open-gigaai/Giga-World-1-Toydata**](https://huggingface.co/datasets/open-gigaai/Giga-World-1-Toydata) — the public Hugging Face model and toy-data repositories
 
 ### 🛠️ Training & Acceleration
 - [**PyTorch**](https://pytorch.org/) & [**DeepSpeed**](https://www.deepspeed.ai/) — the foundation of our distributed training stack
