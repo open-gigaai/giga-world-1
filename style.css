@@ -2930,9 +2930,16 @@ body {
 .wmbench-summary {
     text-align: center;
     color: var(--text-light);
-    max-width: 900px;
+    max-width: 960px;
     margin: 1.5rem auto 2rem;
     line-height: 1.75;
+}
+
+.wmbench-summary--compact {
+    max-width: 980px;
+    margin-top: -0.6rem;
+    margin-bottom: 0;
+    font-size: 0.92rem;
 }
 
 .feature-kicker {
@@ -2952,9 +2959,9 @@ body {
 
 .wmbench-features {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.2rem;
-    max-width: 1100px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    max-width: 1160px;
     margin: 0 auto 2rem;
 }
 
@@ -3228,6 +3235,12 @@ body {
     .metrics-legend {
         gap: 0.6rem 1rem;
         font-size: 0.74rem;
+    }
+}
+
+@media (max-width: 1100px) {
+    .wmbench-features {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
 

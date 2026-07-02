@@ -1363,84 +1363,97 @@
                 <div class="section-divider"></div>
 
                 <p class="wmbench-summary">
-                    WMBench separates <strong>good generation</strong> from <strong>good evaluation</strong>. Beyond
-                    outcome-level
-                    <strong>WMES</strong>, it uses automated diagnostics to analyze rollout quality, geometry,
-                    semantics,
-                    dynamics, interaction, and evaluator reliability.
+                    WMBench evaluates world models as <strong>robot policy evaluators</strong>, not only as video
+                    generators. Its protocol mirrors real deployment: collect real policy rollouts, train world models
+                    under a strict holdout split, run <strong>closed-loop policy evaluation</strong> inside the learned
+                    world model, and compare generated outcomes with real-world conclusions.
                 </p>
 
                 <div class="wmbench-features">
                     <div class="feature-card">
-                        <div class="feature-kicker">Outcome</div>
-                        <h4>WMES for Policy Evaluation</h4>
-                        <p>Measures whether a world model can replace real robot rollouts for method-level policy
-                            comparison.</p>
+                        <div class="feature-kicker">Step 1</div>
+                        <h4>Real-World Collection</h4>
+                        <p>Collect physical closed-loop policy rollouts with initial observations, task instructions,
+                            multi-view videos, and human success labels.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-kicker">Diagnosis</div>
-                        <h4>Generation Process Metrics</h4>
-                        <p>Diagnoses visual realism, temporal stability, geometry, semantics, motion, and interaction
-                            quality.</p>
+                        <div class="feature-kicker">Step 2</div>
+                        <h4>Strict World-Model Holdout</h4>
+                        <p>Train on the designated split while holding out test layouts and initial states to measure
+                            generalization rather than memorization.</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-kicker">Reliability</div>
-                        <h4>Evaluator Agreement</h4>
-                        <p>Uses correlation and rank-stability metrics to test whether simulated evaluation matches real
-                            outcomes.</p>
+                        <div class="feature-kicker">Step 3</div>
+                        <h4>Closed-Loop Rollout</h4>
+                        <p>The policy acts on generated observations, and the world model feeds predictions back to the
+                            policy until task termination.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-kicker">Step 4</div>
+                        <h4>Metrics & Outcome Assessment</h4>
+                        <p>Automatic diagnostics measure rollout quality, while <strong>WMES</strong> from human or VLM
+                            evaluators measures task-level outcome alignment.</p>
                     </div>
                 </div>
 
                 <div class="benchmark-metrics metric-family-grid">
-                    <div class="metric-family-card">
-                        <h4>Generation Quality & Appearance Stability</h4>
-                        <p>Low-level realism and pixel-level consistency, including reconstruction quality, distribution
-                            distance, visual preference, background stability, and photometric consistency.</p>
+                    <div class="metric-family-card metric-family-card--highlight">
+                        <h4>Outcome Evaluation</h4>
+                        <p><strong>WMES</strong> measures whether generated rollouts support task-level policy
+                            comparison and preserve real-world success conclusions.</p>
                         <ul class="metrics-list compact">
-                            <li class="cat-perceptual">PSNR</li>
-                            <li class="cat-perceptual">FID / FVD</li>
+                            <li class="cat-semantic">Human WMES</li>
+                            <li class="cat-semantic">VLM-assisted WMES</li>
+                            <li class="cat-representation">PCC</li>
+                            <li class="cat-trajectory">MMRV</li>
+                        </ul>
+                    </div>
+                    <div class="metric-family-card">
+                        <h4>Frame & Representation Fidelity</h4>
+                        <p>Perceptual quality, content stability, and feature-level similarity across generated and
+                            reference videos.</p>
+                        <ul class="metrics-list compact">
                             <li class="cat-perceptual">Image Quality</li>
                             <li class="cat-perceptual">Aesthetic Quality</li>
+                            <li class="cat-representation">JEPA Similarity</li>
+                            <li class="cat-perceptual">Subject Consistency</li>
                             <li class="cat-temporal">Background Consistency</li>
                             <li class="cat-geometry">Photometric Consistency</li>
                         </ul>
                     </div>
                     <div class="metric-family-card">
-                        <h4>Visual & Geometric Fidelity</h4>
-                        <p>Structural integrity of the robot scene, object identity, embodiment consistency, and stable
-                            3D geometry across viewpoints.</p>
+                        <h4>Geometry, Semantics & Interaction</h4>
+                        <p>Spatial structure, 3D plausibility, task semantics, instruction following, and action-conditioned
+                            robot-object interaction.</p>
                         <ul class="metrics-list compact">
-                            <li class="cat-perceptual">Subject Consistency</li>
+                            <li class="cat-geometry">Geometry Accuracy</li>
                             <li class="cat-geometry">Perspectivity</li>
-                            <li class="cat-geometry">Depth Accuracy</li>
-                            <li class="cat-representation">JEPA Similarity</li>
-                        </ul>
-                    </div>
-                    <div class="metric-family-card">
-                        <h4>Semantics, Dynamics & Interaction</h4>
-                        <p>Task intent, physical plausibility, action following, contact correctness, motion continuity,
-                            and trajectory agreement.</p>
-                        <ul class="metrics-list compact">
                             <li class="cat-semantic">Semantic Alignment</li>
                             <li class="cat-semantic">Instruction Following</li>
                             <li class="cat-semantic">Interaction Quality</li>
                             <li class="cat-trajectory">Trajectory Accuracy</li>
-                            <li class="cat-temporal">Motion Smoothness</li>
-                            <li class="cat-temporal">Dynamic Degree</li>
-                            <li class="cat-temporal">Flow Score</li>
                         </ul>
                     </div>
-                    <div class="metric-family-card metric-family-card--highlight">
-                        <h4>Evaluator Reliability</h4>
-                        <p>Meta-evaluation metrics quantify whether world-model scores preserve real-world policy
-                            rankings and outcome trends.</p>
+                    <div class="metric-family-card">
+                        <h4>Motion & Long-Horizon Rollout</h4>
+                        <p>Short-term motion behavior and long-horizon autoregressive degradation, including temporal
+                            smoothness, flow dynamics, and standard video-generation distances.</p>
                         <ul class="metrics-list compact">
-                            <li class="cat-representation">PCC</li>
-                            <li class="cat-trajectory">MMRV</li>
-                            <li class="cat-semantic">VLM-assisted WMES</li>
+                            <li class="cat-temporal">Dynamic Degree</li>
+                            <li class="cat-temporal">Flow Score</li>
+                            <li class="cat-temporal">Motion Smoothness</li>
+                            <li class="cat-perceptual">PSNR</li>
+                            <li class="cat-perceptual">FID</li>
+                            <li class="cat-perceptual">FVD</li>
                         </ul>
                     </div>
                 </div>
+
+                <p class="wmbench-summary wmbench-summary--compact">
+                    Summary tables focus on six key diagnostics: <strong>Aesthetic Quality</strong>, <strong>Image
+                        Quality</strong>, <strong>JEPA Similarity</strong>, <strong>Semantic Alignment</strong>,
+                    <strong>Subject Consistency</strong>, and <strong>Trajectory Accuracy</strong>.
+                </p>
             </section>
         </div>
 
