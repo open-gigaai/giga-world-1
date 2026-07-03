@@ -57,6 +57,7 @@
 
 | Date | Update |
 | :---: | --- |
+| 📄 **2026-07** | We uploaded the PDF version of the technical report, arXiv coming soon. |
 | 🧑‍💻 **2026-07** | Partial training, inference, data processing, and model utility code was open-sourced. |
 | 📦 **2026-07** | Partial model weights, toy data, and download tools were released. |
 | 📖 **2026-07** | The GigaWorld-1 technical report was released. |
