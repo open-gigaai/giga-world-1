@@ -10,7 +10,7 @@
 
 <div align="center">
 
-[![arXiv](https://img.shields.io/badge/arXiv-2511.19861-b31b1b.svg?style=for-the-badge&logo=arxiv&logoColor=white)](https://github.com/open-gigaai/giga-world-1/blob/main/assets/GigaWorld-1.pdf)
+[![arXiv](https://img.shields.io/badge/arXiv-2511.19861-b31b1b.svg?style=for-the-badge&logo=arxiv&logoColor=white)](https://arxiv.org/abs/2607.02642)
 [![Project Page](https://img.shields.io/badge/Project-Page-blueviolet.svg?style=for-the-badge&logo=google-chrome&logoColor=white)](https://open-gigaai.github.io/giga-world-1/)
 [![HuggingFace Model](https://img.shields.io/badge/🤗_Model-Model-FFD21E.svg?style=for-the-badge)](https://huggingface.co/open-gigaai/Giga-World-1)
 [![HuggingFace Dataset](https://img.shields.io/badge/🤗_Dataset-ToyDataSet-FFD21E.svg?style=for-the-badge)](https://huggingface.co/datasets/open-gigaai/Giga-World-1-Toydata)
