@@ -611,14 +611,11 @@ If you find GigaWorld-1 useful, please consider ⭐ starring the repo and citing
 ## 📖 Citation
 
 ```bibtex
-@article{gigaworld2025,
-  title   = {GigaWorld-1: A Roadmap to World Models for Robot Policy Evaluation},
-  author  = {{GigaAI}},
-  journal = {arXiv preprint},
-  year    = {2025},
-  eprint  = {2511.19861},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.CV}
+@article{team2026gigaworld,
+  title={GigaWorld-1: A Roadmap to Build World Models for Robot Policy Evaluation},
+  author={Team, GigaWorld and Ma, Angyuan and Wang, Boyuan and Li, Bohan and Ni, Chaojun and Li, Guo and Huang, Guan and Zhao, Guosheng and Li, Hao and Li, Hengtao and others},
+  journal={arXiv preprint arXiv:2607.02642},
+  year={2026}
 }
 ```
 
