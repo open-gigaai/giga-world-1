@@ -449,15 +449,17 @@ class GigaworldPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         width,
         patch_size: tuple[int, ...] = (1, 2, 2),
         device: torch.device | None = None,
-        generator: torch.Generator | None = None,
+        generator: torch.Generator | list[torch.Generator] | None = None,
     ):
         # NOTE: A generator must be provided to ensure correct and reproducible results.
         # Creating a default generator here is a fallback only — without a fixed seed,
         # the output will be non-deterministic and may produce incorrect results in CP context.
         if generator is None:
             generator = torch.Generator(device=device)
-        elif isinstance(generator, list):
-            generator = generator[0]
+        elif isinstance(generator, list) and len(generator) != batch_size:
+            raise ValueError(
+                f"Expected one generator per batch item, got {len(generator)} for batch size {batch_size}."
+            )
 
         gamma = self.scheduler.config.gamma
         _, ph, pw = patch_size
@@ -471,8 +473,25 @@ class GigaworldPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         cov = cov.float()  # Upcast to fp32 for numerical stability — cholesky is unreliable in fp16/bf16.
 
         L = torch.linalg.cholesky(cov)
-        block_number = batch_size * channel * num_frames * (height // ph) * (width // pw)
-        z = torch.randn(block_number, block_size, generator=generator, device=generator.device).to(device=device)
+        blocks_per_sample = channel * num_frames * (height // ph) * (width // pw)
+        if isinstance(generator, list):
+            # Keep each sample's random stream independent while preserving
+            # the batch-major order expected by the reshape below.
+            z = torch.cat(
+                [
+                    torch.randn(
+                        blocks_per_sample,
+                        block_size,
+                        generator=sample_generator,
+                        device=sample_generator.device,
+                    ).to(device=device)
+                    for sample_generator in generator
+                ],
+                dim=0,
+            )
+        else:
+            block_number = batch_size * blocks_per_sample
+            z = torch.randn(block_number, block_size, generator=generator, device=generator.device).to(device=device)
         noise = z @ L.T
 
         noise = noise.view(batch_size, channel, num_frames, height // ph, width // pw, ph, pw)
@@ -497,7 +516,7 @@ class GigaworldPipeline(DiffusionPipeline, WanLoraLoaderMixin):
         attention_kwargs: Optional[dict] = None,
         device: Optional[torch.device] = None,
         transformer_dtype: torch.dtype = None,
-        generator: Optional[torch.Generator] = None,
+        generator: Optional[Union[torch.Generator, List[torch.Generator]]] = None,
         # ------------ CFG Zero ------------
         use_cfg_zero_star: Optional[bool] = False,
         use_zero_init: Optional[bool] = True,
